@@ -1,18 +1,65 @@
-# BYUI DS Portfolio Template
-## Building a Quarto Portfolo
+# Ethan Abbott
+#### Aspiring Data Scientist
 
-A template for a portfolio developed with Quarto and hosted on GitHub.
 
-This is all configured so you only need to edit the source files in Quarto (.qmd). The website is generated and hosted automatically by GitHub.
+## About Me
+I'm a senior at Brigham Young University - Idaho studying data science. I love seeing the world around me quantified in order to detect patterns and improve performance. I love sports and thoroughly seeing greatness described with a number. However, I still love to learn about other parts of the world around me.
 
-## Using this template
+Whether it's climbing Jacob's Ladder, practicing trumpet, or learning Spanish, I fight to succeed and excel. One of my youth soccer coaches would frequently remind us that hard work beats talent when talent doesn't work hard. I've applied that principle and seen what it has caused in my life and I know that the only thing between me and positive results are my responsibility and effort. 
 
-1. Click on green button "Use this Tempalte" -> "Create a new Repo"
+## What I'm Currently Working On
+I’m working with a team of data science students to build a FastAPI-based system that streamlines property management for the university’s music department.
 
-1. Choose a name for your repository
+We are replacing manual spreadsheet tracking with a centralized database and API, enabling efficient data storage, retrieval, and updates. My work involves backend development, database design, and building endpoints for querying and managing inventory data.
 
-1. Important: check 'Include all branches' when creating the repository (because we will need the gh-pages branch to host the website).
+## Skills
+<details>
+<summary>Python</summary>
+<ul>
+  <li>Pandas</li>
+  <li>NumPy</li>
+  <li>Spark</li>
+  <li>Lets-Plot</li>
+  <li>scikit-learn</li>
+  <li>Polars</li>
+</ul>
+</details>
 
-1. Once your repo is created, remember to update the links to your GitHub repo in _quarto.yml, replacing every instance 'your_name'.
+<details>
+<summary>R</summary>
+<ul>
+  <li>tidyverse</li>
+  <li>ggplot</li>
+  <li>regression analysis</li>
+</ul>
+</details>
 
-1. The first time you publish to your repo use this command line string `quarto publish gh-pages` in the vs code terminal.
+<details>
+<summary>SQL</summary>
+</details>
+  
+<details>
+<summary>Microsoft</summary>
+<ul>
+  <li>Power BI</li>
+  <li>DAX</li>
+  <li>Excel</li>
+  <li>PowerPoint</li>
+  <li>Word</li>
+</ul>
+</details>
+
+<details>
+<summary>Software</summary>
+<ul>
+  <li>Databricks</li>
+  <li>GCP</li>
+  <li>Docker</li>
+  <li>Git</li>
+</ul>
+</details>
+
+## Contact Me
+- [LinkedIn](https://www.linkedin.com/in/ethan-abbott-3a437a210/)
+- [Handshake](https://byui.joinhandshake.com/profiles/qv7qt5)
+- [Email](mailto:ethan.abbott10@outlook.com)
