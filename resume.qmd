@@ -1,91 +1,73 @@
 ---
 layout: cv
-title: Isaac Newtons's CV
+title: Comprehensive Resume
 ---
-# Isaac Newton
-Physicist, Mathematician, Cambridge professor.
+# Ethan Abbott
+Aspiring Data Scientist
 
-<div id="webaddress">
-<a href="isaac@applesdofall.org">isaac@applesdofall.org</a>
-| <a href="http://en.wikipedia.org/wiki/Isaac_Newton">My wikipedia page</a>
-<!-- | <a href="https://yourusername.github.io/datascience_portfolio/gh-pages/resume.pdf">Download PDF</a> -->
-| <a href="https://github.com/byuidatascience/datascience_portfolio/blob/gh-pages/resume.pdf">Download PDF</a>
-</div>
+[LinkedIn](https://www.linkedin.com/in/ethan-abbott-3a437a210/) | [Email](mailto:ethan.abbott10@outlook.com)
 
-
-## Currently
-
-Standing on the shoulders of giants
-
-### Specialized in
-
-Laws of motion, gravitation, minting coins, disliking [Robert Hooke](http://en.wikipedia.org/wiki/Robert_Hooke)
-
-
-### Research interests
-
-Cooling, power series, optics, alchemy, planetary motions, apples.
+## Skills
+- Python (Pandas, PySpark, NumPy, Polars, scikitlearn, lets-plot)
+- R (tidyverse, ggplot)
+- SQL (Window, join)
+- PowerBI (Visualization, DAX)
+- Excel (Pivot tables, dashboards)
+- Microsoft Office (Powerpoint, Word)
+- Other Software (Git, Docker, Databricks, Google Cloud Platform)
+- C# (Classes)
+- Spanish Fluency
 
 
 ## Education
 
-`1654-1660`
-__The King's School, Grantham.__
+__Bacehlor of Science - Data Science__
+_Brigham Young University - Idaho_
+January 2021 - April 2027
+Rexburg, Idaho
 
-`June 1661 - now`
-__Trinity College, Cambridge__
+## Projects
 
-- Sizar
+__Date Engineering Consultant__
+_RBDC Student Data Science group_
+January 2026 - Present
+Rexburg, Idaho
 
-`1667 - death`
-__Trinity College, Cambridge__
+•	Developing a FastAPI-based Python API to streamline property management operations for school's music department, greatly reducing processing time and potential for errors
 
-- Fellow
+## Work Experience
+__Warehouse and Delivery Associate__
+_Steve's Paint Supply_
+August 2024 - January 2026
+Colorado Springs, CO
 
+•	Managed four separate spaces for efficient storage and retrieval of material. Operated company forklift
+•	Transported up to 100 gallons of paint in a safe and timely manner
+•	Entrusted daily with company funds to realize business purchases around town. Praised for accountable work performance under circumstances easy to abuse
 
+__Missionary__	
+_The Church of Jesus Christ of Latter-Day Saints_
+April 2022 - April 2024
+Mexico City, Mexico
 
-## Awards
-
-`2012`
-President, *Royal Society*, London, UK
-
-Associate, *French Academy of Science*, Paris, France
-
-
-
-## Publications
-
-<!-- A list is also available [online](http://scholar.google.co.uk/citations?user=LTOTl0YAAAAJ) -->
-
-### Journals
-
-`1669`
-Newton Sir I, De analysi per æquationes numero terminorum infinitas. 
-
-`1669`
-Lectiones opticæ.
-
-etc. etc. etc.
-
-### Patents
-
-`2012`
-Infinitesimal calculus for solutions to physics problems, [SMBC](http://www.techdirt.com/articles/20121011/09312820678/if-patents-had-been-around-time-newton.shtml) patent 001
+•	Performed ministering, proselyting, public relations, and service work on a regional level in 3 separate Mexican states
+•	Assigned by mission president to a mission office position to execute a culture change
+•	Found and submitted housing solutions for needs of 135 missionaries including proposals and contract negotiations through church legal department. Completed task of finding new properties for 3 companionships on a short schedule
+•	Oversaw logistics for distributing proselyting aids, equipment, and mail to missionaries in 50 different mission areas
+•	Organized and cleaned out storage spaces to increase space and better separate 2 inventories
+•	Managed technology maintenance, repair, and training needs. Headed project to distribute 75 new phones in an efficient manner to rotate oldest phones out of use sooner
+•	Prepared dozens of residency application packages for foreign-serving missionaries and maintained inconsistent consulate appointment schedules
+•	Planned transportation of 70+ missionaries on a tight schedule to ensure missionaries could work in new area as soon as possible, usually same day
+•	Assigned to leadership positions over up to 15 other missionaries
 
 
-## Occupation
+__Hotel Maintenance Staff__
+_Hampton Inn and Suites_
+June 2020 - December 2022
+Colorado Springs, CO
 
-`1600`
-__Royal Mint__, London
-
-- Warden
-- Minted coins
-
-`1600`
-__Lucasian professor of Mathematics__, Cambridge University
-
-
+• Serviced and supported hotel amenities and building assets for the #1 rated Hampton Inn & Suites in Colorado. Specialized in pool maintenance, grounds keeping, facilities appearance, structural and landscaping improvements to keep a fully operational, clean hotel property at one of the highest volume per unit hotels in Colorado.
 
 <!-- ### Footer
 
-Last updated: May 2013 -->
+Last updated: March 2026 -->
