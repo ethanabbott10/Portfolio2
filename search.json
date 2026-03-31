@@ -313,16 +313,23 @@
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "about me",
+    "title": "About Me",
     "section": "",
-    "text": "MarkDown Basics"
+    "text": "I’m a senior at Brigham Young University - Idaho studying data science. I love seeing the world around me quantified in order to detect patterns and improve performance. I love sports and thoroughly seeing greatness described with a number. However, I still love to learn about other parts of the world around me.\nWhether it’s climbing Jacob’s Ladder, practicing trumpet, or learning Spanish, I fight to succeed and excel. One of my youth soccer coaches would frequently remind us that hard work beats talent when talent doesn’t work hard. I’ve applied that principle and seen what it has caused in my life and I know that the only thing between me and positive results are my responsibility and effort."
   },
   {
-    "objectID": "index.html#title-2-header",
-    "href": "index.html#title-2-header",
-    "title": "about me",
-    "section": "",
-    "text": "MarkDown Basics"
+    "objectID": "index.html#what-im-currently-working-on",
+    "href": "index.html#what-im-currently-working-on",
+    "title": "About Me",
+    "section": "What I’m Currently Working On",
+    "text": "What I’m Currently Working On\nI’m working with a team of data science students to build a FastAPI-based system that streamlines property management for the university’s music department.\nWe are replacing manual spreadsheet tracking with a centralized database and API, enabling efficient data storage, retrieval, and updates. My work involves backend development, database design, and building endpoints for querying and managing inventory data."
+  },
+  {
+    "objectID": "index.html#skills",
+    "href": "index.html#skills",
+    "title": "About Me",
+    "section": "Skills",
+    "text": "Skills\n\n\nPython\n\n\n\nPandas\n\n\nNumPy\n\n\nSpark\n\n\nLets-Plot\n\n\nscikit-learn\n\n\nPolars\n\n\n\n\n\nR\n\n\n\ntidyverse\n\n\nggplot\n\n\nregression analysis\n\n\n\n\n\nSQL\n\n\n\n\nMicrosoft\n\n\n\nPower BI\n\n\nDAX\n\n\nExcel\n\n\nPowerPoint\n\n\nWord\n\n\n\n\n\nSoftware\n\n\n\nDatabricks\n\n\nGCP\n\n\nDocker\n\n\nGit"
   },
   {
     "objectID": "resume.html",
