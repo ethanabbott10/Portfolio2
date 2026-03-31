@@ -4,4 +4,7 @@
 /_site/*.js
 /_site/*.css
 /.quarto/
+<<<<<<< HEAD
 **/*.quarto_ipynb
+=======
+>>>>>>> 4331da4 (re-render site)
