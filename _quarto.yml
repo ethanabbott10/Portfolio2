@@ -6,7 +6,7 @@ website:
   title: "Ethan Abbott - Data Science Portfolio"
   favicon: Images/favicon.png
   back-to-top-navigation: true
-  repo-url: https://github.com/ethanabbott10/ethanabbott10.github.io
+  repo-url: https://github.com/ethanabbott10/Portfolio2
   #repo-actions: [issue] #if you want to allow others to report issues on your site uncomment this line
 
   page-footer: 
