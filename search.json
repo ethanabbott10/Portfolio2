@@ -174,7 +174,7 @@
     "href": "index.html#what-im-currently-working-on",
     "title": "About Me",
     "section": "What I’m Currently Working On",
-    "text": "What I’m Currently Working On\nI’m working with a team of data science students to build a FastAPI-based system that streamlines property management for the university’s music department.\nWe are replacing manual spreadsheet tracking with a centralized database and API, enabling efficient data storage, retrieval, and updates. My work involves backend development, database design, and building endpoints for querying and managing inventory data. john"
+    "text": "What I’m Currently Working On\nI’m working with a team of data science students to build a FastAPI-based system that streamlines property management for the university’s music department.\nWe are replacing manual spreadsheet tracking with a centralized database and API, enabling efficient data storage, retrieval, and updates. My work involves backend development, database design, and building endpoints for querying and managing inventory data."
   },
   {
     "objectID": "index.html#skills",
