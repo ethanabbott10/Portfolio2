@@ -71,19 +71,19 @@ website:
           file: exploration.qmd
         - text: "---"
         - text: "Project 1"
-          file: Exploration_Projects/project1.qmd
+          file: Data_Exploration/project1.qmd
         - text: "---"
         - text: "Project 2"
-          file: Exploration_Projects/project2.qmd
+          file: Data_Exploration/project2.qmd
         - text: "---"
         - text: "Project 3"
-          file: Exploration_Projects/project3.qmd
+          file: Data_Exploration/project3.qmd
         - text: "---"
         - text: "Project 4"
-          file: Exploration_Projects/project4.qmd
+          file: Data_Exploration/project4.qmd
         - text: "---"
         - text: "Project 5"
-          file: Exploration_Projects/project5.qmd
+          file: Data_Exploration/project5.qmd
         - text: "---"
     - title: "Story Telling"
       style: "docked"
