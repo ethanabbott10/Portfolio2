@@ -53,73 +53,81 @@
     ]
   },
   {
-    "objectID": "Full_Stack/project2.html",
-    "href": "Full_Stack/project2.html",
+    "objectID": "Data_Exploration/project2.html",
+    "href": "Data_Exploration/project2.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
     "text": "Paste in a template\n\n\n\n\n Back to top",
     "crumbs": [
-      "Full Stack",
+      "Data Exploration",
       "Project 2"
     ]
   },
   {
-    "objectID": "Full_Stack/project5.html",
-    "href": "Full_Stack/project5.html",
+    "objectID": "Data_Exploration/project5.html",
+    "href": "Data_Exploration/project5.html",
+    "title": "Client Report - [Insert Project Title]",
+    "section": "",
+    "text": "Paste in a template\n\n\n\n\n Back to top",
+    "crumbs": [
+      "Data Exploration",
+      "Project 5"
+    ]
+  },
+  {
+    "objectID": "Full_Stack/project3.html",
+    "href": "Full_Stack/project3.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
     "text": "Paste in a template\n\n\n\n\n Back to top",
     "crumbs": [
       "Full Stack",
-      "Project 5"
-    ]
-  },
-  {
-    "objectID": "Competition/project3.html",
-    "href": "Competition/project3.html",
-    "title": "Client Report - [Insert Project Title]",
-    "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top",
-    "crumbs": [
-      "Competition",
       "Project 3"
     ]
   },
   {
-    "objectID": "Competition/project1.html",
-    "href": "Competition/project1.html",
+    "objectID": "Full_Stack/project1.html",
+    "href": "Full_Stack/project1.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
     "text": "Paste in a template\n\n\n\n\n Back to top",
     "crumbs": [
-      "Competition",
+      "Full Stack",
       "Project 1"
     ]
   },
   {
-    "objectID": "Competition/project4.html",
-    "href": "Competition/project4.html",
+    "objectID": "Full_Stack/project4.html",
+    "href": "Full_Stack/project4.html",
+    "title": "Client Report - [Insert Project Title]",
+    "section": "",
+    "text": "Paste in a template\n\n\n\n\n Back to top",
+    "crumbs": [
+      "Full Stack",
+      "Project 4"
+    ]
+  },
+  {
+    "objectID": "Competition/project2.html",
+    "href": "Competition/project2.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
     "text": "Paste in a template\n\n\n\n\n Back to top",
     "crumbs": [
       "Competition",
-      "Project 4"
+      "Project 2"
     ]
   },
   {
-    "objectID": "Cleansing_Exploration/project2.html",
-    "href": "Cleansing_Exploration/project2.html",
+    "objectID": "Competition/project5.html",
+    "href": "Competition/project5.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "Cleansing_Exploration/project5.html",
-    "href": "Cleansing_Exploration/project5.html",
-    "title": "Client Report - [Insert Project Title]",
-    "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top"
+    "text": "Paste in a template\n\n\n\n\n Back to top",
+    "crumbs": [
+      "Competition",
+      "Project 5"
+    ]
   },
   {
     "objectID": "story_telling.html",
@@ -144,16 +152,23 @@
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "about me",
+    "title": "About Me",
     "section": "",
-    "text": "MarkDown Basics"
+    "text": "I’m a senior at Brigham Young University - Idaho studying data science. I love seeing the world around me quantified in order to detect patterns and improve performance. I love sports and thoroughly seeing greatness described with a number. However, I still love to learn about other parts of the world around me.\nWhether it’s climbing Jacob’s Ladder, practicing trumpet, or learning Spanish, I fight to succeed and excel. One of my youth soccer coaches would frequently remind us that hard work beats talent when talent doesn’t work hard. I’ve applied that principle and seen what it has caused in my life and I know that the only thing between me and positive results are my responsibility and effort."
   },
   {
-    "objectID": "index.html#title-2-header",
-    "href": "index.html#title-2-header",
-    "title": "about me",
-    "section": "",
-    "text": "MarkDown Basics"
+    "objectID": "index.html#what-im-currently-working-on",
+    "href": "index.html#what-im-currently-working-on",
+    "title": "About Me",
+    "section": "What I’m Currently Working On",
+    "text": "What I’m Currently Working On\nI’m working with a team of data science students to build a FastAPI-based system that streamlines property management for the university’s music department.\nWe are replacing manual spreadsheet tracking with a centralized database and API, enabling efficient data storage, retrieval, and updates. My work involves backend development, database design, and building endpoints for querying and managing inventory data. john"
+  },
+  {
+    "objectID": "index.html#skills",
+    "href": "index.html#skills",
+    "title": "About Me",
+    "section": "Skills",
+    "text": "Skills\n\n\nPython\n\n\n\nPandas\n\n\nNumPy\n\n\nSpark\n\n\nLets-Plot\n\n\nscikit-learn\n\n\nPolars\n\n\n\n\n\nR\n\n\n\ntidyverse\n\n\nggplot\n\n\nregression analysis\n\n\n\n\n\nSQL\n\n\n\n\nMicrosoft\n\n\n\nPower BI\n\n\nDAX\n\n\nExcel\n\n\nPowerPoint\n\n\nWord\n\n\n\n\n\nSoftware\n\n\n\nDatabricks\n\n\nGCP\n\n\nDocker\n\n\nGit"
   },
   {
     "objectID": "Machine_Learning/project2.html",
@@ -277,11 +292,7 @@
     "href": "resume.html",
     "title": "Comprehensive Resume",
     "section": "",
-<<<<<<< HEAD:docs/search.json
-    "text": "Aspiring Data Scientist\nLinkedIn | Email\n\n\n\nPython (Pandas, PySpark, NumPy, Polars, scikitlearn, lets-plot)\nR (tidyverse, ggplot)\nSQL (Window, join)\nPowerBI (Visualization, DAX)\nExcel (Pivot tables, dashboards)\nMicrosoft Office (Powerpoint, Word)\nOther Software (Git, Docker, Databricks, Google Cloud Platform)\nC# (Classes)\nSpanish Fluency\n\n\n\n\nBacehlor of Science - Data Science Brigham Young University - Idaho January 2021 - April 2027 Rexburg, Idaho\n\n\n\nDate Engineering Consultant RBDC Student Data Science group January 2026 - Present Rexburg, Idaho\n• Developing a FastAPI-based Python API to streamline property management operations for school’s music department, greatly reducing processing time and potential for errors\n\n\n\nWarehouse and Delivery Associate Steve’s Paint Supply August 2024 - January 2026 Colorado Springs, CO\n• Managed four separate spaces for efficient storage and retrieval of material. Operated company forklift • Transported up to 100 gallons of paint in a safe and timely manner • Entrusted daily with company funds to realize business purchases around town. Praised for accountable work performance under circumstances easy to abuse\nMissionary\nThe Church of Jesus Christ of Latter-Day Saints April 2022 - April 2024 Mexico City, Mexico\n• Performed ministering, proselyting, public relations, and service work on a regional level in 3 separate Mexican states • Assigned by mission president to a mission office position to execute a culture change • Found and submitted housing solutions for needs of 135 missionaries including proposals and contract negotiations through church legal department. Completed task of finding new properties for 3 companionships on a short schedule • Oversaw logistics for distributing proselyting aids, equipment, and mail to missionaries in 50 different mission areas • Organized and cleaned out storage spaces to increase space and better separate 2 inventories • Managed technology maintenance, repair, and training needs. Headed project to distribute 75 new phones in an efficient manner to rotate oldest phones out of use sooner • Prepared dozens of residency application packages for foreign-serving missionaries and maintained inconsistent consulate appointment schedules • Planned transportation of 70+ missionaries on a tight schedule to ensure missionaries could work in new area as soon as possible, usually same day • Assigned to leadership positions over up to 15 other missionaries\nHotel Maintenance Staff Hampton Inn and Suites June 2020 - December 2022 Colorado Springs, CO\n• Serviced and supported hotel amenities and building assets for the #1 rated Hampton Inn & Suites in Colorado. Specialized in pool maintenance, grounds keeping, facilities appearance, structural and landscaping improvements to keep a fully operational, clean hotel property at one of the highest volume per unit hotels in Colorado."
-=======
-    "text": "Physicist, Mathematician, Cambridge professor.\n\nisaac@applesdofall.org | My wikipedia page  | Download PDF\n\n\n\nStanding on the shoulders of giants\n\n\nLaws of motion, gravitation, minting coins, disliking Robert Hooke\n\n\n\nCooling, power series, optics, alchemy, planetary motions, apples.\n\n\n\n\n1654-1660 The King’s School, Grantham.\nJune 1661 - now Trinity College, Cambridge\n\nSizar\n\n1667 - death Trinity College, Cambridge\n\nFellow\n\n\n\n\n2012 President, Royal Society, London, UK\nAssociate, French Academy of Science, Paris, France\n\n\n\n\n\n\n1669 Newton Sir I, De analysi per æquationes numero terminorum infinitas.\n1669 Lectiones opticæ.\netc. etc. etc.\n\n\n\n2012 Infinitesimal calculus for solutions to physics problems, SMBC patent 001\n\n\n\n\n1600 Royal Mint, London\n\nWarden\nMinted coins\n\n1600 Lucasian professor of Mathematics, Cambridge University"
->>>>>>> 4331da4 (re-render site):_site/search.json
+    "text": "Aspiring Data Scientist\nLinkedIn | Email\n\n\n\nPython (Pandas, PySpark, NumPy, Polars, scikitlearn, lets-plot)\nR (tidyverse, ggplot)\nSQL (Window, join)\nPowerBI (Visualization, DAX)\nExcel (Pivot tables, dashboards)\nMicrosoft Office (Powerpoint, Word)\nOther Software (Git, Docker, Databricks, Google Cloud Platform)\nC# (Classes)\nSpanish Fluency\n\n\n\n\nBachelor of Science - Data Science\nBrigham Young University - Idaho\nJanuary 2021 - April 2027\nRexburg, Idaho\n\n\n\nDate Engineering Consultant\nRBDC Student Data Science group\nJanuary 2026 - Present\nRexburg, Idaho\n• Developing a FastAPI-based Python API to streamline property management operations for school’s music department, greatly reducing processing time and potential for errors\n\n\n\nWarehouse and Delivery Associate\nSteve’s Paint Supply\nAugust 2024 - January 2026\nColorado Springs, CO\n• Managed four separate spaces for efficient storage and retrieval of material. Operated company forklift • Transported up to 100 gallons of paint in a safe and timely manner • Entrusted daily with company funds to realize business purchases around town. Praised for accountable work performance under circumstances easy to abuse\nMissionary\nThe Church of Jesus Christ of Latter-Day Saints\nApril 2022 - April 2024\nMexico City, Mexico\n• Performed ministering, proselyting, public relations, and service work on a regional level in 3 separate Mexican states • Assigned by mission president to a mission office position to execute a culture change • Found and submitted housing solutions for needs of 135 missionaries including proposals and contract negotiations through church legal department. Completed task of finding new properties for 3 companionships on a short schedule • Oversaw logistics for distributing proselyting aids, equipment, and mail to missionaries in 50 different mission areas • Organized and cleaned out storage spaces to increase space and better separate 2 inventories • Managed technology maintenance, repair, and training needs. Headed project to distribute 75 new phones in an efficient manner to rotate oldest phones out of use sooner • Prepared dozens of residency application packages for foreign-serving missionaries and maintained inconsistent consulate appointment schedules • Planned transportation of 70+ missionaries on a tight schedule to ensure missionaries could work in new area as soon as possible, usually same day • Assigned to leadership positions over up to 15 other missionaries\nHotel Maintenance Staff\nHampton Inn and Suites\nJune 2020 - December 2022\nColorado Springs, CO\n• Serviced and supported hotel amenities and building assets for the #1 rated Hampton Inn & Suites in Colorado. Specialized in pool maintenance, grounds keeping, facilities appearance, structural and landscaping improvements to keep a fully operational, clean hotel property at one of the highest volume per unit hotels in Colorado."
   },
   {
     "objectID": "resume.html#skills",
@@ -295,21 +306,21 @@
     "href": "resume.html#education",
     "title": "Comprehensive Resume",
     "section": "",
-    "text": "Bacehlor of Science - Data Science Brigham Young University - Idaho January 2021 - April 2027 Rexburg, Idaho"
+    "text": "Bachelor of Science - Data Science\nBrigham Young University - Idaho\nJanuary 2021 - April 2027\nRexburg, Idaho"
   },
   {
     "objectID": "resume.html#projects",
     "href": "resume.html#projects",
     "title": "Comprehensive Resume",
     "section": "",
-    "text": "Date Engineering Consultant RBDC Student Data Science group January 2026 - Present Rexburg, Idaho\n• Developing a FastAPI-based Python API to streamline property management operations for school’s music department, greatly reducing processing time and potential for errors"
+    "text": "Date Engineering Consultant\nRBDC Student Data Science group\nJanuary 2026 - Present\nRexburg, Idaho\n• Developing a FastAPI-based Python API to streamline property management operations for school’s music department, greatly reducing processing time and potential for errors"
   },
   {
     "objectID": "resume.html#work-experience",
     "href": "resume.html#work-experience",
     "title": "Comprehensive Resume",
     "section": "",
-    "text": "Warehouse and Delivery Associate Steve’s Paint Supply August 2024 - January 2026 Colorado Springs, CO\n• Managed four separate spaces for efficient storage and retrieval of material. Operated company forklift • Transported up to 100 gallons of paint in a safe and timely manner • Entrusted daily with company funds to realize business purchases around town. Praised for accountable work performance under circumstances easy to abuse\nMissionary\nThe Church of Jesus Christ of Latter-Day Saints April 2022 - April 2024 Mexico City, Mexico\n• Performed ministering, proselyting, public relations, and service work on a regional level in 3 separate Mexican states • Assigned by mission president to a mission office position to execute a culture change • Found and submitted housing solutions for needs of 135 missionaries including proposals and contract negotiations through church legal department. Completed task of finding new properties for 3 companionships on a short schedule • Oversaw logistics for distributing proselyting aids, equipment, and mail to missionaries in 50 different mission areas • Organized and cleaned out storage spaces to increase space and better separate 2 inventories • Managed technology maintenance, repair, and training needs. Headed project to distribute 75 new phones in an efficient manner to rotate oldest phones out of use sooner • Prepared dozens of residency application packages for foreign-serving missionaries and maintained inconsistent consulate appointment schedules • Planned transportation of 70+ missionaries on a tight schedule to ensure missionaries could work in new area as soon as possible, usually same day • Assigned to leadership positions over up to 15 other missionaries\nHotel Maintenance Staff Hampton Inn and Suites June 2020 - December 2022 Colorado Springs, CO\n• Serviced and supported hotel amenities and building assets for the #1 rated Hampton Inn & Suites in Colorado. Specialized in pool maintenance, grounds keeping, facilities appearance, structural and landscaping improvements to keep a fully operational, clean hotel property at one of the highest volume per unit hotels in Colorado."
+    "text": "Warehouse and Delivery Associate\nSteve’s Paint Supply\nAugust 2024 - January 2026\nColorado Springs, CO\n• Managed four separate spaces for efficient storage and retrieval of material. Operated company forklift • Transported up to 100 gallons of paint in a safe and timely manner • Entrusted daily with company funds to realize business purchases around town. Praised for accountable work performance under circumstances easy to abuse\nMissionary\nThe Church of Jesus Christ of Latter-Day Saints\nApril 2022 - April 2024\nMexico City, Mexico\n• Performed ministering, proselyting, public relations, and service work on a regional level in 3 separate Mexican states • Assigned by mission president to a mission office position to execute a culture change • Found and submitted housing solutions for needs of 135 missionaries including proposals and contract negotiations through church legal department. Completed task of finding new properties for 3 companionships on a short schedule • Oversaw logistics for distributing proselyting aids, equipment, and mail to missionaries in 50 different mission areas • Organized and cleaned out storage spaces to increase space and better separate 2 inventories • Managed technology maintenance, repair, and training needs. Headed project to distribute 75 new phones in an efficient manner to rotate oldest phones out of use sooner • Prepared dozens of residency application packages for foreign-serving missionaries and maintained inconsistent consulate appointment schedules • Planned transportation of 70+ missionaries on a tight schedule to ensure missionaries could work in new area as soon as possible, usually same day • Assigned to leadership positions over up to 15 other missionaries\nHotel Maintenance Staff\nHampton Inn and Suites\nJune 2020 - December 2022\nColorado Springs, CO\n• Serviced and supported hotel amenities and building assets for the #1 rated Hampton Inn & Suites in Colorado. Specialized in pool maintenance, grounds keeping, facilities appearance, structural and landscaping improvements to keep a fully operational, clean hotel property at one of the highest volume per unit hotels in Colorado."
   },
   {
     "objectID": "Machine_Learning/project4.html",
@@ -365,78 +376,90 @@
     ]
   },
   {
-    "objectID": "Cleansing_Exploration/project4.html",
-    "href": "Cleansing_Exploration/project4.html",
-    "title": "Client Report - [Insert Project Title]",
-    "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "Cleansing_Exploration/project1.html",
-    "href": "Cleansing_Exploration/project1.html",
-    "title": "Client Report - [Insert Project Title]",
-    "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "Cleansing_Exploration/project3.html",
-    "href": "Cleansing_Exploration/project3.html",
-    "title": "Client Report - [Insert Project Title]",
-    "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "Competition/project5.html",
-    "href": "Competition/project5.html",
+    "objectID": "Competition/project4.html",
+    "href": "Competition/project4.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
     "text": "Paste in a template\n\n\n\n\n Back to top",
     "crumbs": [
       "Competition",
-      "Project 5"
-    ]
-  },
-  {
-    "objectID": "Competition/project2.html",
-    "href": "Competition/project2.html",
-    "title": "Client Report - [Insert Project Title]",
-    "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top",
-    "crumbs": [
-      "Competition",
-      "Project 2"
-    ]
-  },
-  {
-    "objectID": "Full_Stack/project4.html",
-    "href": "Full_Stack/project4.html",
-    "title": "Client Report - [Insert Project Title]",
-    "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top",
-    "crumbs": [
-      "Full Stack",
       "Project 4"
     ]
   },
   {
-    "objectID": "Full_Stack/project1.html",
-    "href": "Full_Stack/project1.html",
+    "objectID": "Competition/project1.html",
+    "href": "Competition/project1.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
     "text": "Paste in a template\n\n\n\n\n Back to top",
     "crumbs": [
-      "Full Stack",
+      "Competition",
       "Project 1"
     ]
   },
   {
-    "objectID": "Full_Stack/project3.html",
-    "href": "Full_Stack/project3.html",
+    "objectID": "Competition/project3.html",
+    "href": "Competition/project3.html",
+    "title": "Client Report - [Insert Project Title]",
+    "section": "",
+    "text": "Paste in a template\n\n\n\n\n Back to top",
+    "crumbs": [
+      "Competition",
+      "Project 3"
+    ]
+  },
+  {
+    "objectID": "Full_Stack/project5.html",
+    "href": "Full_Stack/project5.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
     "text": "Paste in a template\n\n\n\n\n Back to top",
     "crumbs": [
       "Full Stack",
+      "Project 5"
+    ]
+  },
+  {
+    "objectID": "Full_Stack/project2.html",
+    "href": "Full_Stack/project2.html",
+    "title": "Client Report - [Insert Project Title]",
+    "section": "",
+    "text": "Paste in a template\n\n\n\n\n Back to top",
+    "crumbs": [
+      "Full Stack",
+      "Project 2"
+    ]
+  },
+  {
+    "objectID": "Data_Exploration/project4.html",
+    "href": "Data_Exploration/project4.html",
+    "title": "Client Report - [Insert Project Title]",
+    "section": "",
+    "text": "Paste in a template\n\n\n\n\n Back to top",
+    "crumbs": [
+      "Data Exploration",
+      "Project 4"
+    ]
+  },
+  {
+    "objectID": "Data_Exploration/project1.html",
+    "href": "Data_Exploration/project1.html",
+    "title": "Client Report - [Insert Project Title]",
+    "section": "",
+    "text": "Paste in a template\n\n\n\n\n Back to top",
+    "crumbs": [
+      "Data Exploration",
+      "Project 1"
+    ]
+  },
+  {
+    "objectID": "Data_Exploration/project3.html",
+    "href": "Data_Exploration/project3.html",
+    "title": "Client Report - [Insert Project Title]",
+    "section": "",
+    "text": "Paste in a template\n\n\n\n\n Back to top",
+    "crumbs": [
+      "Data Exploration",
       "Project 3"
     ]
   },
