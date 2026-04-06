@@ -10,7 +10,7 @@ Whether it's climbing Jacob's Ladder, practicing trumpet, or learning Spanish, I
 ## What I'm Currently Working On
 I’m working with a team of data science students to build a FastAPI-based system that streamlines property management for the university’s music department.
 
-We are replacing manual spreadsheet tracking with a centralized database and API, enabling efficient data storage, retrieval, and updates. My work involves backend development, database design, and building endpoints for querying and managing inventory data. john
+We are replacing manual spreadsheet tracking with a centralized database and API, enabling efficient data storage, retrieval, and updates. My work involves backend development, database design, and building endpoints for querying and managing inventory data.
 
 ## Skills
 <details>
