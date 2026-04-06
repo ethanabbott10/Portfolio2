@@ -141,84 +141,89 @@
     ]
   },
   {
-    "objectID": "ml.html",
-    "href": "ml.html",
-    "title": "about me",
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "About Me",
     "section": "",
-    "text": "MarkDown Basics",
-    "crumbs": [
-      "Machine Learning"
-    ]
+    "text": "I’m a senior at Brigham Young University - Idaho studying data science. I love seeing the world around me quantified in order to detect patterns and improve performance. I love sports and thoroughly seeing greatness described with a number. However, I still love to learn about other parts of the world around me.\nWhether it’s climbing Jacob’s Ladder, practicing trumpet, or learning Spanish, I fight to succeed and excel. One of my youth soccer coaches would frequently remind us that hard work beats talent when talent doesn’t work hard. I’ve applied that principle and seen what it has caused in my life and I know that the only thing between me and positive results are my responsibility and effort."
   },
   {
-    "objectID": "ml.html#title-2-header",
-    "href": "ml.html#title-2-header",
-    "title": "about me",
-    "section": "",
-    "text": "MarkDown Basics",
-    "crumbs": [
-      "Machine Learning"
-    ]
+    "objectID": "index.html#what-im-currently-working-on",
+    "href": "index.html#what-im-currently-working-on",
+    "title": "About Me",
+    "section": "What I’m Currently Working On",
+    "text": "What I’m Currently Working On\nI’m working with a team of data science students to build a FastAPI-based system that streamlines property management for the university’s music department.\nWe are replacing manual spreadsheet tracking with a centralized database and API, enabling efficient data storage, retrieval, and updates. My work involves backend development, database design, and building endpoints for querying and managing inventory data. john"
   },
   {
-    "objectID": "Story_Telling/project3.html",
-    "href": "Story_Telling/project3.html",
+    "objectID": "index.html#skills",
+    "href": "index.html#skills",
+    "title": "About Me",
+    "section": "Skills",
+    "text": "Skills\n\n\nPython\n\n\n\nPandas\n\n\nNumPy\n\n\nSpark\n\n\nLets-Plot\n\n\nscikit-learn\n\n\nPolars\n\n\n\n\n\nR\n\n\n\ntidyverse\n\n\nggplot\n\n\nregression analysis\n\n\n\n\n\nSQL\n\n\n\n\nMicrosoft\n\n\n\nPower BI\n\n\nDAX\n\n\nExcel\n\n\nPowerPoint\n\n\nWord\n\n\n\n\n\nSoftware\n\n\n\nDatabricks\n\n\nGCP\n\n\nDocker\n\n\nGit"
+  },
+  {
+    "objectID": "Story_Telling/project4.html",
+    "href": "Story_Telling/project4.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
     "text": "Paste in a template\n\n\n\n\n Back to top",
     "crumbs": [
       "Story Telling",
-      "Project 3"
+      "Project 4"
     ]
   },
   {
-    "objectID": "Story_Telling/project5.html",
-    "href": "Story_Telling/project5.html",
+    "objectID": "Story_Telling/project2.html",
+    "href": "Story_Telling/project2.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
     "text": "Paste in a template\n\n\n\n\n Back to top",
     "crumbs": [
       "Story Telling",
-      "Project 5"
+      "Project 2"
     ]
   },
   {
-    "objectID": "full_stack.html",
-    "href": "full_stack.html",
+    "objectID": "Story_Telling/project1.html",
+    "href": "Story_Telling/project1.html",
+    "title": "Client Report - [Insert Project Title]",
+    "section": "",
+    "text": "Paste in a template\n\n\n\n\n Back to top",
+    "crumbs": [
+      "Story Telling",
+      "Project 1"
+    ]
+  },
+  {
+    "objectID": "exploration.html",
+    "href": "exploration.html",
     "title": "about me",
     "section": "",
     "text": "MarkDown Basics",
     "crumbs": [
-      "Full Stack"
+      "Data Exploration"
     ]
   },
   {
-    "objectID": "full_stack.html#title-2-header",
-    "href": "full_stack.html#title-2-header",
+    "objectID": "exploration.html#title-2-header",
+    "href": "exploration.html#title-2-header",
     "title": "about me",
     "section": "",
     "text": "MarkDown Basics",
     "crumbs": [
-      "Full Stack"
+      "Data Exploration"
     ]
   },
   {
-    "objectID": "Cleansing_Exploration/project4.html",
-    "href": "Cleansing_Exploration/project4.html",
+    "objectID": "Cleansing_Exploration/project3.html",
+    "href": "Cleansing_Exploration/project3.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
     "text": "Paste in a template\n\n\n\n\n Back to top"
   },
   {
-    "objectID": "Cleansing_Exploration/project2.html",
-    "href": "Cleansing_Exploration/project2.html",
-    "title": "Client Report - [Insert Project Title]",
-    "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "Cleansing_Exploration/project1.html",
-    "href": "Cleansing_Exploration/project1.html",
+    "objectID": "Cleansing_Exploration/project5.html",
+    "href": "Cleansing_Exploration/project5.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
     "text": "Paste in a template\n\n\n\n\n Back to top"
@@ -244,92 +249,87 @@
     ]
   },
   {
-    "objectID": "Cleansing_Exploration/project5.html",
-    "href": "Cleansing_Exploration/project5.html",
+    "objectID": "Cleansing_Exploration/project2.html",
+    "href": "Cleansing_Exploration/project2.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
     "text": "Paste in a template\n\n\n\n\n Back to top"
   },
   {
-    "objectID": "Cleansing_Exploration/project3.html",
-    "href": "Cleansing_Exploration/project3.html",
+    "objectID": "Cleansing_Exploration/project4.html",
+    "href": "Cleansing_Exploration/project4.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
     "text": "Paste in a template\n\n\n\n\n Back to top"
   },
   {
-    "objectID": "exploration.html",
-    "href": "exploration.html",
+    "objectID": "full_stack.html",
+    "href": "full_stack.html",
     "title": "about me",
     "section": "",
     "text": "MarkDown Basics",
     "crumbs": [
-      "Data Exploration"
+      "Full Stack"
     ]
   },
   {
-    "objectID": "exploration.html#title-2-header",
-    "href": "exploration.html#title-2-header",
+    "objectID": "full_stack.html#title-2-header",
+    "href": "full_stack.html#title-2-header",
     "title": "about me",
     "section": "",
     "text": "MarkDown Basics",
     "crumbs": [
-      "Data Exploration"
+      "Full Stack"
     ]
   },
   {
-    "objectID": "Story_Telling/project1.html",
-    "href": "Story_Telling/project1.html",
+    "objectID": "Story_Telling/project5.html",
+    "href": "Story_Telling/project5.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
     "text": "Paste in a template\n\n\n\n\n Back to top",
     "crumbs": [
       "Story Telling",
-      "Project 1"
+      "Project 5"
     ]
   },
   {
-    "objectID": "Story_Telling/project2.html",
-    "href": "Story_Telling/project2.html",
+    "objectID": "Story_Telling/project3.html",
+    "href": "Story_Telling/project3.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
     "text": "Paste in a template\n\n\n\n\n Back to top",
     "crumbs": [
       "Story Telling",
-      "Project 2"
+      "Project 3"
     ]
   },
   {
-    "objectID": "Story_Telling/project4.html",
-    "href": "Story_Telling/project4.html",
+    "objectID": "ml.html",
+    "href": "ml.html",
+    "title": "about me",
+    "section": "",
+    "text": "MarkDown Basics",
+    "crumbs": [
+      "Machine Learning"
+    ]
+  },
+  {
+    "objectID": "ml.html#title-2-header",
+    "href": "ml.html#title-2-header",
+    "title": "about me",
+    "section": "",
+    "text": "MarkDown Basics",
+    "crumbs": [
+      "Machine Learning"
+    ]
+  },
+  {
+    "objectID": "Data_Exploration/project1.html",
+    "href": "Data_Exploration/project1.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top",
-    "crumbs": [
-      "Story Telling",
-      "Project 4"
-    ]
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "About Me",
-    "section": "",
-    "text": "I’m a senior at Brigham Young University - Idaho studying data science. I love seeing the world around me quantified in order to detect patterns and improve performance. I love sports and thoroughly seeing greatness described with a number. However, I still love to learn about other parts of the world around me.\nWhether it’s climbing Jacob’s Ladder, practicing trumpet, or learning Spanish, I fight to succeed and excel. One of my youth soccer coaches would frequently remind us that hard work beats talent when talent doesn’t work hard. I’ve applied that principle and seen what it has caused in my life and I know that the only thing between me and positive results are my responsibility and effort."
-  },
-  {
-    "objectID": "index.html#what-im-currently-working-on",
-    "href": "index.html#what-im-currently-working-on",
-    "title": "About Me",
-    "section": "What I’m Currently Working On",
-    "text": "What I’m Currently Working On\nI’m working with a team of data science students to build a FastAPI-based system that streamlines property management for the university’s music department.\nWe are replacing manual spreadsheet tracking with a centralized database and API, enabling efficient data storage, retrieval, and updates. My work involves backend development, database design, and building endpoints for querying and managing inventory data. john"
-  },
-  {
-    "objectID": "index.html#skills",
-    "href": "index.html#skills",
-    "title": "About Me",
-    "section": "Skills",
-    "text": "Skills\n\n\nPython\n\n\n\nPandas\n\n\nNumPy\n\n\nSpark\n\n\nLets-Plot\n\n\nscikit-learn\n\n\nPolars\n\n\n\n\n\nR\n\n\n\ntidyverse\n\n\nggplot\n\n\nregression analysis\n\n\n\n\n\nSQL\n\n\n\n\nMicrosoft\n\n\n\nPower BI\n\n\nDAX\n\n\nExcel\n\n\nPowerPoint\n\n\nWord\n\n\n\n\n\nSoftware\n\n\n\nDatabricks\n\n\nGCP\n\n\nDocker\n\n\nGit"
+    "text": "Paste in a template\n\n\n\n\n Back to top"
   },
   {
     "objectID": "resume.html",
