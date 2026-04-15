@@ -33,7 +33,7 @@ _RBDC Student Data Science group_\
 January 2026 - Present\
 Rexburg, Idaho
 
-•	Developing a FastAPI-based Python API to streamline property management operations for school's music department, greatly reducing processing time and potential for errors
+-	Developing a FastAPI-based Python API to streamline property management operations for school's music department, greatly reducing processing time and potential for errors
 
 ## Work Experience
 __Warehouse and Delivery Associate__\
@@ -41,24 +41,24 @@ _Steve's Paint Supply_\
 August 2024 - January 2026\
 Colorado Springs, CO
 
-•	Managed four separate spaces for efficient storage and retrieval of material. Operated company forklift
-•	Transported up to 100 gallons of paint in a safe and timely manner
-•	Entrusted daily with company funds to realize business purchases around town. Praised for accountable work performance under circumstances easy to abuse
+-	Managed four separate spaces for efficient storage and retrieval of material. Operated company forklift
+-	Transported up to 100 gallons of paint in a safe and timely manner
+-	Entrusted daily with company funds to realize business purchases around town. Praised for accountable work performance under circumstances easy to abuse
 
 __Missionary__\
 _The Church of Jesus Christ of Latter-Day Saints_\
 April 2022 - April 2024\
 Mexico City, Mexico
 
-•	Performed ministering, proselyting, public relations, and service work on a regional level in 3 separate Mexican states
-•	Assigned by mission president to a mission office position to execute a culture change
-•	Found and submitted housing solutions for needs of 135 missionaries including proposals and contract negotiations through church legal department. Completed task of finding new properties for 3 companionships on a short schedule
-•	Oversaw logistics for distributing proselyting aids, equipment, and mail to missionaries in 50 different mission areas
-•	Organized and cleaned out storage spaces to increase space and better separate 2 inventories
-•	Managed technology maintenance, repair, and training needs. Headed project to distribute 75 new phones in an efficient manner to rotate oldest phones out of use sooner
-•	Prepared dozens of residency application packages for foreign-serving missionaries and maintained inconsistent consulate appointment schedules
-•	Planned transportation of 70+ missionaries on a tight schedule to ensure missionaries could work in new area as soon as possible, usually same day
-•	Assigned to leadership positions over up to 15 other missionaries
+-	Performed ministering, proselyting, public relations, and service work on a regional level in 3 separate Mexican states
+-	Assigned by mission president to a mission office position to execute a culture change
+-	Found and submitted housing solutions for needs of 135 missionaries including proposals and contract negotiations through church legal department. Completed task of finding new properties for 3 companionships on a short schedule
+-	Oversaw logistics for distributing proselyting aids, equipment, and mail to missionaries in 50 different mission areas
+-	Organized and cleaned out storage spaces to increase space and better separate 2 inventories
+-	Managed technology maintenance, repair, and training needs. Headed project to distribute 75 new phones in an efficient manner to rotate oldest phones out of use sooner
+-	Prepared dozens of residency application packages for foreign-serving missionaries and maintained inconsistent consulate appointment schedules
+-	Planned transportation of 70+ missionaries on a tight schedule to ensure missionaries could work in new area as soon as possible, usually same day
+-	Assigned to leadership positions over up to 15 other missionaries
 
 
 __Hotel Maintenance Staff__\
@@ -66,7 +66,7 @@ _Hampton Inn and Suites_\
 June 2020 - December 2022\
 Colorado Springs, CO
 
-• Serviced and supported hotel amenities and building assets for the #1 rated Hampton Inn & Suites in Colorado. Specialized in pool maintenance, grounds keeping, facilities appearance, structural and landscaping improvements to keep a fully operational, clean hotel property at one of the highest volume per unit hotels in Colorado.
+- Serviced and supported hotel amenities and building assets for the #1 rated Hampton Inn & Suites in Colorado. Specialized in pool maintenance, grounds keeping, facilities appearance, structural and landscaping improvements to keep a fully operational, clean hotel property at one of the highest volume per unit hotels in Colorado.
 
 <!-- ### Footer
 
