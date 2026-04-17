@@ -51,18 +51,18 @@ website:
         - text: "NFL QB HoF Predictor"
           file: Cleansing_Projects/nfl.qmd
         - text: "---"
-        - text: "Project 2"
-          file: Cleansing_Projects/project2.qmd
-        - text: "---"
-        - text: "Project 3"
-          file: Cleansing_Projects/project3.qmd
-        - text: "---"
-        - text: "Project 4"
-          file: Cleansing_Projects/project4.qmd
-        - text: "---"
-        - text: "Project 5"
-          file: Cleansing_Projects/project5.qmd
-        - text: "---"
+        #- text: "Project 2"
+         # file: Cleansing_Projects/project2.qmd
+        #- text: "---"
+        #- text: "Project 3"
+          #file: Cleansing_Projects/project3.qmd
+        #- text: "---"
+        #- text: "Project 4"
+          #file: Cleansing_Projects/project4.qmd
+        #- text: "---"
+        #- text: "Project 5"
+          #file: Cleansing_Projects/project5.qmd
+        #- text: "---"
     - title: "Data Exploration"
       style: "docked"
       background: light
