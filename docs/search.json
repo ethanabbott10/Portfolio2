@@ -20,37 +20,29 @@
     ]
   },
   {
-    "objectID": "Cleansing_Projects/project3.html",
-    "href": "Cleansing_Projects/project3.html",
-    "title": "Client Report - [Insert Project Title]",
+    "objectID": "Cleansing_Projects/nfl.html",
+    "href": "Cleansing_Projects/nfl.html",
+    "title": "NFL Hall of Fame Predictor",
     "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top",
+    "text": "For this assignment I got my data from Stathead. Thinking primarily about the quarterbacks drafted in 2004, I wanted to see what a predictive model would say about their chanches of being Hall of Famers given their distinct resumes.\nBelow you will find the process I took to merge multiple data frames, handle null values, and create standardized columns to reduce bias towards players with long career.\n\n# Import necessary libraries and data\nimport pandas as pd\nimport numpy as np\nfrom lets_plot import *\nLetsPlot.setup_html()\nimport sklearn\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.tree import DecisionTreeClassifier \nfrom sklearn.ensemble import RandomForestClassifier\nfrom sklearn.metrics import classification_report\nfrom sklearn.preprocessing import MinMaxScaler\nfrom xgboost import XGBClassifier\nfrom imblearn.over_sampling import SMOTE\n\ngeneral = pd.read_csv(\"https://raw.githubusercontent.com/ethanabbott10/Sports_Data/refs/heads/main/data/qbgeneral.csv\")\n\nsuper_bowls = pd.read_csv(\"https://raw.githubusercontent.com/ethanabbott10/Sports_Data/refs/heads/main/data/qbsuperbowls.csv\")\n\nhof = pd.read_csv(\"https://raw.githubusercontent.com/ethanabbott10/Sports_Data/refs/heads/main/data/qbhof.csv\")\n\npro_bowls = pd.read_csv(\"https://raw.githubusercontent.com/ethanabbott10/Sports_Data/refs/heads/main/data/qbprobowls.csv\")\n\nall_pros = pd.read_csv(\"https://raw.githubusercontent.com/ethanabbott10/Sports_Data/refs/heads/main/data/qballpros.csv\")\n\n\n            \n            \n            \n\n\n\n# 1). Preprocessing data\n\n# Drop unecessary rank and player columns from data frames\nunwanted_columns = ['Rk', 'Player']\nsuper_bowls = super_bowls.drop(columns = unwanted_columns)\nhof = hof.drop(columns = unwanted_columns)\npro_bowls = pro_bowls.drop(columns = unwanted_columns)\nall_pros = all_pros.drop(columns = unwanted_columns)\n\n# Get Super Bowl count\nsuper_bowl_count = super_bowls['player_id'].value_counts().reset_index()\nsuper_bowl_count.columns = ['player_id', 'super_bowls']\n\n# Fill hof column with positive\nhof['hof'] = 1\n\n# Merge data frames into one\ndata_frames = [all_pros, super_bowl_count, hof]\ndf = pd.merge(\n    left = general,\n    right = pro_bowls,\n    how = \"left\",\n    on = \"player_id\")\n\nfor data_frame in data_frames:\n    df = pd.merge(\n    left = df,\n    right = data_frame,\n    how = \"left\",\n    on = \"player_id\")\n\n#Fill N/As (all numeric nulls can be 0)\nint_columns = ['hof', 'super_bowls', 'Sk', 'Yds.1', 'W', 'L', 'T', '1D']\nfloat_columns = ['Cmp%', 'TD%', 'Int%', 'Rate', 'Sk%', 'Y/A', 'AY/A', 'ANY/A', 'Y/C', 'Succ%', 'Y/A.1', 'Succ%.1']\n\nfor column in int_columns:\n    df[column] = df[column].fillna(0).astype(int)\n\nfor column in float_columns:\n    df[column] = df[column].fillna(0)\n\n# Create Hall of Fame Eligible Column\ndf['eligible'] = np.where(df['To'] &gt;= 2020, 0, 1)\n\n# Create 16 games column\ndf['16_games'] = round(df['G'] / 16, 2)\n\n# Create W% column\ndf['W%'] = round(df['W'] / (df['W'] + df['L'] + df['T']), 2).fillna(0)\n\n\n# Create per season columns (I left the other columns but I wanted to ensure that quality players with shorter careers still had a chance without punishing longevity)\n\ndf['passing_yards_per_16_games'] = round(df['Yds'] / df['16_games'], 2)\ndf['passing_attempts_per_16_games'] = round(df['Att'] / df['16_games'], 2)\ndf['passing_tds_per_16_games'] = round(df['TD'] / df['16_games'], 2)\ndf['int_per_16_games'] = round(df['Int'] / df['16_games'], 2)\ndf['pick_6_per_16_games'] = round(df['Yds'] / df['16_games'], 2)\ndf['sacks_per_16_games'] = round(df['Sk'] / df['16_games'], 2)\ndf['sacks_yards_per_16_games'] = round(df['Yds.1'] / df['16_games'], 2)\ndf['wins_per_16_games'] = round(df['W'] / df['16_games'], 2)\ndf['losses_per_16_games'] = round(df['L'] / df['16_games'], 2)\ndf['ties_per_16_games'] = round(df['T'] / df['16_games'], 2)\ndf['fourth_quarter_comebacks_per_16_games'] = round(df['4QC'] / df['16_games'], 2)\ndf['game_winning_drives_per_16_games'] = round(df['GWD'] / df['16_games'], 2)\ndf['rushing_yards_per_16_games'] = round(df['Yds.2'] / df['16_games'], 2)\ndf['rushing_tds_per_16_games'] = round(df['TD.1'] / df['16_games'], 2)\ndf['rushing_first_downs_per_16_games'] = round(df['Sk'] / df['16_games'], 2)\ndf['pro_bowls_per_16_games'] = round(df['Pro_Bowls'] / df['16_games'], 2)\ndf['first_team_all_pros_per_16_games'] = round(df['AP1'] / df['16_games'], 2)\ndf['super_bowls_per_16_games'] = round(df['super_bowls'] / df['16_games'], 2)\n\n# Drop more unwanted columns\ndf = df.drop(columns = ['Rk', 'Age', 'player_id'])\n\n# Rename columns\ndf.columns = ['player', 'career_start', 'career_end', 'games', 'games_started', 'completions', 'passing_attempts', 'incompletions', 'completion_%', 'passing_yards', 'passing_tds', 'interceptions', 'pick_6s', 'touchdown_%', 'int_%', 'passer_rating', 'sacks_taken', 'sack_yards', 'sack_%', 'passing_yards_per_attempt', 'adjusted_passing_yards_per_attempt', 'adjusted_net_passing_yards_per_attempt', 'passing_yards_per_completion', 'passing_yards_per_game', 'pass_success_rate', 'wins', 'losses', 'ties', 'fourth_quarter_comebacks', 'game_winning_drives', 'rushing_attempts', 'rushing_yards', 'rushing_yards_per_attempt', 'rushing_touchdowns', 'rushing_yards_per_game', 'rushing_first_downs', 'rush_success_rate', 'pro_bowls', 'first_team_all_pros', 'super_bowls', 'hall_of_fame', 'hall_of_fame_eligible', '16_games', 'winning_%', 'passing_yards_per_16_games', 'passing_attempts_per_16_games', 'passing_tds_per_16_games', 'int_per_16_games', 'pick_6_per_16_games', 'sacks_per_16_games', 'sacks_yards_per_16_games', 'wins_per_16_games', 'losses_per_16_games', 'ties_per_16_games', 'fourth_quarter_comebacks_per_16_games', 'game_winning_drives_per_16_games', 'rushing_yards_per_16_games', 'rushing_tds_per_16_games', 'rushing_first_downs_per_16_games', 'pro_bowls_per_16_games', 'first_team_all_pros_per_16_games', 'super_bowls_per_16_games']\n\n# Scale values using MinMaxScaler (Bound all numbers between 0 and 1 to weaken the bias towards columns such as passing yards which contain large values, model will be able to better understand the difference between players at each position in the context of all columns)\n\nscaler = MinMaxScaler()\nnumeric_columns = ['games', 'games_started', 'completions', 'passing_attempts', 'incompletions', 'completion_%', 'passing_yards', 'passing_tds', 'interceptions', 'pick_6s', 'touchdown_%', 'int_%', 'passer_rating', 'sacks_taken', 'sack_yards', 'sack_%', 'passing_yards_per_attempt', 'adjusted_passing_yards_per_attempt', 'adjusted_net_passing_yards_per_attempt', 'passing_yards_per_completion', 'passing_yards_per_game', 'pass_success_rate', 'wins', 'losses', 'ties', 'fourth_quarter_comebacks', 'game_winning_drives', 'rushing_attempts', 'rushing_yards', 'rushing_yards_per_attempt', 'rushing_touchdowns', 'rushing_yards_per_game', 'rushing_first_downs', 'rush_success_rate', 'pro_bowls', 'first_team_all_pros', 'super_bowls', 'hall_of_fame', 'hall_of_fame_eligible', '16_games', 'winning_%', 'passing_yards_per_16_games', 'passing_attempts_per_16_games', 'passing_tds_per_16_games', 'int_per_16_games', 'pick_6_per_16_games', 'sacks_per_16_games', 'sacks_yards_per_16_games', 'wins_per_16_games', 'losses_per_16_games', 'ties_per_16_games', 'fourth_quarter_comebacks_per_16_games', 'game_winning_drives_per_16_games', 'rushing_yards_per_16_games', 'rushing_tds_per_16_games', 'rushing_first_downs_per_16_games', 'pro_bowls_per_16_games', 'first_team_all_pros_per_16_games', 'super_bowls_per_16_games']\n\nfor column in numeric_columns:\n    df[column] = scaler.fit_transform(df[[column]])\n\n# Split into eligible and ineligible data frames (I'll split the eligible players to train and then use the model to predict on uneligible players)\neligible = df[df['hall_of_fame_eligible'] == 1]\nineligible = df[df['hall_of_fame_eligible'] == 0]\n\n\n\n\n Back to top",
     "crumbs": [
       "Data Cleansing",
-      "Project 3"
+      "NFL QB HoF Predictor"
     ]
   },
   {
-    "objectID": "Cleansing_Projects/project1.html",
-    "href": "Cleansing_Projects/project1.html",
+    "objectID": "Cleansing_Projects/project2.html",
+    "href": "Cleansing_Projects/project2.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top",
-    "crumbs": [
-      "Data Cleansing",
-      "Project 1"
-    ]
+    "text": "Paste in a template\n\n\n\n\n Back to top"
   },
   {
     "objectID": "Cleansing_Projects/project4.html",
     "href": "Cleansing_Projects/project4.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top",
-    "crumbs": [
-      "Data Cleansing",
-      "Project 4"
-    ]
+    "text": "Paste in a template\n\n\n\n\n Back to top"
   },
   {
     "objectID": "Data_Exploration/project2.html",
@@ -161,7 +153,7 @@
     "href": "index.html#what-im-currently-working-on",
     "title": "About Me",
     "section": "What I’m Currently Working On",
-    "text": "What I’m Currently Working On\nI’m working with a team of data science students to build a FastAPI-based system that streamlines property management for the university’s music department.\nWe are replacing manual spreadsheet tracking with a centralized database and API, enabling efficient data storage, retrieval, and updates. My work involves backend development, database design, and building endpoints for querying and managing inventory data. john"
+    "text": "What I’m Currently Working On\nI’m working with a team of data science students to build a FastAPI-based system that streamlines property management for the university’s music department.\nWe are replacing manual spreadsheet tracking with a centralized database and API, enabling efficient data storage, retrieval, and updates. My work involves backend development, database design, and building endpoints for querying and managing inventory data."
   },
   {
     "objectID": "index.html#skills",
@@ -195,19 +187,9 @@
   {
     "objectID": "cleansing.html",
     "href": "cleansing.html",
-    "title": "about me",
+    "title": "Data Cleansing",
     "section": "",
-    "text": "MarkDown Basics",
-    "crumbs": [
-      "Data Cleansing"
-    ]
-  },
-  {
-    "objectID": "cleansing.html#title-2-header",
-    "href": "cleansing.html#title-2-header",
-    "title": "about me",
-    "section": "",
-    "text": "MarkDown Basics",
+    "text": "What’s here?\n\n\n\n\n Back to top",
     "crumbs": [
       "Data Cleansing"
     ]
@@ -292,7 +274,7 @@
     "href": "resume.html",
     "title": "Comprehensive Resume",
     "section": "",
-    "text": "Aspiring Data Scientist\nLinkedIn | Email\n\n\n\nPython (Pandas, PySpark, NumPy, Polars, scikitlearn, lets-plot)\nR (tidyverse, ggplot)\nSQL (Window, join)\nPowerBI (Visualization, DAX)\nExcel (Pivot tables, dashboards)\nMicrosoft Office (Powerpoint, Word)\nOther Software (Git, Docker, Databricks, Google Cloud Platform)\nC# (Classes)\nSpanish Fluency\n\n\n\n\nBachelor of Science - Data Science\nBrigham Young University - Idaho\nJanuary 2021 - April 2027\nRexburg, Idaho\n\n\n\nDate Engineering Consultant\nRBDC Student Data Science group\nJanuary 2026 - Present\nRexburg, Idaho\n• Developing a FastAPI-based Python API to streamline property management operations for school’s music department, greatly reducing processing time and potential for errors\n\n\n\nWarehouse and Delivery Associate\nSteve’s Paint Supply\nAugust 2024 - January 2026\nColorado Springs, CO\n• Managed four separate spaces for efficient storage and retrieval of material. Operated company forklift • Transported up to 100 gallons of paint in a safe and timely manner • Entrusted daily with company funds to realize business purchases around town. Praised for accountable work performance under circumstances easy to abuse\nMissionary\nThe Church of Jesus Christ of Latter-Day Saints\nApril 2022 - April 2024\nMexico City, Mexico\n• Performed ministering, proselyting, public relations, and service work on a regional level in 3 separate Mexican states • Assigned by mission president to a mission office position to execute a culture change • Found and submitted housing solutions for needs of 135 missionaries including proposals and contract negotiations through church legal department. Completed task of finding new properties for 3 companionships on a short schedule • Oversaw logistics for distributing proselyting aids, equipment, and mail to missionaries in 50 different mission areas • Organized and cleaned out storage spaces to increase space and better separate 2 inventories • Managed technology maintenance, repair, and training needs. Headed project to distribute 75 new phones in an efficient manner to rotate oldest phones out of use sooner • Prepared dozens of residency application packages for foreign-serving missionaries and maintained inconsistent consulate appointment schedules • Planned transportation of 70+ missionaries on a tight schedule to ensure missionaries could work in new area as soon as possible, usually same day • Assigned to leadership positions over up to 15 other missionaries\nHotel Maintenance Staff\nHampton Inn and Suites\nJune 2020 - December 2022\nColorado Springs, CO\n• Serviced and supported hotel amenities and building assets for the #1 rated Hampton Inn & Suites in Colorado. Specialized in pool maintenance, grounds keeping, facilities appearance, structural and landscaping improvements to keep a fully operational, clean hotel property at one of the highest volume per unit hotels in Colorado."
+    "text": "Aspiring Data Scientist\nLinkedIn | Email\n\n\n\nPython (Pandas, PySpark, NumPy, Polars, scikitlearn, lets-plot)\nR (tidyverse, ggplot)\nSQL (Window, join)\nPowerBI (Visualization, DAX)\nExcel (Pivot tables, dashboards)\nMicrosoft Office (Powerpoint, Word)\nOther Software (Git, Docker, Databricks, Google Cloud Platform)\nC# (Classes)\nSpanish Fluency\n\n\n\n\nBachelor of Science - Data Science\nBrigham Young University - Idaho\nJanuary 2021 - April 2027\nRexburg, Idaho\n\n\n\nDate Engineering Consultant\nRBDC Student Data Science group\nJanuary 2026 - Present\nRexburg, Idaho\n\nDeveloping a FastAPI-based Python API to streamline property management operations for school’s music department, greatly reducing processing time and potential for errors\n\n\n\n\nWarehouse and Delivery Associate\nSteve’s Paint Supply\nAugust 2024 - January 2026\nColorado Springs, CO\n\nManaged four separate spaces for efficient storage and retrieval of material. Operated company forklift\nTransported up to 100 gallons of paint in a safe and timely manner\nEntrusted daily with company funds to realize business purchases around town. Praised for accountable work performance under circumstances easy to abuse\n\nMissionary\nThe Church of Jesus Christ of Latter-Day Saints\nApril 2022 - April 2024\nMexico City, Mexico\n\nPerformed ministering, proselyting, public relations, and service work on a regional level in 3 separate Mexican states\nAssigned by mission president to a mission office position to execute a culture change\nFound and submitted housing solutions for needs of 135 missionaries including proposals and contract negotiations through church legal department. Completed task of finding new properties for 3 companionships on a short schedule\nOversaw logistics for distributing proselyting aids, equipment, and mail to missionaries in 50 different mission areas\nOrganized and cleaned out storage spaces to increase space and better separate 2 inventories\nManaged technology maintenance, repair, and training needs. Headed project to distribute 75 new phones in an efficient manner to rotate oldest phones out of use sooner\nPrepared dozens of residency application packages for foreign-serving missionaries and maintained inconsistent consulate appointment schedules\nPlanned transportation of 70+ missionaries on a tight schedule to ensure missionaries could work in new area as soon as possible, usually same day\nAssigned to leadership positions over up to 15 other missionaries\n\nHotel Maintenance Staff\nHampton Inn and Suites\nJune 2020 - December 2022\nColorado Springs, CO\n\nServiced and supported hotel amenities and building assets for the #1 rated Hampton Inn & Suites in Colorado. Specialized in pool maintenance, grounds keeping, facilities appearance, structural and landscaping improvements to keep a fully operational, clean hotel property at one of the highest volume per unit hotels in Colorado."
   },
   {
     "objectID": "resume.html#skills",
@@ -313,14 +295,14 @@
     "href": "resume.html#projects",
     "title": "Comprehensive Resume",
     "section": "",
-    "text": "Date Engineering Consultant\nRBDC Student Data Science group\nJanuary 2026 - Present\nRexburg, Idaho\n• Developing a FastAPI-based Python API to streamline property management operations for school’s music department, greatly reducing processing time and potential for errors"
+    "text": "Date Engineering Consultant\nRBDC Student Data Science group\nJanuary 2026 - Present\nRexburg, Idaho\n\nDeveloping a FastAPI-based Python API to streamline property management operations for school’s music department, greatly reducing processing time and potential for errors"
   },
   {
     "objectID": "resume.html#work-experience",
     "href": "resume.html#work-experience",
     "title": "Comprehensive Resume",
     "section": "",
-    "text": "Warehouse and Delivery Associate\nSteve’s Paint Supply\nAugust 2024 - January 2026\nColorado Springs, CO\n• Managed four separate spaces for efficient storage and retrieval of material. Operated company forklift • Transported up to 100 gallons of paint in a safe and timely manner • Entrusted daily with company funds to realize business purchases around town. Praised for accountable work performance under circumstances easy to abuse\nMissionary\nThe Church of Jesus Christ of Latter-Day Saints\nApril 2022 - April 2024\nMexico City, Mexico\n• Performed ministering, proselyting, public relations, and service work on a regional level in 3 separate Mexican states • Assigned by mission president to a mission office position to execute a culture change • Found and submitted housing solutions for needs of 135 missionaries including proposals and contract negotiations through church legal department. Completed task of finding new properties for 3 companionships on a short schedule • Oversaw logistics for distributing proselyting aids, equipment, and mail to missionaries in 50 different mission areas • Organized and cleaned out storage spaces to increase space and better separate 2 inventories • Managed technology maintenance, repair, and training needs. Headed project to distribute 75 new phones in an efficient manner to rotate oldest phones out of use sooner • Prepared dozens of residency application packages for foreign-serving missionaries and maintained inconsistent consulate appointment schedules • Planned transportation of 70+ missionaries on a tight schedule to ensure missionaries could work in new area as soon as possible, usually same day • Assigned to leadership positions over up to 15 other missionaries\nHotel Maintenance Staff\nHampton Inn and Suites\nJune 2020 - December 2022\nColorado Springs, CO\n• Serviced and supported hotel amenities and building assets for the #1 rated Hampton Inn & Suites in Colorado. Specialized in pool maintenance, grounds keeping, facilities appearance, structural and landscaping improvements to keep a fully operational, clean hotel property at one of the highest volume per unit hotels in Colorado."
+    "text": "Warehouse and Delivery Associate\nSteve’s Paint Supply\nAugust 2024 - January 2026\nColorado Springs, CO\n\nManaged four separate spaces for efficient storage and retrieval of material. Operated company forklift\nTransported up to 100 gallons of paint in a safe and timely manner\nEntrusted daily with company funds to realize business purchases around town. Praised for accountable work performance under circumstances easy to abuse\n\nMissionary\nThe Church of Jesus Christ of Latter-Day Saints\nApril 2022 - April 2024\nMexico City, Mexico\n\nPerformed ministering, proselyting, public relations, and service work on a regional level in 3 separate Mexican states\nAssigned by mission president to a mission office position to execute a culture change\nFound and submitted housing solutions for needs of 135 missionaries including proposals and contract negotiations through church legal department. Completed task of finding new properties for 3 companionships on a short schedule\nOversaw logistics for distributing proselyting aids, equipment, and mail to missionaries in 50 different mission areas\nOrganized and cleaned out storage spaces to increase space and better separate 2 inventories\nManaged technology maintenance, repair, and training needs. Headed project to distribute 75 new phones in an efficient manner to rotate oldest phones out of use sooner\nPrepared dozens of residency application packages for foreign-serving missionaries and maintained inconsistent consulate appointment schedules\nPlanned transportation of 70+ missionaries on a tight schedule to ensure missionaries could work in new area as soon as possible, usually same day\nAssigned to leadership positions over up to 15 other missionaries\n\nHotel Maintenance Staff\nHampton Inn and Suites\nJune 2020 - December 2022\nColorado Springs, CO\n\nServiced and supported hotel amenities and building assets for the #1 rated Hampton Inn & Suites in Colorado. Specialized in pool maintenance, grounds keeping, facilities appearance, structural and landscaping improvements to keep a fully operational, clean hotel property at one of the highest volume per unit hotels in Colorado."
   },
   {
     "objectID": "Machine_Learning/project4.html",
@@ -468,22 +450,14 @@
     "href": "Cleansing_Projects/project5.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top",
-    "crumbs": [
-      "Data Cleansing",
-      "Project 5"
-    ]
+    "text": "Paste in a template\n\n\n\n\n Back to top"
   },
   {
-    "objectID": "Cleansing_Projects/project2.html",
-    "href": "Cleansing_Projects/project2.html",
+    "objectID": "Cleansing_Projects/project3.html",
+    "href": "Cleansing_Projects/project3.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top",
-    "crumbs": [
-      "Data Cleansing",
-      "Project 2"
-    ]
+    "text": "Paste in a template\n\n\n\n\n Back to top"
   },
   {
     "objectID": "full_stack.html",
