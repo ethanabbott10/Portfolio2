@@ -1,7 +1,7 @@
 ---
-title: "Client Report - [Insert Project Title]"
-subtitle: "Course DS 250"
-author: "[STUDENT NAME]"
+title: "NFL Hall of Fame Predictor"
+subtitle: "MAchine Learning"
+author: "Ethan Abbott"
 format:
   html:
     self-contained: true
@@ -12,7 +12,7 @@ format:
     toc-location: body
     number-sections: false
     html-math-method: katex
-    code-fold: true
+    code-fold: false
     code-summary: "Show the code"
     code-overflow: wrap
     code-copy: hover
@@ -24,5 +24,149 @@ execute:
   warning: false
     
 ---
+You can see the data preparation for this model [here](https://ethanabbott10.github.io/Portfolio2/Cleansing_Projects/nfl.html)
 
-### Paste in a template
+This is a classification which outputs a prediction as to whether a quarterback will make the Hall of Fame given the following information:
+- Games Played
+- Games Started
+- Completions
+- Passing Attempts 
+- Incompletions
+- Completion %
+- Passing Yards
+- Passing Touchdowns
+- Interceptions
+- Pick 6's
+- Touchdown %
+- Interception %
+- Passer Rating
+- Sacks Taken
+- Sack Yards
+- Sack %
+- Passing Yards per Attempt
+- Adjusted Passing Yards per Attempt
+- Adjusted Net Passing Yards per Attempt, 'passing_yards_per_completion', 'passing_yards_per_game', 'pass_success_rate', 'wins', - Games Played
+- Games Started
+- Completions
+- Passing Attempts
+- Incompletions
+- Completion %
+- Passing Yards
+- Passing Touchdowns
+- Interceptions
+- Pick 6's
+- Touchdown %
+- Interception %
+- Passer Rating
+- Sacks Taken
+- Sack Yards
+- Sack %
+- Passing Yards per Attempt
+- Adjusted Passing Yards per Attempt
+- Adjusted Net Passing Yards per Attempt
+- Passing Yards per Completion
+- Passing Yards per Game
+- Pass Success Rate
+- Wins
+- Losses
+- Ties
+- Fourth Quarter Comebacks
+- Game Winning Drives
+- Rushing Attempts
+- Rushing Yards
+- Rushing Yards per Attempt
+- Rushing Touchdowns
+- Rushing Yards per Game
+- Rushing First Downs
+- Rush Success Rate
+- Pro Bowls
+- First Team All-Pros
+- Super Bowls
+- Hall of Fame
+- Hall of Fame Eligible
+- 16 Games
+- Winning %
+
+As well as per 16 for all stats that aren't career comprehensive such as ratings and percentages. 
+
+```{python}
+# 2). Selection, training, and use of a machine learning model
+
+# Create X and y from eligible data set
+X = eligible.drop(columns = ['hall_of_fame', 'player', 'hall_of_fame_eligible'])
+y = eligible['hall_of_fame']
+
+# Split into test and training data
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 20)
+
+# SMOTE to help with inbalanced data
+#sm = SMOTE()
+#X_sm, y_sm = sm.fit_resample(X_train, y_train)
+```
+
+```{python}
+# Decision Tree
+tree = DecisionTreeClassifier()
+tree.fit(X_train, y_train)
+tree_prediction = tree.predict(X_test)
+tree_report = classification_report(y_test, tree_prediction)
+print(tree_report)
+
+# Random Forest
+forest = RandomForestClassifier()
+forest.fit(X_train, y_train)
+forest_prediction = forest.predict(X_test)
+forest_report = classification_report(y_test, forest_prediction)
+print(forest_report)
+
+# XGBoost
+xg = XGBClassifier(scale_pos_weight = 27.37)
+xg.fit(X_train, y_train)
+xg_prediction = xg.predict(X_test)
+xg_report = classification_report(y_test, xg_prediction)
+print(xg_report)
+
+# Use XGBoost model to make predictions on ineligible players
+
+Z = ineligible.drop(columns = ['player', 'hall_of_fame_eligible', 'hall_of_fame'])
+
+hof_predictions = xg.predict(Z)
+
+players = pd.DataFrame({
+    'player': ineligible['player'].values,
+    'hof': hof_predictions
+})
+
+wrong_predict = xg.predict(X)
+
+wrong = pd.DataFrame({
+    'player' : eligible['player'].values,
+    'real' : eligible['hall_of_fame'].values,
+    'predicted' : wrong_predict
+}).query('real != predicted')
+
+```
+
+
+```{python}
+# Create feature importance plot
+important_stats = pd.DataFrame({'importance': xg.feature_importances_,'stat': X_train.columns}).sort_values('importance', ascending = True).query('importance >= .035')
+
+(
+    ggplot(
+        data = important_stats,
+        mapping = aes(
+            y = 'importance',
+            x = 'stat'))
+        + geom_bar(stat = 'identity')
+        + labs(
+            x = 'Stat',
+            y = 'Importance',
+            title = 'What makes a Hall of Famer?',
+            subtitle = 'The stats that most strongly predict a Hall of Fame career')
+        + theme(
+            axis_text_x = element_text(
+                hjust=1),
+            panel_grid= element_blank())
+)
+```
