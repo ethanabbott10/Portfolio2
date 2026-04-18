@@ -3,4 +3,5 @@ title: "Data Cleansing"
 ---
 
 # What's here?
-
+## NFL Quarterback Hall of Fame Predictor
+The data used was taken from Pro Football Reference's Stathead service. In order to get all of the player information I wanted, I had to perform multiple queries to pull specific information regarding awards and Super Bowl information. The tables from these queries were then joined together. I handled null values and created standardized "per 16 games" columns to reduce bias towards long careers.
