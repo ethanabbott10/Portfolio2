@@ -90,7 +90,13 @@ This is a classification which outputs a prediction as to whether a quarterback 
 As well as per 16 for all stats that aren't career comprehensive such as ratings and percentages. 
 
 ```{python}
+
+
 # 2). Selection, training, and use of a machine learning model
+
+# Load cleaned data
+eligible = pd.from_parquet("https://github.com/ethanabbott10/Sports_Data/blob/main/data/eligible.parquet")
+ineligible = pd.from_parquet("https://github.com/ethanabbott10/Sports_Data/blob/main/data/ineligible.parquet")
 
 # Create X and y from eligible data set
 X = eligible.drop(columns = ['hall_of_fame', 'player', 'hall_of_fame_eligible'])
