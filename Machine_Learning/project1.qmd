@@ -108,8 +108,8 @@ from sklearn.preprocessing import MinMaxScaler
 from xgboost import XGBClassifier
 from imblearn.over_sampling import SMOTE
 
-eligible = pd.read_parquet("https://github.com/ethanabbott10/Sports_Data/blob/main/data/eligible.parquet")
-ineligible = pd.read_parquet("https://github.com/ethanabbott10/Sports_Data/blob/main/data/ineligible.parquet")
+eligible = pd.read_parquet("https://raw.githubusercontent.com/ethanabbott10/Sports_Data/main/data/eligible.parquet")
+ineligible = pd.read_parquet("https://raw.githubusercontent.com/ethanabbott10/Sports_Data/main/data/ineligible.parquet")
 
 # Create X and y from eligible data set
 X = eligible.drop(columns = ['hall_of_fame', 'player', 'hall_of_fame_eligible'])
