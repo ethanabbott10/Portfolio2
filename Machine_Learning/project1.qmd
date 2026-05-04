@@ -94,9 +94,22 @@ As well as per 16 for all stats that aren't career comprehensive such as ratings
 
 # 2). Selection, training, and use of a machine learning model
 
-# Load cleaned data
-eligible = read_parquet("https://github.com/ethanabbott10/Sports_Data/blob/main/data/eligible.parquet")
-ineligible = read_parquet("https://github.com/ethanabbott10/Sports_Data/blob/main/data/ineligible.parquet")
+# Load cleaned data and libraries
+import pandas as pd
+import numpy as np
+from lets_plot import *
+LetsPlot.setup_html()
+import sklearn
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier 
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import classification_report
+from sklearn.preprocessing import MinMaxScaler
+from xgboost import XGBClassifier
+from imblearn.over_sampling import SMOTE
+
+eligible = pd.read_parquet("https://github.com/ethanabbott10/Sports_Data/blob/main/data/eligible.parquet")
+ineligible = pd.read_parquet("https://github.com/ethanabbott10/Sports_Data/blob/main/data/ineligible.parquet")
 
 # Create X and y from eligible data set
 X = eligible.drop(columns = ['hall_of_fame', 'player', 'hall_of_fame_eligible'])
