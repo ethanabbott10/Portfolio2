@@ -1,6 +1,6 @@
 ---
 title: "NFL Hall of Fame Predictor"
-subtitle: "MAchine Learning"
+subtitle: "Machine Learning"
 author: "Ethan Abbott"
 format:
   html:
