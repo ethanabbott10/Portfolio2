@@ -4345,7 +4345,7 @@ var requirejs,require,define;(function(global,setTimeout){var req,s,head,baseEle
 <p>You can see the data preparation for this model <a href="https://ethanabbott10.github.io/Portfolio2/Cleansing_Projects/nfl.html">here</a></p>
 <p>This is a classification which outputs a prediction as to whether a quarterback will make the Hall of Fame given the following information: - Games Played - Games Started - Completions - Passing Attempts - Incompletions - Completion % - Passing Yards - Passing Touchdowns - Interceptions - Pick 6’s - Touchdown % - Interception % - Passer Rating - Sacks Taken - Sack Yards - Sack % - Passing Yards per Attempt - Adjusted Passing Yards per Attempt - Adjusted Net Passing Yards per Attempt, ‘passing_yards_per_completion’, ‘passing_yards_per_game’, ‘pass_success_rate’, ‘wins’, - Games Played - Games Started - Completions - Passing Attempts - Incompletions - Completion % - Passing Yards - Passing Touchdowns - Interceptions - Pick 6’s - Touchdown % - Interception % - Passer Rating - Sacks Taken - Sack Yards - Sack % - Passing Yards per Attempt - Adjusted Passing Yards per Attempt - Adjusted Net Passing Yards per Attempt - Passing Yards per Completion - Passing Yards per Game - Pass Success Rate - Wins - Losses - Ties - Fourth Quarter Comebacks - Game Winning Drives - Rushing Attempts - Rushing Yards - Rushing Yards per Attempt - Rushing Touchdowns - Rushing Yards per Game - Rushing First Downs - Rush Success Rate - Pro Bowls - First Team All-Pros - Super Bowls - Hall of Fame - Hall of Fame Eligible - 16 Games - Winning %</p>
 <p>As well as per 16 for all stats that aren’t career comprehensive such as ratings and percentages.</p>
-<div id="6f63f828" class="cell" data-execution_count="1">
+<div id="fc048ac9" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 2). Selection, training, and use of a machine learning model</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Load cleaned data and libraries</span></span>
@@ -4377,7 +4377,7 @@ var requirejs,require,define;(function(global,setTimeout){var req,s,head,baseEle
 <span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="co">#X_sm, y_sm = sm.fit_resample(X_train, y_train)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 
-            <div id="d7UYHU"></div>
+            <div id="tsMIMd"></div>
             <script type="text/javascript" data-lets-plot-script="library">
                 if(!window.letsPlotCallQueue) {
                     window.letsPlotCallQueue = [];
@@ -4401,16 +4401,16 @@ var requirejs,require,define;(function(global,setTimeout){var req,s,head,baseEle
                         var div = document.createElement("div");
                         div.style.color = 'darkred';
                         div.textContent = 'Error loading Lets-Plot JS';
-                        document.getElementById("d7UYHU").appendChild(div);
+                        document.getElementById("tsMIMd").appendChild(div);
                     };
-                    var e = document.getElementById("d7UYHU");
+                    var e = document.getElementById("tsMIMd");
                     e.appendChild(script);
                 })()
             </script>
             
 </div>
 </div>
-<div id="15d8da7c" class="cell" data-execution_count="2">
+<div id="849fb882" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Decision Tree</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>tree <span class="op">=</span> DecisionTreeClassifier()</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>tree.fit(X_train, y_train)</span>
@@ -4453,31 +4453,34 @@ var requirejs,require,define;(function(global,setTimeout){var req,s,head,baseEle
 <div class="cell-output cell-output-stdout">
 <pre><code>              precision    recall  f1-score   support
 
-         0.0       1.00      1.00      1.00        20
+         0.0       0.95      0.95      0.95        19
+         1.0       0.00      0.00      0.00         1
 
-    accuracy                           1.00        20
-   macro avg       1.00      1.00      1.00        20
-weighted avg       1.00      1.00      1.00        20
-
-              precision    recall  f1-score   support
-
-         0.0       1.00      1.00      1.00        20
-
-    accuracy                           1.00        20
-   macro avg       1.00      1.00      1.00        20
-weighted avg       1.00      1.00      1.00        20
+    accuracy                           0.90        20
+   macro avg       0.47      0.47      0.47        20
+weighted avg       0.90      0.90      0.90        20
 
               precision    recall  f1-score   support
 
-         0.0       1.00      1.00      1.00        20
+         0.0       0.95      1.00      0.97        19
+         1.0       0.00      0.00      0.00         1
 
-    accuracy                           1.00        20
-   macro avg       1.00      1.00      1.00        20
-weighted avg       1.00      1.00      1.00        20
+    accuracy                           0.95        20
+   macro avg       0.47      0.50      0.49        20
+weighted avg       0.90      0.95      0.93        20
+
+              precision    recall  f1-score   support
+
+         0.0       1.00      0.95      0.97        19
+         1.0       0.50      1.00      0.67         1
+
+    accuracy                           0.95        20
+   macro avg       0.75      0.97      0.82        20
+weighted avg       0.97      0.95      0.96        20
 </code></pre>
 </div>
 </div>
-<div id="50a1c069" class="cell" data-execution_count="3">
+<div id="9ca5ea7e" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create feature importance plot</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>important_stats <span class="op">=</span> pd.DataFrame({<span class="st">&#39;importance&#39;</span>: xg.feature_importances_,<span class="st">&#39;stat&#39;</span>: X_train.columns}).sort_values(<span class="st">&#39;importance&#39;</span>, ascending <span class="op">=</span> <span class="va">True</span>).query(<span class="st">&#39;importance &gt;= .035&#39;</span>)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -4499,13 +4502,13 @@ weighted avg       1.00      1.00      1.00        20
 <span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>            panel_grid<span class="op">=</span> element_blank())</span>
 <span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="3">
-   <div id="Hi5bkJ"></div>
+   <div id="QaiZIS"></div>
    <script type="text/javascript" data-lets-plot-script="plot">
    
    (function() {
    // ----------
    
-   var containerDiv = document.getElementById("Hi5bkJ");
+   var containerDiv = document.getElementById("QaiZIS");
    var observer = new ResizeObserver(function(entries) {
        for (let entry of entries) {
            var width = containerDiv.clientWidth
@@ -4519,8 +4522,8 @@ weighted avg       1.00      1.00      1.00        20
 
                var plotSpec={
 "data":{
-"importance":[0.038523729890584946,0.04229333996772766,0.044727642089128494,0.0528363473713398,0.06908590346574783,0.11374769359827042,0.35547104477882385],
-"stat":["interceptions","rushing_tds_per_16_games","winning_%","games","pick_6s","completions","pro_bowls_per_16_games"]
+"importance":[0.05691156163811684,0.06891113519668579,0.08956984430551529,0.11230164766311646,0.3889275789260864],
+"stat":["winning_%","rushing_yards","interceptions","rushing_tds_per_16_games","pro_bowls_per_16_games"]
 },
 "mapping":{
 "x":"stat",
