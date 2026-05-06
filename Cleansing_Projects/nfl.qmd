@@ -144,8 +144,4 @@ for column in numeric_columns:
 # Split into eligible and ineligible data frames (I'll split the eligible players to train and then use the model to predict on uneligible players)
 eligible = df[df['hall_of_fame_eligible'] == 1]
 ineligible = df[df['hall_of_fame_eligible'] == 0]
-
-# Save data as parquet files
-eligible.to_parquet("ethanabbott10/Sports_Data/data/eligible.parquet")
-ineligible.to_parquet("ethanabbott10/Sports_Data/data/ineligible.parquet")
 ```
