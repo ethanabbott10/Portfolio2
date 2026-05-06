@@ -2,32 +2,22 @@
   {
     "objectID": "story_telling.html",
     "href": "story_telling.html",
-    "title": "about me",
+    "title": "Story Telling",
     "section": "",
-    "text": "MarkDown Basics",
+    "text": "What’s Here?\n\n\n\n\n Back to top",
     "crumbs": [
       "Story Telling"
     ]
   },
   {
-    "objectID": "story_telling.html#title-2-header",
-    "href": "story_telling.html#title-2-header",
-    "title": "about me",
+    "objectID": "Cleansing_Projects/nfl.html",
+    "href": "Cleansing_Projects/nfl.html",
+    "title": "NFL Hall of Fame Predictor",
     "section": "",
-    "text": "MarkDown Basics",
-    "crumbs": [
-      "Story Telling"
-    ]
-  },
-  {
-    "objectID": "Cleansing_Projects/project3.html",
-    "href": "Cleansing_Projects/project3.html",
-    "title": "Client Report - [Insert Project Title]",
-    "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top",
+    "text": "For this assignment I got my data from Stathead. Thinking primarily about the quarterbacks drafted in 2004, I wanted to see what a predictive model would say about their chanches of being Hall of Famers given their distinct resumes.\nBelow you will find the process I took to merge multiple data frames, handle null values, and create standardized columns to reduce bias towards players with long career.\n\n# Import necessary libraries and data\nimport pandas as pd\nimport numpy as np\nfrom lets_plot import *\nLetsPlot.setup_html()\nimport sklearn\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.tree import DecisionTreeClassifier \nfrom sklearn.ensemble import RandomForestClassifier\nfrom sklearn.metrics import classification_report\nfrom sklearn.preprocessing import MinMaxScaler\nfrom xgboost import XGBClassifier\nfrom imblearn.over_sampling import SMOTE\n\ngeneral = pd.read_csv(\"https://raw.githubusercontent.com/ethanabbott10/Sports_Data/refs/heads/main/data/qbgeneral.csv\")\n\nsuper_bowls = pd.read_csv(\"https://raw.githubusercontent.com/ethanabbott10/Sports_Data/refs/heads/main/data/qbsuperbowls.csv\")\n\nhof = pd.read_csv(\"https://raw.githubusercontent.com/ethanabbott10/Sports_Data/refs/heads/main/data/qbhof.csv\")\n\npro_bowls = pd.read_csv(\"https://raw.githubusercontent.com/ethanabbott10/Sports_Data/refs/heads/main/data/qbprobowls.csv\")\n\nall_pros = pd.read_csv(\"https://raw.githubusercontent.com/ethanabbott10/Sports_Data/refs/heads/main/data/qballpros.csv\")\n\n\n        \n        \n        \n\n\n\n# 1). Preprocessing data\n\n# Drop unecessary rank and player columns from data frames\nunwanted_columns = ['Rk', 'Player']\nsuper_bowls = super_bowls.drop(columns = unwanted_columns)\nhof = hof.drop(columns = unwanted_columns)\npro_bowls = pro_bowls.drop(columns = unwanted_columns)\nall_pros = all_pros.drop(columns = unwanted_columns)\n\n# Get Super Bowl count\nsuper_bowl_count = super_bowls['player_id'].value_counts().reset_index()\nsuper_bowl_count.columns = ['player_id', 'super_bowls']\n\n# Fill hof column with positive\nhof['hof'] = 1\n\n# Merge data frames into one\ndata_frames = [all_pros, super_bowl_count, hof]\ndf = pd.merge(\n    left = general,\n    right = pro_bowls,\n    how = \"left\",\n    on = \"player_id\")\n\nfor data_frame in data_frames:\n    df = pd.merge(\n    left = df,\n    right = data_frame,\n    how = \"left\",\n    on = \"player_id\")\n\n#Fill N/As (all numeric nulls can be 0)\nint_columns = ['hof', 'super_bowls', 'Sk', 'Yds.1', 'W', 'L', 'T', '1D']\nfloat_columns = ['Cmp%', 'TD%', 'Int%', 'Rate', 'Sk%', 'Y/A', 'AY/A', 'ANY/A', 'Y/C', 'Succ%', 'Y/A.1', 'Succ%.1']\n\nfor column in int_columns:\n    df[column] = df[column].fillna(0).astype(int)\n\nfor column in float_columns:\n    df[column] = df[column].fillna(0)\n\n# Create Hall of Fame Eligible Column\ndf['eligible'] = np.where(df['To'] &gt;= 2020, 0, 1)\n\n# Create 16 games column\ndf['16_games'] = round(df['G'] / 16, 2)\n\n# Create W% column\ndf['W%'] = round(df['W'] / (df['W'] + df['L'] + df['T']), 2).fillna(0)\n\n\n# Create per season columns (I left the other columns but I wanted to ensure that quality players with shorter careers still had a chance without punishing longevity)\n\ndf['passing_yards_per_16_games'] = round(df['Yds'] / df['16_games'], 2)\ndf['passing_attempts_per_16_games'] = round(df['Att'] / df['16_games'], 2)\ndf['passing_tds_per_16_games'] = round(df['TD'] / df['16_games'], 2)\ndf['int_per_16_games'] = round(df['Int'] / df['16_games'], 2)\ndf['pick_6_per_16_games'] = round(df['Yds'] / df['16_games'], 2)\ndf['sacks_per_16_games'] = round(df['Sk'] / df['16_games'], 2)\ndf['sacks_yards_per_16_games'] = round(df['Yds.1'] / df['16_games'], 2)\ndf['wins_per_16_games'] = round(df['W'] / df['16_games'], 2)\ndf['losses_per_16_games'] = round(df['L'] / df['16_games'], 2)\ndf['ties_per_16_games'] = round(df['T'] / df['16_games'], 2)\ndf['fourth_quarter_comebacks_per_16_games'] = round(df['4QC'] / df['16_games'], 2)\ndf['game_winning_drives_per_16_games'] = round(df['GWD'] / df['16_games'], 2)\ndf['rushing_yards_per_16_games'] = round(df['Yds.2'] / df['16_games'], 2)\ndf['rushing_tds_per_16_games'] = round(df['TD.1'] / df['16_games'], 2)\ndf['rushing_first_downs_per_16_games'] = round(df['Sk'] / df['16_games'], 2)\ndf['pro_bowls_per_16_games'] = round(df['Pro_Bowls'] / df['16_games'], 2)\ndf['first_team_all_pros_per_16_games'] = round(df['AP1'] / df['16_games'], 2)\ndf['super_bowls_per_16_games'] = round(df['super_bowls'] / df['16_games'], 2)\n\n# Drop more unwanted columns\ndf = df.drop(columns = ['Rk', 'Age', 'player_id'])\n\n# Rename columns\ndf.columns = ['player', 'career_start', 'career_end', 'games', 'games_started', 'completions', 'passing_attempts', 'incompletions', 'completion_%', 'passing_yards', 'passing_tds', 'interceptions', 'pick_6s', 'touchdown_%', 'int_%', 'passer_rating', 'sacks_taken', 'sack_yards', 'sack_%', 'passing_yards_per_attempt', 'adjusted_passing_yards_per_attempt', 'adjusted_net_passing_yards_per_attempt', 'passing_yards_per_completion', 'passing_yards_per_game', 'pass_success_rate', 'wins', 'losses', 'ties', 'fourth_quarter_comebacks', 'game_winning_drives', 'rushing_attempts', 'rushing_yards', 'rushing_yards_per_attempt', 'rushing_touchdowns', 'rushing_yards_per_game', 'rushing_first_downs', 'rush_success_rate', 'pro_bowls', 'first_team_all_pros', 'super_bowls', 'hall_of_fame', 'hall_of_fame_eligible', '16_games', 'winning_%', 'passing_yards_per_16_games', 'passing_attempts_per_16_games', 'passing_tds_per_16_games', 'int_per_16_games', 'pick_6_per_16_games', 'sacks_per_16_games', 'sacks_yards_per_16_games', 'wins_per_16_games', 'losses_per_16_games', 'ties_per_16_games', 'fourth_quarter_comebacks_per_16_games', 'game_winning_drives_per_16_games', 'rushing_yards_per_16_games', 'rushing_tds_per_16_games', 'rushing_first_downs_per_16_games', 'pro_bowls_per_16_games', 'first_team_all_pros_per_16_games', 'super_bowls_per_16_games']\n\n# Scale values using MinMaxScaler (Bound all numbers between 0 and 1 to weaken the bias towards columns such as passing yards which contain large values, model will be able to better understand the difference between players at each position in the context of all columns)\n\nscaler = MinMaxScaler()\nnumeric_columns = ['games', 'games_started', 'completions', 'passing_attempts', 'incompletions', 'completion_%', 'passing_yards', 'passing_tds', 'interceptions', 'pick_6s', 'touchdown_%', 'int_%', 'passer_rating', 'sacks_taken', 'sack_yards', 'sack_%', 'passing_yards_per_attempt', 'adjusted_passing_yards_per_attempt', 'adjusted_net_passing_yards_per_attempt', 'passing_yards_per_completion', 'passing_yards_per_game', 'pass_success_rate', 'wins', 'losses', 'ties', 'fourth_quarter_comebacks', 'game_winning_drives', 'rushing_attempts', 'rushing_yards', 'rushing_yards_per_attempt', 'rushing_touchdowns', 'rushing_yards_per_game', 'rushing_first_downs', 'rush_success_rate', 'pro_bowls', 'first_team_all_pros', 'super_bowls', 'hall_of_fame', 'hall_of_fame_eligible', '16_games', 'winning_%', 'passing_yards_per_16_games', 'passing_attempts_per_16_games', 'passing_tds_per_16_games', 'int_per_16_games', 'pick_6_per_16_games', 'sacks_per_16_games', 'sacks_yards_per_16_games', 'wins_per_16_games', 'losses_per_16_games', 'ties_per_16_games', 'fourth_quarter_comebacks_per_16_games', 'game_winning_drives_per_16_games', 'rushing_yards_per_16_games', 'rushing_tds_per_16_games', 'rushing_first_downs_per_16_games', 'pro_bowls_per_16_games', 'first_team_all_pros_per_16_games', 'super_bowls_per_16_games']\n\nfor column in numeric_columns:\n    df[column] = scaler.fit_transform(df[[column]])\n\n# Split into eligible and ineligible data frames (I'll split the eligible players to train and then use the model to predict on uneligible players)\neligible = df[df['hall_of_fame_eligible'] == 1]\nineligible = df[df['hall_of_fame_eligible'] == 0]\n\n\n\n\n Back to top",
     "crumbs": [
       "Data Cleansing",
-      "Project 3"
+      "NFL QB HoF Predictor"
     ]
   },
   {
@@ -35,66 +25,42 @@
     "href": "Cleansing_Projects/project5.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top",
-    "crumbs": [
-      "Data Cleansing",
-      "Project 5"
-    ]
+    "text": "Paste in a template\n\n\n\n\n Back to top"
   },
   {
     "objectID": "Story_Telling/project2.html",
     "href": "Story_Telling/project2.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top",
-    "crumbs": [
-      "Story Telling",
-      "Project 2"
-    ]
+    "text": "Paste in a template\n\n\n\n\n Back to top"
   },
   {
     "objectID": "Story_Telling/project1.html",
     "href": "Story_Telling/project1.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top",
-    "crumbs": [
-      "Story Telling",
-      "Project 1"
-    ]
+    "text": "Paste in a template\n\n\n\n\n Back to top"
   },
   {
     "objectID": "Story_Telling/project4.html",
     "href": "Story_Telling/project4.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top",
-    "crumbs": [
-      "Story Telling",
-      "Project 4"
-    ]
+    "text": "Paste in a template\n\n\n\n\n Back to top"
   },
   {
     "objectID": "Full_Stack/project3.html",
     "href": "Full_Stack/project3.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top",
-    "crumbs": [
-      "Full Stack",
-      "Project 3"
-    ]
+    "text": "Paste in a template\n\n\n\n\n Back to top"
   },
   {
     "objectID": "Full_Stack/project5.html",
     "href": "Full_Stack/project5.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top",
-    "crumbs": [
-      "Full Stack",
-      "Project 5"
-    ]
+    "text": "Paste in a template\n\n\n\n\n Back to top"
   },
   {
     "objectID": "index.html",
@@ -120,19 +86,9 @@
   {
     "objectID": "exploration.html",
     "href": "exploration.html",
-    "title": "about me",
+    "title": "Data Exploration",
     "section": "",
-    "text": "MarkDown Basics",
-    "crumbs": [
-      "Data Exploration"
-    ]
-  },
-  {
-    "objectID": "exploration.html#title-2-header",
-    "href": "exploration.html#title-2-header",
-    "title": "about me",
-    "section": "",
-    "text": "MarkDown Basics",
+    "text": "What’s Here?\n\n\n\n\n Back to top",
     "crumbs": [
       "Data Exploration"
     ]
@@ -142,21 +98,17 @@
     "href": "Machine_Learning/project2.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top",
-    "crumbs": [
-      "Machine Learning",
-      "Project 2"
-    ]
+    "text": "Paste in a template\n\n\n\n\n Back to top"
   },
   {
     "objectID": "Machine_Learning/project1.html",
     "href": "Machine_Learning/project1.html",
-    "title": "Client Report - [Insert Project Title]",
+    "title": "NFL Hall of Fame Predictor",
     "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top",
+    "text": "You can see the data preparation for this model here\nThis is a classification which outputs a prediction as to whether a quarterback will make the Hall of Fame given the following information: - Games Played - Games Started - Completions - Passing Attempts - Incompletions - Completion % - Passing Yards - Passing Touchdowns - Interceptions - Pick 6’s - Touchdown % - Interception % - Passer Rating - Sacks Taken - Sack Yards - Sack % - Passing Yards per Attempt - Adjusted Passing Yards per Attempt - Adjusted Net Passing Yards per Attempt, ‘passing_yards_per_completion’, ‘passing_yards_per_game’, ‘pass_success_rate’, ‘wins’, - Games Played - Games Started - Completions - Passing Attempts - Incompletions - Completion % - Passing Yards - Passing Touchdowns - Interceptions - Pick 6’s - Touchdown % - Interception % - Passer Rating - Sacks Taken - Sack Yards - Sack % - Passing Yards per Attempt - Adjusted Passing Yards per Attempt - Adjusted Net Passing Yards per Attempt - Passing Yards per Completion - Passing Yards per Game - Pass Success Rate - Wins - Losses - Ties - Fourth Quarter Comebacks - Game Winning Drives - Rushing Attempts - Rushing Yards - Rushing Yards per Attempt - Rushing Touchdowns - Rushing Yards per Game - Rushing First Downs - Rush Success Rate - Pro Bowls - First Team All-Pros - Super Bowls - Hall of Fame - Hall of Fame Eligible - 16 Games - Winning %\nAs well as per 16 for all stats that aren’t career comprehensive such as ratings and percentages.\n\n# 2). Selection, training, and use of a machine learning model\n\n# Load cleaned data and libraries\nimport pandas as pd\nimport numpy as np\nfrom lets_plot import *\nLetsPlot.setup_html()\nimport sklearn\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.tree import DecisionTreeClassifier \nfrom sklearn.ensemble import RandomForestClassifier\nfrom sklearn.metrics import classification_report\nfrom sklearn.preprocessing import MinMaxScaler\nfrom xgboost import XGBClassifier\nfrom imblearn.over_sampling import SMOTE\n\neligible = pd.read_parquet(\"https://raw.githubusercontent.com/ethanabbott10/Sports_Data/main/data/eligible.parquet\")\nineligible = pd.read_parquet(\"https://raw.githubusercontent.com/ethanabbott10/Sports_Data/main/data/ineligible.parquet\")\n\n# Create X and y from eligible data set\nX = eligible.drop(columns = ['hall_of_fame', 'player', 'hall_of_fame_eligible'])\ny = eligible['hall_of_fame']\n\n# Split into test and training data\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 20)\n\n# SMOTE to help with inbalanced data\n#sm = SMOTE()\n#X_sm, y_sm = sm.fit_resample(X_train, y_train)\n\n\n        \n        \n        \n\n\n\n# Decision Tree\ntree = DecisionTreeClassifier()\ntree.fit(X_train, y_train)\ntree_prediction = tree.predict(X_test)\ntree_report = classification_report(y_test, tree_prediction)\nprint(tree_report)\n\n# Random Forest\nforest = RandomForestClassifier()\nforest.fit(X_train, y_train)\nforest_prediction = forest.predict(X_test)\nforest_report = classification_report(y_test, forest_prediction)\nprint(forest_report)\n\n# XGBoost\nxg = XGBClassifier(scale_pos_weight = 27.37)\nxg.fit(X_train, y_train)\nxg_prediction = xg.predict(X_test)\nxg_report = classification_report(y_test, xg_prediction)\nprint(xg_report)\n\n# Use XGBoost model to make predictions on ineligible players\n\nZ = ineligible.drop(columns = ['player', 'hall_of_fame_eligible', 'hall_of_fame'])\n\nhof_predictions = xg.predict(Z)\n\nplayers = pd.DataFrame({\n    'player': ineligible['player'].values,\n    'hof': hof_predictions\n})\n\nwrong_predict = xg.predict(X)\n\nwrong = pd.DataFrame({\n    'player' : eligible['player'].values,\n    'real' : eligible['hall_of_fame'].values,\n    'predicted' : wrong_predict\n}).query('real != predicted')\n\n              precision    recall  f1-score   support\n\n         0.0       0.95      1.00      0.97        18\n         1.0       1.00      0.50      0.67         2\n\n    accuracy                           0.95        20\n   macro avg       0.97      0.75      0.82        20\nweighted avg       0.95      0.95      0.94        20\n\n              precision    recall  f1-score   support\n\n         0.0       1.00      1.00      1.00        18\n         1.0       1.00      1.00      1.00         2\n\n    accuracy                           1.00        20\n   macro avg       1.00      1.00      1.00        20\nweighted avg       1.00      1.00      1.00        20\n\n              precision    recall  f1-score   support\n\n         0.0       1.00      1.00      1.00        18\n         1.0       1.00      1.00      1.00         2\n\n    accuracy                           1.00        20\n   macro avg       1.00      1.00      1.00        20\nweighted avg       1.00      1.00      1.00        20\n\n\n\n\n# Create feature importance plot\nimportant_stats = pd.DataFrame({'importance': xg.feature_importances_,'stat': X_train.columns}).sort_values('importance', ascending = True).query('importance &gt;= .035')\n\n(\n    ggplot(\n        data = important_stats,\n        mapping = aes(\n            y = 'importance',\n            x = 'stat'))\n        + geom_bar(stat = 'identity')\n        + labs(\n            x = 'Stat',\n            y = 'Importance',\n            title = 'What makes a Hall of Famer?',\n            subtitle = 'The stats that most strongly predict a Hall of Fame career')\n        + theme(\n            axis_text_x = element_text(\n                hjust=1),\n            panel_grid= element_blank())\n)\n\n   \n   \n\n\n\n\n\n Back to top",
     "crumbs": [
       "Machine Learning",
-      "Project 1"
+      "NFL QB Hof Predictor"
     ]
   },
   {
@@ -164,77 +116,49 @@
     "href": "Machine_Learning/project4.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top",
-    "crumbs": [
-      "Machine Learning",
-      "Project 4"
-    ]
+    "text": "Paste in a template\n\n\n\n\n Back to top"
   },
   {
     "objectID": "Data_Exploration/project2.html",
     "href": "Data_Exploration/project2.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top",
-    "crumbs": [
-      "Data Exploration",
-      "Project 2"
-    ]
+    "text": "Paste in a template\n\n\n\n\n Back to top"
   },
   {
     "objectID": "Data_Exploration/project1.html",
     "href": "Data_Exploration/project1.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top",
-    "crumbs": [
-      "Data Exploration",
-      "Project 1"
-    ]
+    "text": "Paste in a template\n\n\n\n\n Back to top"
   },
   {
     "objectID": "Data_Exploration/project4.html",
     "href": "Data_Exploration/project4.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top",
-    "crumbs": [
-      "Data Exploration",
-      "Project 4"
-    ]
+    "text": "Paste in a template\n\n\n\n\n Back to top"
   },
   {
     "objectID": "Competition/project2.html",
     "href": "Competition/project2.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top",
-    "crumbs": [
-      "Competition",
-      "Project 2"
-    ]
+    "text": "Paste in a template\n\n\n\n\n Back to top"
   },
   {
     "objectID": "Competition/project1.html",
     "href": "Competition/project1.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top",
-    "crumbs": [
-      "Competition",
-      "Project 1"
-    ]
+    "text": "Paste in a template\n\n\n\n\n Back to top"
   },
   {
     "objectID": "Competition/project4.html",
     "href": "Competition/project4.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top",
-    "crumbs": [
-      "Competition",
-      "Project 4"
-    ]
+    "text": "Paste in a template\n\n\n\n\n Back to top"
   },
   {
     "objectID": "resume.html",
@@ -276,29 +200,31 @@
     "href": "Competition/project5.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top",
-    "crumbs": [
-      "Competition",
-      "Project 5"
-    ]
+    "text": "Paste in a template\n\n\n\n\n Back to top"
   },
   {
     "objectID": "Competition/project3.html",
     "href": "Competition/project3.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top",
-    "crumbs": [
-      "Competition",
-      "Project 3"
-    ]
+    "text": "Paste in a template\n\n\n\n\n Back to top"
   },
   {
     "objectID": "cleansing.html",
     "href": "cleansing.html",
     "title": "Data Cleansing",
     "section": "",
-    "text": "What’s here?\n\n\n\n\n Back to top",
+    "text": "The data used was taken from Pro Football Reference’s Stathead service. In order to get all of the player information I wanted, I had to perform multiple queries to pull specific information regarding awards and Super Bowl information. The tables from these queries were then joined together. I handled null values and created standardized “per 16 games” columns to reduce bias towards long careers.",
+    "crumbs": [
+      "Data Cleansing"
+    ]
+  },
+  {
+    "objectID": "cleansing.html#nfl-quarterback-hall-of-fame-predictor",
+    "href": "cleansing.html#nfl-quarterback-hall-of-fame-predictor",
+    "title": "Data Cleansing",
+    "section": "",
+    "text": "The data used was taken from Pro Football Reference’s Stathead service. In order to get all of the player information I wanted, I had to perform multiple queries to pull specific information regarding awards and Super Bowl information. The tables from these queries were then joined together. I handled null values and created standardized “per 16 games” columns to reduce bias towards long careers.",
     "crumbs": [
       "Data Cleansing"
     ]
@@ -308,39 +234,21 @@
     "href": "Data_Exploration/project5.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top",
-    "crumbs": [
-      "Data Exploration",
-      "Project 5"
-    ]
+    "text": "Paste in a template\n\n\n\n\n Back to top"
   },
   {
     "objectID": "Data_Exploration/project3.html",
     "href": "Data_Exploration/project3.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top",
-    "crumbs": [
-      "Data Exploration",
-      "Project 3"
-    ]
+    "text": "Paste in a template\n\n\n\n\n Back to top"
   },
   {
     "objectID": "full_stack.html",
     "href": "full_stack.html",
-    "title": "about me",
+    "title": "Full Stack",
     "section": "",
-    "text": "MarkDown Basics",
-    "crumbs": [
-      "Full Stack"
-    ]
-  },
-  {
-    "objectID": "full_stack.html#title-2-header",
-    "href": "full_stack.html#title-2-header",
-    "title": "about me",
-    "section": "",
-    "text": "MarkDown Basics",
+    "text": "What’s Here?\n\n\n\n\n Back to top",
     "crumbs": [
       "Full Stack"
     ]
@@ -350,39 +258,21 @@
     "href": "Machine_Learning/project5.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top",
-    "crumbs": [
-      "Machine Learning",
-      "Project 5"
-    ]
+    "text": "Paste in a template\n\n\n\n\n Back to top"
   },
   {
     "objectID": "Machine_Learning/project3.html",
     "href": "Machine_Learning/project3.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top",
-    "crumbs": [
-      "Machine Learning",
-      "Project 3"
-    ]
+    "text": "Paste in a template\n\n\n\n\n Back to top"
   },
   {
     "objectID": "competition.html",
     "href": "competition.html",
-    "title": "about me",
+    "title": "Competition",
     "section": "",
-    "text": "MarkDown Basics",
-    "crumbs": [
-      "Competition"
-    ]
-  },
-  {
-    "objectID": "competition.html#title-2-header",
-    "href": "competition.html#title-2-header",
-    "title": "about me",
-    "section": "",
-    "text": "MarkDown Basics",
+    "text": "What’s Here?\n\n\n\n\n Back to top",
     "crumbs": [
       "Competition"
     ]
@@ -390,19 +280,9 @@
   {
     "objectID": "ml.html",
     "href": "ml.html",
-    "title": "about me",
+    "title": "Machine Learning",
     "section": "",
-    "text": "MarkDown Basics",
-    "crumbs": [
-      "Machine Learning"
-    ]
-  },
-  {
-    "objectID": "ml.html#title-2-header",
-    "href": "ml.html#title-2-header",
-    "title": "about me",
-    "section": "",
-    "text": "MarkDown Basics",
+    "text": "What’s Here?\n\n\n\n\n Back to top",
     "crumbs": [
       "Machine Learning"
     ]
@@ -412,87 +292,55 @@
     "href": "Full_Stack/project4.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top",
-    "crumbs": [
-      "Full Stack",
-      "Project 4"
-    ]
+    "text": "Paste in a template\n\n\n\n\n Back to top"
   },
   {
     "objectID": "Full_Stack/project1.html",
     "href": "Full_Stack/project1.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top",
-    "crumbs": [
-      "Full Stack",
-      "Project 1"
-    ]
+    "text": "Paste in a template\n\n\n\n\n Back to top"
   },
   {
     "objectID": "Full_Stack/project2.html",
     "href": "Full_Stack/project2.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top",
-    "crumbs": [
-      "Full Stack",
-      "Project 2"
-    ]
+    "text": "Paste in a template\n\n\n\n\n Back to top"
   },
   {
     "objectID": "Story_Telling/project5.html",
     "href": "Story_Telling/project5.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top",
-    "crumbs": [
-      "Story Telling",
-      "Project 5"
-    ]
+    "text": "Paste in a template\n\n\n\n\n Back to top"
   },
   {
     "objectID": "Story_Telling/project3.html",
     "href": "Story_Telling/project3.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top",
-    "crumbs": [
-      "Story Telling",
-      "Project 3"
-    ]
+    "text": "Paste in a template\n\n\n\n\n Back to top"
   },
   {
     "objectID": "Cleansing_Projects/project4.html",
     "href": "Cleansing_Projects/project4.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top",
-    "crumbs": [
-      "Data Cleansing",
-      "Project 4"
-    ]
+    "text": "Paste in a template\n\n\n\n\n Back to top"
   },
   {
-    "objectID": "Cleansing_Projects/project1.html",
-    "href": "Cleansing_Projects/project1.html",
+    "objectID": "Cleansing_Projects/project3.html",
+    "href": "Cleansing_Projects/project3.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top",
-    "crumbs": [
-      "Data Cleansing",
-      "Project 1"
-    ]
+    "text": "Paste in a template\n\n\n\n\n Back to top"
   },
   {
     "objectID": "Cleansing_Projects/project2.html",
     "href": "Cleansing_Projects/project2.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top",
-    "crumbs": [
-      "Data Cleansing",
-      "Project 2"
-    ]
+    "text": "Paste in a template\n\n\n\n\n Back to top"
   }
 ]
