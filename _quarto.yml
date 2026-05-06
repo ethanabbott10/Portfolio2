@@ -114,8 +114,8 @@ website:
         - text: "Machine Learning"
           file: ml.qmd
         - text: "---"
-        #- text: "Project 1"
-          #file: Machine_Learning/project1.qmd
+        - text: "NFL QB Hof Predictor"
+          file: Machine_Learning/project1.qmd
         #- text: "---"
         #- text: "Project 2"
           #file: Machine_Learning/project2.qmd
