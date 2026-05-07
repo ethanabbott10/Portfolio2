@@ -4345,7 +4345,7 @@ var requirejs,require,define;(function(global,setTimeout){var req,s,head,baseEle
 <p>You can see the data preparation for this model <a href="https://ethanabbott10.github.io/Portfolio2/Cleansing_Projects/nfl.html">here</a></p>
 <p>This is a classification which outputs a prediction as to whether a quarterback will make the Hall of Fame given the following information: - Games Played - Games Started - Completions - Passing Attempts - Incompletions - Completion % - Passing Yards - Passing Touchdowns - Interceptions - Pick 6’s - Touchdown % - Interception % - Passer Rating - Sacks Taken - Sack Yards - Sack % - Passing Yards per Attempt - Adjusted Passing Yards per Attempt - Adjusted Net Passing Yards per Attempt, ‘passing_yards_per_completion’, ‘passing_yards_per_game’, ‘pass_success_rate’, ‘wins’, - Games Played - Games Started - Completions - Passing Attempts - Incompletions - Completion % - Passing Yards - Passing Touchdowns - Interceptions - Pick 6’s - Touchdown % - Interception % - Passer Rating - Sacks Taken - Sack Yards - Sack % - Passing Yards per Attempt - Adjusted Passing Yards per Attempt - Adjusted Net Passing Yards per Attempt - Passing Yards per Completion - Passing Yards per Game - Pass Success Rate - Wins - Losses - Ties - Fourth Quarter Comebacks - Game Winning Drives - Rushing Attempts - Rushing Yards - Rushing Yards per Attempt - Rushing Touchdowns - Rushing Yards per Game - Rushing First Downs - Rush Success Rate - Pro Bowls - First Team All-Pros - Super Bowls - Hall of Fame - Hall of Fame Eligible - 16 Games - Winning %</p>
 <p>As well as per 16 for all stats that aren’t career comprehensive such as ratings and percentages.</p>
-<div id="0342f1a2" class="cell" data-execution_count="1">
+<div id="01f83c28" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 2). Selection, training, and use of a machine learning model</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Load cleaned data and libraries</span></span>
@@ -4377,7 +4377,7 @@ var requirejs,require,define;(function(global,setTimeout){var req,s,head,baseEle
 <span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="co">#X_sm, y_sm = sm.fit_resample(X_train, y_train)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 
-        <div id="uNplBF"></div>
+        <div id="1cQGJz"></div>
         <script type="text/javascript" data-lets-plot-script="library">
             if(!window.letsPlotCallQueue) {
                 window.letsPlotCallQueue = [];
@@ -4401,16 +4401,16 @@ var requirejs,require,define;(function(global,setTimeout){var req,s,head,baseEle
                     var div = document.createElement("div");
                     div.style.color = 'darkred';
                     div.textContent = 'Error loading Lets-Plot JS';
-                    document.getElementById("uNplBF").appendChild(div);
+                    document.getElementById("1cQGJz").appendChild(div);
                 };
-                var e = document.getElementById("uNplBF");
+                var e = document.getElementById("1cQGJz");
                 e.appendChild(script);
             })()
         </script>
         
 </div>
 </div>
-<div id="384cab2b" class="cell" data-execution_count="2">
+<div id="75b4269b" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Decision Tree</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>tree <span class="op">=</span> DecisionTreeClassifier()</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>tree.fit(X_train, y_train)</span>
@@ -4453,7 +4453,8 @@ var requirejs,require,define;(function(global,setTimeout){var req,s,head,baseEle
 <div class="cell-output cell-output-stdout">
 <pre><code>              precision    recall  f1-score   support
 
-         0.0       1.00      1.00      1.00        20
+         0.0       1.00      1.00      1.00        19
+         1.0       1.00      1.00      1.00         1
 
     accuracy                           1.00        20
    macro avg       1.00      1.00      1.00        20
@@ -4461,7 +4462,8 @@ weighted avg       1.00      1.00      1.00        20
 
               precision    recall  f1-score   support
 
-         0.0       1.00      1.00      1.00        20
+         0.0       1.00      1.00      1.00        19
+         1.0       1.00      1.00      1.00         1
 
     accuracy                           1.00        20
    macro avg       1.00      1.00      1.00        20
@@ -4469,7 +4471,8 @@ weighted avg       1.00      1.00      1.00        20
 
               precision    recall  f1-score   support
 
-         0.0       1.00      1.00      1.00        20
+         0.0       1.00      1.00      1.00        19
+         1.0       1.00      1.00      1.00         1
 
     accuracy                           1.00        20
    macro avg       1.00      1.00      1.00        20
@@ -4477,7 +4480,7 @@ weighted avg       1.00      1.00      1.00        20
 </code></pre>
 </div>
 </div>
-<div id="a9a08150" class="cell" data-execution_count="3">
+<div id="0708d1b0" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create feature importance plot</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>important_stats <span class="op">=</span> pd.DataFrame({<span class="st">&#39;importance&#39;</span>: xg.feature_importances_,<span class="st">&#39;stat&#39;</span>: X_train.columns}).sort_values(<span class="st">&#39;importance&#39;</span>, ascending <span class="op">=</span> <span class="va">True</span>).query(<span class="st">&#39;importance &gt;= .035&#39;</span>)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -4499,7 +4502,7 @@ weighted avg       1.00      1.00      1.00        20
 <span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>            panel_grid<span class="op">=</span> element_blank())</span>
 <span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="3">
-   <div id="VuZXar"></div>
+   <div id="yDINex"></div>
    <script type="text/javascript" data-lets-plot-script="plot">
    
    (function() {
@@ -4524,15 +4527,15 @@ weighted avg       1.00      1.00      1.00        20
        };
    }
    
-   const containerDiv = document.getElementById("VuZXar");
+   const containerDiv = document.getElementById("yDINex");
    let fig = null;
    
    function renderPlot() {
        if (fig === null) {
            const plotSpec = {
 "data":{
-"importance":[0.05214330181479454,0.059269532561302185,0.06823655962944031,0.11306750029325485,0.3643752634525299],
-"stat":["losses","rushing_yards","Unnamed: 0","career_end","pro_bowls_per_16_games"]
+"importance":[0.054029759019613266,0.0572180300951004,0.05946299061179161,0.13438476622104645,0.4302181005477905],
+"stat":["Unnamed: 0","sack_yards","winning_%","career_end","pro_bowls_per_16_games"]
 },
 "mapping":{
 "x":"stat",
