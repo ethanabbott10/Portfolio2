@@ -92,8 +92,8 @@ website:
         - text: "Story Telling"
           file: story_telling.qmd
         - text: "---"
-        #- text: "Project 1"
-          #file: Story_Telling/project1.qmd
+        - text: "NFL QB HoF Predictor"
+          file: Story_Telling/project1.qmd
         #- text: "---"
         #- text: "Project 2"
           #file: Story_Telling/project2.qmd
