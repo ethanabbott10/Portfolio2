@@ -4343,9 +4343,70 @@ var requirejs,require,define;(function(global,setTimeout){var req,s,head,baseEle
 
 
 <p>You can see the data preparation for this model <a href="https://ethanabbott10.github.io/Portfolio2/Cleansing_Projects/nfl.html">here</a></p>
-<p>This is a classification which outputs a prediction as to whether a quarterback will make the Hall of Fame given the following information: - Games Played - Games Started - Completions - Passing Attempts - Incompletions - Completion % - Passing Yards - Passing Touchdowns - Interceptions - Pick 6’s - Touchdown % - Interception % - Passer Rating - Sacks Taken - Sack Yards - Sack % - Passing Yards per Attempt - Adjusted Passing Yards per Attempt - Adjusted Net Passing Yards per Attempt, ‘passing_yards_per_completion’, ‘passing_yards_per_game’, ‘pass_success_rate’, ‘wins’, - Games Played - Games Started - Completions - Passing Attempts - Incompletions - Completion % - Passing Yards - Passing Touchdowns - Interceptions - Pick 6’s - Touchdown % - Interception % - Passer Rating - Sacks Taken - Sack Yards - Sack % - Passing Yards per Attempt - Adjusted Passing Yards per Attempt - Adjusted Net Passing Yards per Attempt - Passing Yards per Completion - Passing Yards per Game - Pass Success Rate - Wins - Losses - Ties - Fourth Quarter Comebacks - Game Winning Drives - Rushing Attempts - Rushing Yards - Rushing Yards per Attempt - Rushing Touchdowns - Rushing Yards per Game - Rushing First Downs - Rush Success Rate - Pro Bowls - First Team All-Pros - Super Bowls - Hall of Fame - Hall of Fame Eligible - 16 Games - Winning %</p>
+<p>This is a classification which outputs a prediction as to whether a quarterback will make the Hall of Fame given the following information:</p>
+<ul>
+<li>Games Played</li>
+<li>Games Started</li>
+<li>Completions</li>
+<li>Passing Attempts</li>
+<li>Incompletions</li>
+<li>Completion %</li>
+<li>Passing Yards</li>
+<li>Passing Touchdowns</li>
+<li>Interceptions</li>
+<li>Pick 6’s</li>
+<li>Touchdown %</li>
+<li>Interception %</li>
+<li>Passer Rating</li>
+<li>Sacks Taken</li>
+<li>Sack Yards</li>
+<li>Sack %</li>
+<li>Passing Yards per Attempt</li>
+<li>Adjusted Passing Yards per Attempt</li>
+<li>Adjusted Net Passing Yards per Attempt, ‘passing_yards_per_completion’, ‘passing_yards_per_game’, ‘pass_success_rate’, ‘wins’, - Games Played</li>
+<li>Games Started</li>
+<li>Completions</li>
+<li>Passing Attempts</li>
+<li>Incompletions</li>
+<li>Completion %</li>
+<li>Passing Yards</li>
+<li>Passing Touchdowns</li>
+<li>Interceptions</li>
+<li>Pick 6’s</li>
+<li>Touchdown %</li>
+<li>Interception %</li>
+<li>Passer Rating</li>
+<li>Sacks Taken</li>
+<li>Sack Yards</li>
+<li>Sack %</li>
+<li>Passing Yards per Attempt</li>
+<li>Adjusted Passing Yards per Attempt</li>
+<li>Adjusted Net Passing Yards per Attempt</li>
+<li>Passing Yards per Completion</li>
+<li>Passing Yards per Game</li>
+<li>Pass Success Rate</li>
+<li>Wins</li>
+<li>Losses</li>
+<li>Ties</li>
+<li>Fourth Quarter Comebacks</li>
+<li>Game Winning Drives</li>
+<li>Rushing Attempts</li>
+<li>Rushing Yards</li>
+<li>Rushing Yards per Attempt</li>
+<li>Rushing Touchdowns</li>
+<li>Rushing Yards per Game</li>
+<li>Rushing First Downs</li>
+<li>Rush Success Rate</li>
+<li>Pro Bowls</li>
+<li>First Team All-Pros</li>
+<li>Super Bowls</li>
+<li>Hall of Fame</li>
+<li>Hall of Fame Eligible</li>
+<li>16 Games</li>
+<li>Winning %</li>
+</ul>
 <p>As well as per 16 for all stats that aren’t career comprehensive such as ratings and percentages.</p>
-<div id="0970fa9a" class="cell" data-execution_count="1">
+<div id="a09b8209" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 2). Selection, training, and use of a machine learning model</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Load cleaned data and libraries</span></span>
@@ -4377,7 +4438,7 @@ var requirejs,require,define;(function(global,setTimeout){var req,s,head,baseEle
 <span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="co">#X_sm, y_sm = sm.fit_resample(X_train, y_train)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 
-            <div id="N9YtaZ"></div>
+            <div id="RZKUVn"></div>
             <script type="text/javascript" data-lets-plot-script="library">
                 if(!window.letsPlotCallQueue) {
                     window.letsPlotCallQueue = [];
@@ -4401,16 +4462,16 @@ var requirejs,require,define;(function(global,setTimeout){var req,s,head,baseEle
                         var div = document.createElement("div");
                         div.style.color = 'darkred';
                         div.textContent = 'Error loading Lets-Plot JS';
-                        document.getElementById("N9YtaZ").appendChild(div);
+                        document.getElementById("RZKUVn").appendChild(div);
                     };
-                    var e = document.getElementById("N9YtaZ");
+                    var e = document.getElementById("RZKUVn");
                     e.appendChild(script);
                 })()
             </script>
             
 </div>
 </div>
-<div id="55abc7ac" class="cell" data-execution_count="2">
+<div id="510b70a9" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Decision Tree</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>tree <span class="op">=</span> DecisionTreeClassifier()</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>tree.fit(X_train, y_train)</span>
@@ -4480,7 +4541,7 @@ weighted avg       1.00      1.00      1.00        20
 </code></pre>
 </div>
 </div>
-<div id="97be4871" class="cell" data-execution_count="3">
+<div id="419ad9ca" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create feature importance plot</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>important_stats <span class="op">=</span> pd.DataFrame({<span class="st">&#39;importance&#39;</span>: xg.feature_importances_,<span class="st">&#39;stat&#39;</span>: X_train.columns}).sort_values(<span class="st">&#39;importance&#39;</span>, ascending <span class="op">=</span> <span class="va">True</span>).query(<span class="st">&#39;importance &gt;= .035&#39;</span>)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -4502,13 +4563,13 @@ weighted avg       1.00      1.00      1.00        20
 <span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>            panel_grid<span class="op">=</span> element_blank())</span>
 <span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="3">
-   <div id="5ZgCPT"></div>
+   <div id="7u5zZ0"></div>
    <script type="text/javascript" data-lets-plot-script="plot">
    
    (function() {
    // ----------
    
-   var containerDiv = document.getElementById("5ZgCPT");
+   var containerDiv = document.getElementById("7u5zZ0");
    var observer = new ResizeObserver(function(entries) {
        for (let entry of entries) {
            var width = containerDiv.clientWidth
@@ -4522,8 +4583,8 @@ weighted avg       1.00      1.00      1.00        20
 
                var plotSpec={
 "data":{
-"importance":[0.04731293395161629,0.05802900716662407,0.0735321193933487,0.08685603737831116,0.10062422603368759,0.3742937445640564],
-"stat":["interceptions","rush_success_rate","winning_%","career_end","completions","pro_bowls_per_16_games"]
+"importance":[0.037095166742801666,0.0379667691886425,0.05176593363285065,0.09903682768344879,0.12269116938114166,0.39545586705207825],
+"stat":["Unnamed: 0","passing_yards_per_game","winning_%","completions","career_end","pro_bowls_per_16_games"]
 },
 "mapping":{
 "x":"stat",
