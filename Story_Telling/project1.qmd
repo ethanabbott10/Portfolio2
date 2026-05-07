@@ -1,7 +1,7 @@
 ---
-title: "Client Report - [Insert Project Title]"
-subtitle: "Course DS 250"
-author: "[STUDENT NAME]"
+title: "What Makes a Hall of Famer?"
+subtitle: ""
+author: "Ethan Abbott"
 format:
   html:
     self-contained: true
@@ -25,4 +25,86 @@ execute:
     
 ---
 
-### Paste in a template
+# Introduction
+The general consensus around the NFL today is that the 1983 draft had the greatest quarterback class of all time. John Elway, Dan Marino, and Jim Kelly combined for 23 Pro Bowls, 11 All Pros, 2 MVPs, 10 Super Bowl Appearances, and 2 Super Bowl Championships. Each made the Hall of Fame. 
+
+The consensus runner-up is the 2004 draft class, featuring Eli Manning, Ben Roethlisberger, and Philip Rivers. Given their recent retirements (or coming out of retirement), only Eli Manning is eligible for induction. He has been on the past two ballots but hasn't been inducted. Roethlisberger will be eligible in 2027 while Rivers reset his 5 year waiting period by coming out of retirement last season.
+
+![Stathead QB Comparison](https://www.sports-reference.com/stathead/tiny/KjLhv)
+
+Each player has an interesting case. Phillip Rivers has had no playoff success while Eli Manning won 2 Super Bowl MVPs. Ben Roethlisberger's resume is a mesh of the two. He doesn't quite have Rivers' raw statistics and accolades nor Manning's playoff impact. 
+
+Will the 2004 draft class also have three Hall of Fame inductees? What achievement matters the most? I created a machine learning mdoel to answer those questions. 
+
+# The Model
+I trained an XGBoost classification model using statistics from [Pro Football Reference] (https://www.pro-football-reference.com/) for every quarterback whose stats they have. (Click the dropdown to see which stats were used)
+
+<details>
+<summary><strong>Stats Used</strong></summary>
+
+- Games Played
+- Games Started
+- Completions
+- Passing Attempts 
+- Incompletions
+- Completion %
+- Passing Yards
+- Passing Touchdowns
+- Interceptions
+- Pick 6's
+- Touchdown %
+- Interception %
+- Passer Rating
+- Sacks Taken
+- Sack Yards
+- Sack %
+- Passing Yards per Attempt
+- Adjusted Passing Yards per Attempt
+- Adjusted Net Passing Yards per Attempt, 'passing_yards_per_completion', 'passing_yards_per_game', 'pass_success_rate', 'wins', - Games Played
+- Games Started
+- Completions
+- Passing Attempts
+- Incompletions
+- Completion %
+- Passing Yards
+- Passing Touchdowns
+- Interceptions
+- Pick 6's
+- Touchdown %
+- Interception %
+- Passer Rating
+- Sacks Taken
+- Sack Yards
+- Sack %
+- Passing Yards per Attempt
+- Adjusted Passing Yards per Attempt
+- Adjusted Net Passing Yards per Attempt
+- Passing Yards per Completion
+- Passing Yards per Game
+- Pass Success Rate
+- Wins
+- Losses
+- Ties
+- Fourth Quarter Comebacks
+- Game Winning Drives
+- Rushing Attempts
+- Rushing Yards
+- Rushing Yards per Attempt
+- Rushing Touchdowns
+- Rushing Yards per Game
+- Rushing First Downs
+- Rush Success Rate
+- Pro Bowls
+- First Team All-Pros
+- Super Bowls
+- Hall of Fame
+- Hall of Fame Eligible
+- 16 Games
+- Winning %
+- Per 16 games metrics for each stat that isn't a percentage or a rating
+
+</details>
+
+
+
+
