@@ -30,7 +30,7 @@ The general consensus around the NFL today is that the 1983 draft had the greate
 
 The consensus runner-up is the 2004 draft class, featuring Eli Manning, Ben Roethlisberger, and Philip Rivers. Given their recent retirements (or coming out of retirement), only Eli Manning is eligible for induction. He has been on the past two ballots but hasn't been inducted. Roethlisberger will be eligible in 2027 while Rivers reset his 5 year waiting period by coming out of retirement last season.
 
-![Stathead QB Comparison](Images/nflqbcomparison.png)
+![Stathead QB Comparison](../Images/nflqbcomparison.png)
 
 Each player has an interesting case. Phillip Rivers has had no playoff success while Eli Manning won 2 Super Bowl MVPs. Ben Roethlisberger's resume is a mesh of the two. He doesn't quite have Rivers' raw statistics and accolades nor Manning's playoff impact. 
 
