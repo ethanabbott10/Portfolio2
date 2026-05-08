@@ -4406,7 +4406,7 @@ var requirejs,require,define;(function(global,setTimeout){var req,s,head,baseEle
 <li>Winning %</li>
 </ul>
 <p>As well as per 16 for all stats that aren’t career comprehensive such as ratings and percentages.</p>
-<div id="fc30e224" class="cell" data-execution_count="1">
+<div id="27f2e1c9" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 2). Selection, training, and use of a machine learning model</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Load cleaned data and libraries</span></span>
@@ -4438,7 +4438,7 @@ var requirejs,require,define;(function(global,setTimeout){var req,s,head,baseEle
 <span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="co">#X_sm, y_sm = sm.fit_resample(X_train, y_train)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 
-            <div id="t7jq2P"></div>
+            <div id="hPlT9B"></div>
             <script type="text/javascript" data-lets-plot-script="library">
                 if(!window.letsPlotCallQueue) {
                     window.letsPlotCallQueue = [];
@@ -4462,16 +4462,16 @@ var requirejs,require,define;(function(global,setTimeout){var req,s,head,baseEle
                         var div = document.createElement("div");
                         div.style.color = 'darkred';
                         div.textContent = 'Error loading Lets-Plot JS';
-                        document.getElementById("t7jq2P").appendChild(div);
+                        document.getElementById("hPlT9B").appendChild(div);
                     };
-                    var e = document.getElementById("t7jq2P");
+                    var e = document.getElementById("hPlT9B");
                     e.appendChild(script);
                 })()
             </script>
             
 </div>
 </div>
-<div id="635ba8cb" class="cell" data-execution_count="2">
+<div id="907752b7" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Decision Tree</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>tree <span class="op">=</span> DecisionTreeClassifier()</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>tree.fit(X_train, y_train)</span>
@@ -4514,34 +4514,34 @@ var requirejs,require,define;(function(global,setTimeout){var req,s,head,baseEle
 <div class="cell-output cell-output-stdout">
 <pre><code>              precision    recall  f1-score   support
 
-         0.0       1.00      0.95      0.97        19
-         1.0       0.50      1.00      0.67         1
+         0.0       0.95      1.00      0.97        18
+         1.0       1.00      0.50      0.67         2
 
     accuracy                           0.95        20
-   macro avg       0.75      0.97      0.82        20
-weighted avg       0.97      0.95      0.96        20
+   macro avg       0.97      0.75      0.82        20
+weighted avg       0.95      0.95      0.94        20
 
               precision    recall  f1-score   support
 
-         0.0       1.00      0.95      0.97        19
-         1.0       0.50      1.00      0.67         1
+         0.0       0.90      1.00      0.95        18
+         1.0       0.00      0.00      0.00         2
 
-    accuracy                           0.95        20
-   macro avg       0.75      0.97      0.82        20
-weighted avg       0.97      0.95      0.96        20
+    accuracy                           0.90        20
+   macro avg       0.45      0.50      0.47        20
+weighted avg       0.81      0.90      0.85        20
 
               precision    recall  f1-score   support
 
-         0.0       1.00      0.95      0.97        19
-         1.0       0.50      1.00      0.67         1
+         0.0       0.95      1.00      0.97        18
+         1.0       1.00      0.50      0.67         2
 
     accuracy                           0.95        20
-   macro avg       0.75      0.97      0.82        20
-weighted avg       0.97      0.95      0.96        20
+   macro avg       0.97      0.75      0.82        20
+weighted avg       0.95      0.95      0.94        20
 </code></pre>
 </div>
 </div>
-<div id="a7ffe871" class="cell" data-execution_count="3">
+<div id="5830f201" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create feature importance plot</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>important_stats <span class="op">=</span> pd.DataFrame({<span class="st">&#39;importance&#39;</span>: xg.feature_importances_,<span class="st">&#39;stat&#39;</span>: X_train.columns}).sort_values(<span class="st">&#39;importance&#39;</span>, ascending <span class="op">=</span> <span class="va">True</span>).query(<span class="st">&#39;importance &gt;= .035&#39;</span>)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -4563,13 +4563,13 @@ weighted avg       0.97      0.95      0.96        20
 <span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>            panel_grid<span class="op">=</span> element_blank())</span>
 <span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="3">
-   <div id="XO2Dax"></div>
+   <div id="1Dlst7"></div>
    <script type="text/javascript" data-lets-plot-script="plot">
    
    (function() {
    // ----------
    
-   var containerDiv = document.getElementById("XO2Dax");
+   var containerDiv = document.getElementById("1Dlst7");
    var observer = new ResizeObserver(function(entries) {
        for (let entry of entries) {
            var width = containerDiv.clientWidth
@@ -4583,8 +4583,8 @@ weighted avg       0.97      0.95      0.96        20
 
                var plotSpec={
 "data":{
-"importance":[0.035650305449962616,0.042722977697849274,0.05566335842013359,0.05831080675125122,0.061264362186193466,0.16419194638729095,0.39209821820259094],
-"stat":["ties_per_16_games","Unnamed: 0","interceptions","rush_success_rate","winning_%","career_end","pro_bowls_per_16_games"]
+"importance":[0.04301667958498001,0.04609278589487076,0.046948473900556564,0.047494061291217804,0.06418464332818985,0.08177146315574646,0.11840416491031647,0.3539874851703644],
+"stat":["passing_attempts_per_16_games","interceptions","Unnamed: 0","pro_bowls","career_end","winning_%","completions","pro_bowls_per_16_games"]
 },
 "mapping":{
 "x":"stat",
