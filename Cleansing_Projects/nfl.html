@@ -4345,7 +4345,7 @@ var requirejs,require,define;(function(global,setTimeout){var req,s,head,baseEle
 
 <p>For this assignment I got my data from <a href="https://www.sports-reference.com/stathead/all/">Stathead</a>. Thinking primarily about the quarterbacks drafted in 2004, I wanted to see what a predictive model would say about their chanches of being Hall of Famers given their distinct resumes.</p>
 <p>Below you will find the process I took to merge multiple data frames, handle null values, and create standardized columns to reduce bias towards players with long career.</p>
-<div id="ee03d745" class="cell" data-execution_count="1">
+<div id="c5c740ea" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Import necessary libraries and data</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -4371,7 +4371,7 @@ var requirejs,require,define;(function(global,setTimeout){var req,s,head,baseEle
 <span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>all_pros <span class="op">=</span> pd.read_csv(<span class="st">&quot;https://raw.githubusercontent.com/ethanabbott10/Sports_Data/refs/heads/main/data/qballpros.csv&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 
-        <div id="VBvzSQ"></div>
+        <div id="o2qvy5"></div>
         <script type="text/javascript" data-lets-plot-script="library">
             if(!window.letsPlotCallQueue) {
                 window.letsPlotCallQueue = [];
@@ -4395,16 +4395,16 @@ var requirejs,require,define;(function(global,setTimeout){var req,s,head,baseEle
                     var div = document.createElement("div");
                     div.style.color = 'darkred';
                     div.textContent = 'Error loading Lets-Plot JS';
-                    document.getElementById("VBvzSQ").appendChild(div);
+                    document.getElementById("o2qvy5").appendChild(div);
                 };
-                var e = document.getElementById("VBvzSQ");
+                var e = document.getElementById("o2qvy5");
                 e.appendChild(script);
             })()
         </script>
         
 </div>
 </div>
-<div id="8d6da041" class="cell" data-execution_count="2">
+<div id="d7c6a047" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1). Preprocessing data</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Drop unecessary rank and player columns from data frames</span></span>
