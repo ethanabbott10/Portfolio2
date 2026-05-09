@@ -152,10 +152,6 @@ for column in numeric_columns:
 # Split into eligible and ineligible data frames
 eligible = df[df['hall_of_fame_eligible'] == 1]
 ineligible = df[df['hall_of_fame_eligible'] == 0]
-
-# Save each as a csv file
-eligible.to_csv("../data/eligible.csv")
-ineligible.to_csv("../data/ineligible.csv")
 ```
 
 I trained an XGBoost classification model using statistics from [Pro Football Reference] (https://www.pro-football-reference.com/) for 80% of the quarterbacks eligible for the Hall of Fame whose stats they have. (Click the dropdown to see which stats were used)
@@ -239,8 +235,8 @@ y = eligible['hall_of_fame']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 20)
 
 # SMOTE to help with inbalanced data
-#sm = SMOTE()
-#X_sm, y_sm = sm.fit_resample(X_train, y_train)
+sm = SMOTE()
+X_sm, y_sm = sm.fit_resample(X_train, y_train)
 ```
 
 ```{python}
