@@ -6,3 +6,5 @@
 /.quarto/
 <<<<<<< HEAD
 **/*.quarto_ipynb
+
+.databricks

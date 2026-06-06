@@ -1,7 +1,7 @@
 ---
-title: "Client Report - [Insert Project Title]"
-subtitle: "Course DS 250"
-author: "[STUDENT NAME]"
+title: "Market Segmentation Feature Engineering"
+subtitle: "Data Cleansing"
+author: "Ethan Abbott"
 format:
   html:
     self-contained: true
@@ -24,5 +24,74 @@ execute:
   warning: false
     
 ---
+```{python}
+# Import necessary libraries
+import pyspark as spark
+import pyspark.sql.functions as sf
+from pyspark.sql.window import Window
+from lets_plot import *
+import plotly.express as px
+import polars as pl
+import requests
+import io
 
-### Paste in a template
+print(response.status_code)
+print(response.content[:200])
+
+url = "https://raw.githubusercontent.com/byuibigdata/app_challenge_wi26_hathaway/main/data/cstore_shopper.parquet"
+response = requests.get(url)
+print(response.status_code)
+print(response.content[:200])
+shoppers = pl.read_parquet(io.BytesIO(response.content))
+
+
+# Load in necessary tables
+shoppers = pl.read_parquet("https://raw.githubusercontent.com/byuibigdata/app_challenge_wi26_hathaway/main/data/cstore_shopper.parquet")
+stores = pl.read_parquet("https://raw.githubusercontent.com/byuibigdata/app_challenge_wi26_hathaway/main/data/cstore_stores.parquet")
+sets = pl.read_parquet("https://raw.githubusercontent.com/byuibigdata/app_challenge_wi26_hathaway/main/data/cstore_transaction_sets.parquet")
+items0 = pl.read_parquet("https://raw.githubusercontent.com/byuibigdata/app_challenge_wi26_hathaway/main/data/transaction_items/part-00000.parquet")
+items1 = pl.read_parquet("https://raw.githubusercontent.com/byuibigdata/app_challenge_wi26_hathaway/main/data/transaction_items/part-00001.parquet")
+items2 = pl.read_parquet("https://raw.githubusercontent.com/byuibigdata/app_challenge_wi26_hathaway/main/data/transaction_items/part-00002.parquet")
+items3 = pl.read_parquet("https://raw.githubusercontent.com/byuibigdata/app_challenge_wi26_hathaway/main/data/transaction_items/part-00003.parquet")
+items4 = pl.read_parquet("https://raw.githubusercontent.com/byuibigdata/app_challenge_wi26_hathaway/main/data/transaction_items/part-00004.parquet")
+items5 = pl.read_parquet("https://raw.githubusercontent.com/byuibigdata/app_challenge_wi26_hathaway/main/data/transaction_items/part-00005.parquet")
+items6 = pl.read_parquet("https://raw.githubusercontent.com/byuibigdata/app_challenge_wi26_hathaway/main/data/transaction_items/part-00006.parquet")
+
+# Create baseline tables
+
+# Merge items tables
+
+items = (
+    items0
+    .union(items1)
+    .union(items2)
+    .union(items3)
+    .union(items4)
+    .union(items5)
+    .union(items6)
+)
+
+# Join shoppers, transactions, items, and stores tables
+joined_items = (shoppers
+                .join(transactions, on = "TRANSACTION_SET_ID", how = "left")
+                .join(stores, "STORE_ID", how = "left")
+                .withColumn("MONTH", sf.month("DATE_TIME"))
+                .withColumn("YEAR", sf.year("DATE_TIME"))
+                .join(items, "GTIN", how = "left"))
+
+# Join shoppers, sets, and stores table. Create columns for year, month, and hour of each transaction set
+joined_sets = (shoppers
+               .join(sets, on = "TRANSACTION_SET_ID", how = "left")
+               .join(stores, on = "STORE_ID", how = "left")
+               .withColumn("MONTH", sf.month("DATE_TIME"))
+               .withColumn("YEAR", sf.year("DATE_TIME"))
+               .withColumn("TIME", sf.hour("DATE_TIME")))
+```
+
+I took convenience store sales data and created a couple of features that would be used by a clustering model to segment a convenience store's customer base. Data came from Dewey Data. I used PySpark to perform all the engineering. 
+
+The first feature is the number of cycles it has been since the customer last shop. A cycle is the average number of days between visits. 
+
+```{python}
+
+
