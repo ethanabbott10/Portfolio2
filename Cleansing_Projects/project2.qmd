@@ -32,21 +32,10 @@ from pyspark.sql.window import Window
 from lets_plot import *
 import plotly.express as px
 import polars as pl
-import requests
-import io
-
-print(response.status_code)
-print(response.content[:200])
-
-url = "https://raw.githubusercontent.com/byuibigdata/app_challenge_wi26_hathaway/main/data/cstore_shopper.parquet"
-response = requests.get(url)
-print(response.status_code)
-print(response.content[:200])
-shoppers = pl.read_parquet(io.BytesIO(response.content))
 
 
 # Load in necessary tables
-shoppers = pl.read_parquet("https://raw.githubusercontent.com/byuibigdata/app_challenge_wi26_hathaway/main/data/cstore_shopper.parquet")
+shoppers0 = pl.read_parquet("../../Data/shoppers_0.parquet")
 stores = pl.read_parquet("https://raw.githubusercontent.com/byuibigdata/app_challenge_wi26_hathaway/main/data/cstore_stores.parquet")
 sets = pl.read_parquet("https://raw.githubusercontent.com/byuibigdata/app_challenge_wi26_hathaway/main/data/cstore_transaction_sets.parquet")
 items0 = pl.read_parquet("https://raw.githubusercontent.com/byuibigdata/app_challenge_wi26_hathaway/main/data/transaction_items/part-00000.parquet")
