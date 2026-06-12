@@ -35,21 +35,23 @@ import polars as pl
 
 
 # Load in necessary tables
-shoppers0 = pl.read_parquet("../../Data/shoppers_0.parquet")
-stores = pl.read_parquet("https://raw.githubusercontent.com/byuibigdata/app_challenge_wi26_hathaway/main/data/cstore_stores.parquet")
-sets = pl.read_parquet("https://raw.githubusercontent.com/byuibigdata/app_challenge_wi26_hathaway/main/data/cstore_transaction_sets.parquet")
-items0 = pl.read_parquet("https://raw.githubusercontent.com/byuibigdata/app_challenge_wi26_hathaway/main/data/transaction_items/part-00000.parquet")
-items1 = pl.read_parquet("https://raw.githubusercontent.com/byuibigdata/app_challenge_wi26_hathaway/main/data/transaction_items/part-00001.parquet")
-items2 = pl.read_parquet("https://raw.githubusercontent.com/byuibigdata/app_challenge_wi26_hathaway/main/data/transaction_items/part-00002.parquet")
-items3 = pl.read_parquet("https://raw.githubusercontent.com/byuibigdata/app_challenge_wi26_hathaway/main/data/transaction_items/part-00003.parquet")
-items4 = pl.read_parquet("https://raw.githubusercontent.com/byuibigdata/app_challenge_wi26_hathaway/main/data/transaction_items/part-00004.parquet")
-items5 = pl.read_parquet("https://raw.githubusercontent.com/byuibigdata/app_challenge_wi26_hathaway/main/data/transaction_items/part-00005.parquet")
-items6 = pl.read_parquet("https://raw.githubusercontent.com/byuibigdata/app_challenge_wi26_hathaway/main/data/transaction_items/part-00006.parquet")
+shoppers0 = pl.read_parquet("../Data/shoppers_0.parquet")
+shoppers1 = pl.read_parquet("../../Data/shoppers_1.parquet")
+shoppers2 = pl.read_parquet("../../Data/shoppers_0.parquet")
+stores = pl.read_parquet("../../Data/cstore_stores.parquet")
+sets0 = pl.read_parquet("../../Data/sets_0.parquet")
+sets1 = pl.read_parquet("../../Data/sets_1.parquet")
+items0 = pl.read_parquet("../../Data/part-00000.parquet")
+items1 = pl.read_parquet("../../Data/part-00001.parquet")
+items2 = pl.read_parquet("../../Data/part-00002.parquet")
+items3 = pl.read_parquet("../../Data/part-00003.parquet")
+items4 = pl.read_parquet("../../Data/part-00004.parquet")
+items5 = pl.read_parquet("../../Data/part-00005.parquet")
+items6 = pl.read_parquet("../../Data/part-00006.parquet")
 
 # Create baseline tables
 
 # Merge items tables
-
 items = (
     items0
     .union(items1)
@@ -58,6 +60,19 @@ items = (
     .union(items4)
     .union(items5)
     .union(items6)
+)
+
+# Merge sets tables
+sets = (
+  sets0
+  .union(sets1)
+)
+
+# Merge shoppers tables
+shoppers = (
+  shoppers0
+  .union(shoppers1)
+  .union(shoppers2)
 )
 
 # Join shoppers, transactions, items, and stores tables
