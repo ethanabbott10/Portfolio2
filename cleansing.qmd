@@ -5,3 +5,6 @@ title: "Data Cleansing"
 # What's here?
 ## NFL Quarterback Hall of Fame Predictor
 The data used was taken from Pro Football Reference's Stathead service. In order to get all of the player information I wanted, I had to perform multiple queries to pull specific information regarding awards and Super Bowl information. The tables from these queries were then joined together. I handled null values and created standardized "per 16 games" columns to reduce bias towards long careers.
+
+## Convenience Store Clustering Feature Engineering
+I created a couple of features to be used in a clustering alogrithm for market segmentation. Data came from Dewey Data. I loaded in the parquet files and used PySpark to perform all the engineering. The features are a way to see how long it has been since a customer has come based on their habits as well as how predictable their basket is. All of this with the idea to identify customers that have fallen away from frequency or could easily be interested in sales on certain products. 
