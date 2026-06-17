@@ -4040,7 +4040,7 @@ vertical-align: -.125em;
 </style>
 </head>
 
-<body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+<body class="nav-sidebar docked nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
     const toggleBodyColorMode = (bsSheetEl) => {
       const mode = bsSheetEl.getAttribute("data-mode");
       const bodyEl = window.document.querySelector("body");
@@ -4228,7 +4228,7 @@ vertical-align: -.125em;
 <span class="menu-text">My Resume</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../cleansing.html"> 
+    <a class="nav-link active" href="../cleansing.html" aria-current="page"> 
 <span class="menu-text">Data Cleansing</span></a>
   </li>  
   <li class="nav-item">
@@ -4258,18 +4258,28 @@ vertical-align: -.125em;
 </div>
       </div> <!-- /container-fluid -->
     </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../Cleansing_Projects/cstore.html">Convenience Store Clustering</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
 </header>
 <!-- content -->
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-page">
+    <div class="quarto-title column-page-right">
       <h1 class="title">Market Segmentation Feature Engineering</h1>
             <p class="subtitle lead">Data Cleansing</p>
                       </div>
   </div>
     
   
-  <div class="quarto-title-meta column-page">
+  <div class="quarto-title-meta column-page-right">
 
       <div>
       <div class="quarto-title-meta-heading">Author</div>
@@ -4285,11 +4295,39 @@ vertical-align: -.125em;
   
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../cleansing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Cleansing</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Cleansing_Projects/nfl.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">NFL QB HoF Predictor</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Cleansing_Projects/cstore.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Convenience Store Clustering</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
     </div>
 <!-- main -->
-<main class="content quarto-banner-title-block column-page" id="quarto-document-content">
+<main class="content quarto-banner-title-block column-page-right" id="quarto-document-content">
 
 
 
@@ -4297,7 +4335,7 @@ vertical-align: -.125em;
 
 
 <p>I took convenience store sales data and created a couple of features that would be used by a clustering model to segment a convenience store’s customer base. Ideally this segmentation would be used to identify customers who were perhaps frequent shoppers in the past who have fallen away or high potential customers who could easily made into frequent customers. Data came from Dewey Data. I used PySpark to perform all the engineering.</p>
-<div id="c4d6b0a6" class="cell" data-execution_count="1">
+<div id="10360c5a" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Import necessary libraries</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pyspark <span class="im">as</span> spark</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pyspark.sql.functions <span class="im">as</span> sf</span>
@@ -4371,7 +4409,7 @@ vertical-align: -.125em;
 <span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a>               .withColumn(<span class="st">&quot;TIME&quot;</span>, sf.hour(<span class="st">&quot;DATE_TIME&quot;</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>The first feature is the number of cycles it has been since the customer last shop. A cycle is the average number of days between visits. Now customers who have gone longer than normal without shopping at the store can easily be indentified and grouped bny the clustering alogrithm.</p>
-<div id="3231852f" class="cell" data-execution_count="2">
+<div id="02d50bfb" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the number of cycles that have passed since the last time each shopper generated a set using shoppers.SHOPPER_ID, shoppers.TRANSACTION_SET_ID, and sets.DATE_TIME</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Create window for calculations</span></span>
@@ -4395,7 +4433,7 @@ vertical-align: -.125em;
 </div>
 </div>
 <p>The second feature I created was a sort of basket diversity score. The company might offer discounts on certain items to customers who have a consistent shopping pattern. The score represents the average of the percentage of baskets that every item a customer has purchased appears in. If a customer only buys gas, then gas is in 100% of their baskets, therefore they have a score of 100. If a customer buys cigarettes every time and peanuts half the time, their score is 75% (100% and 50%).</p>
-<div id="89214e13" class="cell" data-execution_count="3">
+<div id="abf17599" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate The average percent of Total transaction sets every item a shopper has bought appears in for each shopper at every store all time using shoppers.SHOPPER_ID, shoppers.TRANSACTION_SET_ID, and items.GTIN</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter joined_items to distinct shopper_id, transaction_set_id, and gtin combinations (we had some problems with duplicate rows instead of quantity being more than 1)</span></span>
