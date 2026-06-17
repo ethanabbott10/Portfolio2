@@ -51,9 +51,9 @@ website:
         - text: "NFL QB HoF Predictor"
           file: Cleansing_Projects/nfl.qmd
         - text: "---"
-        #- text: "Project 2"
-         # file: Cleansing_Projects/project2.qmd
-        #- text: "---"
+        - text: "Convenience Store Clustering"
+         file: Cleansing_Projects/cstore.qmd
+        - text: "---"
         #- text: "Project 3"
           #file: Cleansing_Projects/project3.qmd
         #- text: "---"
