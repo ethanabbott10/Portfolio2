@@ -29,55 +29,61 @@ execute:
 import pyspark as spark
 import pyspark.sql.functions as sf
 from pyspark.sql.window import Window
+from pyspark.sql import SparkSession
 from lets_plot import *
 import plotly.express as px
 import polars as pl
 
+spark = SparkSession.builder.getOrCreate()
+
 
 # Load in necessary tables
-shoppers0 = pl.read_parquet("../Data/shoppers_0.parquet")
-shoppers1 = pl.read_parquet("../../Data/shoppers_1.parquet")
-shoppers2 = pl.read_parquet("../../Data/shoppers_0.parquet")
-stores = pl.read_parquet("../../Data/cstore_stores.parquet")
-sets0 = pl.read_parquet("../../Data/sets_0.parquet")
-sets1 = pl.read_parquet("../../Data/sets_1.parquet")
-items0 = pl.read_parquet("../../Data/part-00000.parquet")
-items1 = pl.read_parquet("../../Data/part-00001.parquet")
-items2 = pl.read_parquet("../../Data/part-00002.parquet")
-items3 = pl.read_parquet("../../Data/part-00003.parquet")
-items4 = pl.read_parquet("../../Data/part-00004.parquet")
-items5 = pl.read_parquet("../../Data/part-00005.parquet")
-items6 = pl.read_parquet("../../Data/part-00006.parquet")
+shoppers0 = spark.read.parquet("../Data/shoppers_0.parquet")
+shoppers1 = spark.read.parquet("../Data/shoppers_1.parquet")
+shoppers2 = spark.read.parquet("../Data/shoppers_2.parquet")
+stores = spark.read.parquet("../Data/cstore_stores.parquet")
+sets0 = spark.read.parquet("../Data/sets_0.parquet")
+sets1 = spark.read.parquet("../Data/sets_1.parquet")
+items0 = spark.read.parquet("../Data/part-00000.parquet")
+items1 = spark.read.parquet("../Data/part-00001.parquet")
+items2 = spark.read.parquet("../Data/part-00002.parquet")
+items3 = spark.read.parquet("../Data/part-00003.parquet")
+items4 = spark.read.parquet("../Data/part-00004.parquet")
+items5 = spark.read.parquet("../Data/part-00005.parquet")
+items6 = spark.read.parquet("../Data/part-00006.parquet")
 
 # Create baseline tables
 
 # Merge items tables
 items = (
     items0
-    .union(items1)
-    .union(items2)
-    .union(items3)
-    .union(items4)
-    .union(items5)
-    .union(items6)
+    .unionByName(items1)
+    .unionByName(items2)
+    .unionByName(items3)
+    .unionByName(items4)
+    .unionByName(items5)
+    .unionByName(items6)
 )
 
 # Merge sets tables
-sets = (
-  sets0
-  .union(sets1)
-)
+sets = sets0.unionByName(sets1)
 
 # Merge shoppers tables
 shoppers = (
-  shoppers0
-  .union(shoppers1)
-  .union(shoppers2)
+    shoppers0
+    .unionByName(shoppers1)
+    .unionByName(shoppers2)
+)
+
+# Change data type of Store ID in stores table
+stores = stores.withColumn(
+    "STORE_ID",
+    sf.col("STORE_ID").cast("string")
 )
 
 # Join shoppers, transactions, items, and stores tables
 joined_items = (shoppers
-                .join(transactions, on = "TRANSACTION_SET_ID", how = "left")
+                .join(sets, on = "TRANSACTION_SET_ID", how = "left")
                 .join(stores, "STORE_ID", how = "left")
                 .withColumn("MONTH", sf.month("DATE_TIME"))
                 .withColumn("YEAR", sf.year("DATE_TIME"))
