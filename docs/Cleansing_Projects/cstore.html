@@ -4335,7 +4335,7 @@ vertical-align: -.125em;
 
 
 <p>I took convenience store sales data and created a couple of features that would be used by a clustering model to segment a convenience store’s customer base. Ideally this segmentation would be used to identify customers who were perhaps frequent shoppers in the past who have fallen away or high potential customers who could easily made into frequent customers. Data came from Dewey Data. I used PySpark to perform all the engineering.</p>
-<div id="10360c5a" class="cell" data-execution_count="1">
+<div id="59ffe9fe" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Import necessary libraries</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pyspark <span class="im">as</span> spark</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pyspark.sql.functions <span class="im">as</span> sf</span>
@@ -4409,7 +4409,7 @@ vertical-align: -.125em;
 <span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a>               .withColumn(<span class="st">&quot;TIME&quot;</span>, sf.hour(<span class="st">&quot;DATE_TIME&quot;</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>The first feature is the number of cycles it has been since the customer last shop. A cycle is the average number of days between visits. Now customers who have gone longer than normal without shopping at the store can easily be indentified and grouped bny the clustering alogrithm.</p>
-<div id="02d50bfb" class="cell" data-execution_count="2">
+<div id="b23da6b0" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the number of cycles that have passed since the last time each shopper generated a set using shoppers.SHOPPER_ID, shoppers.TRANSACTION_SET_ID, and sets.DATE_TIME</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Create window for calculations</span></span>
@@ -4433,7 +4433,7 @@ vertical-align: -.125em;
 </div>
 </div>
 <p>The second feature I created was a sort of basket diversity score. The company might offer discounts on certain items to customers who have a consistent shopping pattern. The score represents the average of the percentage of baskets that every item a customer has purchased appears in. If a customer only buys gas, then gas is in 100% of their baskets, therefore they have a score of 100. If a customer buys cigarettes every time and peanuts half the time, their score is 75% (100% and 50%).</p>
-<div id="abf17599" class="cell" data-execution_count="3">
+<div id="c25d9f46" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate The average percent of Total transaction sets every item a shopper has bought appears in for each shopper at every store all time using shoppers.SHOPPER_ID, shoppers.TRANSACTION_SET_ID, and items.GTIN</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter joined_items to distinct shopper_id, transaction_set_id, and gtin combinations (we had some problems with duplicate rows instead of quantity being more than 1)</span></span>
