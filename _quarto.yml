@@ -52,7 +52,7 @@ website:
           file: Cleansing_Projects/nfl.qmd
         - text: "---"
         - text: "Convenience Store Clustering"
-         file: Cleansing_Projects/cstore.qmd
+          file: Cleansing_Projects/cstore.qmd
         - text: "---"
         #- text: "Project 3"
           #file: Cleansing_Projects/project3.qmd
