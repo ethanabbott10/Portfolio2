@@ -1,70 +1,23 @@
 [
   {
-    "objectID": "story_telling.html",
-    "href": "story_telling.html",
-    "title": "Story Telling",
+    "objectID": "cleansing.html",
+    "href": "cleansing.html",
+    "title": "Data Cleansing",
     "section": "",
-    "text": "What’s Here?\n\n\n\n\n Back to top",
+    "text": "The data used was taken from Pro Football Reference’s Stathead service. In order to get all of the player information I wanted, I had to perform multiple queries to pull specific information regarding awards and Super Bowl information. The tables from these queries were then joined together. I handled null values and created standardized “per 16 games” columns to reduce bias towards long careers.",
     "crumbs": [
-      "Story Telling"
+      "Data Cleansing"
     ]
   },
   {
-    "objectID": "Cleansing_Projects/nfl.html",
-    "href": "Cleansing_Projects/nfl.html",
-    "title": "NFL Hall of Fame Predictor",
+    "objectID": "cleansing.html#nfl-quarterback-hall-of-fame-predictor",
+    "href": "cleansing.html#nfl-quarterback-hall-of-fame-predictor",
+    "title": "Data Cleansing",
     "section": "",
-    "text": "For this assignment I got my data from Stathead. Thinking primarily about the quarterbacks drafted in 2004, I wanted to see what a predictive model would say about their chanches of being Hall of Famers given their distinct resumes.\nBelow you will find the process I took to merge multiple data frames, handle null values, and create standardized columns to reduce bias towards players with long career.\n\n# Import necessary libraries and data\nimport pandas as pd\nimport numpy as np\nfrom lets_plot import *\nLetsPlot.setup_html()\nimport sklearn\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.tree import DecisionTreeClassifier \nfrom sklearn.ensemble import RandomForestClassifier\nfrom sklearn.metrics import classification_report\nfrom sklearn.preprocessing import MinMaxScaler\nfrom xgboost import XGBClassifier\nfrom imblearn.over_sampling import SMOTE\n\ngeneral = pd.read_csv(\"https://raw.githubusercontent.com/ethanabbott10/Sports_Data/refs/heads/main/data/qbgeneral.csv\")\n\nsuper_bowls = pd.read_csv(\"https://raw.githubusercontent.com/ethanabbott10/Sports_Data/refs/heads/main/data/qbsuperbowls.csv\")\n\nhof = pd.read_csv(\"https://raw.githubusercontent.com/ethanabbott10/Sports_Data/refs/heads/main/data/qbhof.csv\")\n\npro_bowls = pd.read_csv(\"https://raw.githubusercontent.com/ethanabbott10/Sports_Data/refs/heads/main/data/qbprobowls.csv\")\n\nall_pros = pd.read_csv(\"https://raw.githubusercontent.com/ethanabbott10/Sports_Data/refs/heads/main/data/qballpros.csv\")\n\n\n        \n        \n        \n\n\n\n# 1). Preprocessing data\n\n# Drop unecessary rank and player columns from data frames\nunwanted_columns = ['Rk', 'Player']\nsuper_bowls = super_bowls.drop(columns = unwanted_columns)\nhof = hof.drop(columns = unwanted_columns)\npro_bowls = pro_bowls.drop(columns = unwanted_columns)\nall_pros = all_pros.drop(columns = unwanted_columns)\n\n# Get Super Bowl count\nsuper_bowl_count = super_bowls['player_id'].value_counts().reset_index()\nsuper_bowl_count.columns = ['player_id', 'super_bowls']\n\n# Fill hof column with positive\nhof['hof'] = 1\n\n# Merge data frames into one\ndata_frames = [all_pros, super_bowl_count, hof]\ndf = pd.merge(\n    left = general,\n    right = pro_bowls,\n    how = \"left\",\n    on = \"player_id\")\n\nfor data_frame in data_frames:\n    df = pd.merge(\n    left = df,\n    right = data_frame,\n    how = \"left\",\n    on = \"player_id\")\n\n#Fill N/As (all numeric nulls can be 0)\nint_columns = ['hof', 'super_bowls', 'Sk', 'Yds.1', 'W', 'L', 'T', '1D']\nfloat_columns = ['Cmp%', 'TD%', 'Int%', 'Rate', 'Sk%', 'Y/A', 'AY/A', 'ANY/A', 'Y/C', 'Succ%', 'Y/A.1', 'Succ%.1']\n\nfor column in int_columns:\n    df[column] = df[column].fillna(0).astype(int)\n\nfor column in float_columns:\n    df[column] = df[column].fillna(0)\n\n# Create Hall of Fame Eligible Column\ndf['eligible'] = np.where(df['To'] &gt;= 2020, 0, 1)\n\n# Create 16 games column\ndf['16_games'] = round(df['G'] / 16, 2)\n\n# Create W% column\ndf['W%'] = round(df['W'] / (df['W'] + df['L'] + df['T']), 2).fillna(0)\n\n\n# Create per season columns (I left the other columns but I wanted to ensure that quality players with shorter careers still had a chance without punishing longevity)\n\ndf['passing_yards_per_16_games'] = round(df['Yds'] / df['16_games'], 2)\ndf['passing_attempts_per_16_games'] = round(df['Att'] / df['16_games'], 2)\ndf['passing_tds_per_16_games'] = round(df['TD'] / df['16_games'], 2)\ndf['int_per_16_games'] = round(df['Int'] / df['16_games'], 2)\ndf['pick_6_per_16_games'] = round(df['Yds'] / df['16_games'], 2)\ndf['sacks_per_16_games'] = round(df['Sk'] / df['16_games'], 2)\ndf['sacks_yards_per_16_games'] = round(df['Yds.1'] / df['16_games'], 2)\ndf['wins_per_16_games'] = round(df['W'] / df['16_games'], 2)\ndf['losses_per_16_games'] = round(df['L'] / df['16_games'], 2)\ndf['ties_per_16_games'] = round(df['T'] / df['16_games'], 2)\ndf['fourth_quarter_comebacks_per_16_games'] = round(df['4QC'] / df['16_games'], 2)\ndf['game_winning_drives_per_16_games'] = round(df['GWD'] / df['16_games'], 2)\ndf['rushing_yards_per_16_games'] = round(df['Yds.2'] / df['16_games'], 2)\ndf['rushing_tds_per_16_games'] = round(df['TD.1'] / df['16_games'], 2)\ndf['rushing_first_downs_per_16_games'] = round(df['Sk'] / df['16_games'], 2)\ndf['pro_bowls_per_16_games'] = round(df['Pro_Bowls'] / df['16_games'], 2)\ndf['first_team_all_pros_per_16_games'] = round(df['AP1'] / df['16_games'], 2)\ndf['super_bowls_per_16_games'] = round(df['super_bowls'] / df['16_games'], 2)\n\n# Drop more unwanted columns\ndf = df.drop(columns = ['Rk', 'Age', 'player_id'])\n\n# Rename columns\ndf.columns = ['player', 'career_start', 'career_end', 'games', 'games_started', 'completions', 'passing_attempts', 'incompletions', 'completion_%', 'passing_yards', 'passing_tds', 'interceptions', 'pick_6s', 'touchdown_%', 'int_%', 'passer_rating', 'sacks_taken', 'sack_yards', 'sack_%', 'passing_yards_per_attempt', 'adjusted_passing_yards_per_attempt', 'adjusted_net_passing_yards_per_attempt', 'passing_yards_per_completion', 'passing_yards_per_game', 'pass_success_rate', 'wins', 'losses', 'ties', 'fourth_quarter_comebacks', 'game_winning_drives', 'rushing_attempts', 'rushing_yards', 'rushing_yards_per_attempt', 'rushing_touchdowns', 'rushing_yards_per_game', 'rushing_first_downs', 'rush_success_rate', 'pro_bowls', 'first_team_all_pros', 'super_bowls', 'hall_of_fame', 'hall_of_fame_eligible', '16_games', 'winning_%', 'passing_yards_per_16_games', 'passing_attempts_per_16_games', 'passing_tds_per_16_games', 'int_per_16_games', 'pick_6_per_16_games', 'sacks_per_16_games', 'sacks_yards_per_16_games', 'wins_per_16_games', 'losses_per_16_games', 'ties_per_16_games', 'fourth_quarter_comebacks_per_16_games', 'game_winning_drives_per_16_games', 'rushing_yards_per_16_games', 'rushing_tds_per_16_games', 'rushing_first_downs_per_16_games', 'pro_bowls_per_16_games', 'first_team_all_pros_per_16_games', 'super_bowls_per_16_games']\n\n# Scale values using MinMaxScaler (Bound all numbers between 0 and 1 to weaken the bias towards columns such as passing yards which contain large values, model will be able to better understand the difference between players at each position in the context of all columns)\n\nscaler = MinMaxScaler()\nnumeric_columns = ['games', 'games_started', 'completions', 'passing_attempts', 'incompletions', 'completion_%', 'passing_yards', 'passing_tds', 'interceptions', 'pick_6s', 'touchdown_%', 'int_%', 'passer_rating', 'sacks_taken', 'sack_yards', 'sack_%', 'passing_yards_per_attempt', 'adjusted_passing_yards_per_attempt', 'adjusted_net_passing_yards_per_attempt', 'passing_yards_per_completion', 'passing_yards_per_game', 'pass_success_rate', 'wins', 'losses', 'ties', 'fourth_quarter_comebacks', 'game_winning_drives', 'rushing_attempts', 'rushing_yards', 'rushing_yards_per_attempt', 'rushing_touchdowns', 'rushing_yards_per_game', 'rushing_first_downs', 'rush_success_rate', 'pro_bowls', 'first_team_all_pros', 'super_bowls', 'hall_of_fame', 'hall_of_fame_eligible', '16_games', 'winning_%', 'passing_yards_per_16_games', 'passing_attempts_per_16_games', 'passing_tds_per_16_games', 'int_per_16_games', 'pick_6_per_16_games', 'sacks_per_16_games', 'sacks_yards_per_16_games', 'wins_per_16_games', 'losses_per_16_games', 'ties_per_16_games', 'fourth_quarter_comebacks_per_16_games', 'game_winning_drives_per_16_games', 'rushing_yards_per_16_games', 'rushing_tds_per_16_games', 'rushing_first_downs_per_16_games', 'pro_bowls_per_16_games', 'first_team_all_pros_per_16_games', 'super_bowls_per_16_games']\n\nfor column in numeric_columns:\n    df[column] = scaler.fit_transform(df[[column]])\n\n# Split into eligible and ineligible data frames (I'll split the eligible players to train and then use the model to predict on uneligible players)\neligible = df[df['hall_of_fame_eligible'] == 1]\nineligible = df[df['hall_of_fame_eligible'] == 0]\n\n\n\n\n Back to top",
+    "text": "The data used was taken from Pro Football Reference’s Stathead service. In order to get all of the player information I wanted, I had to perform multiple queries to pull specific information regarding awards and Super Bowl information. The tables from these queries were then joined together. I handled null values and created standardized “per 16 games” columns to reduce bias towards long careers.",
     "crumbs": [
-      "Data Cleansing",
-      "NFL QB HoF Predictor"
+      "Data Cleansing"
     ]
-  },
-  {
-    "objectID": "Cleansing_Projects/project5.html",
-    "href": "Cleansing_Projects/project5.html",
-    "title": "Client Report - [Insert Project Title]",
-    "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "Story_Telling/project2.html",
-    "href": "Story_Telling/project2.html",
-    "title": "Client Report - [Insert Project Title]",
-    "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "Story_Telling/project1.html",
-    "href": "Story_Telling/project1.html",
-    "title": "What Makes a Hall of Famer?",
-    "section": "",
-    "text": "Introduction\nThe general consensus around the NFL today is that the 1983 draft had the greatest quarterback class of all time. John Elway, Dan Marino, and Jim Kelly combined for 23 Pro Bowls, 11 All Pros, 2 MVPs, 10 Super Bowl Appearances, and 2 Super Bowl Championships. Each made the Hall of Fame.\nThe consensus runner-up is the 2004 draft class, featuring Eli Manning, Ben Roethlisberger, and Philip Rivers. Given their recent retirements (or coming out of retirement), only Eli Manning is eligible for induction. He has been on the past two ballots but hasn’t been inducted. Roethlisberger will be eligible in 2027 while Rivers reset his 5 year waiting period by coming out of retirement last season.\n\n\n\nStathead QB Comparison\n\n\nEach player has an interesting case. Phillip Rivers has had no playoff success while Eli Manning won 2 Super Bowl MVPs. Ben Roethlisberger’s resume is a mesh of the two. He doesn’t quite have Rivers’ raw statistics and accolades nor Manning’s playoff impact.\nWill the 2004 draft class also have three Hall of Fame inductees? What achievement matters the most? I created a machine learning mdoel to answer those questions.\n\n\nThe Model\n\n\nShow the code\n# Import necessary libraries and data\nimport pandas as pd\nimport numpy as np\nfrom lets_plot import *\nLetsPlot.setup_html()\nimport sklearn\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.tree import DecisionTreeClassifier \nfrom sklearn.ensemble import RandomForestClassifier\nfrom sklearn.metrics import classification_report\nfrom sklearn.preprocessing import MinMaxScaler\nfrom xgboost import XGBClassifier\nfrom imblearn.over_sampling import SMOTE\n\ngeneral = pd.read_csv(\"https://raw.githubusercontent.com/ethanabbott10/Sports_Data/refs/heads/main/data/qbgeneral.csv\")\n\nsuper_bowls = pd.read_csv(\"https://raw.githubusercontent.com/ethanabbott10/Sports_Data/refs/heads/main/data/qbsuperbowls.csv\")\n\nhof = pd.read_csv(\"https://raw.githubusercontent.com/ethanabbott10/Sports_Data/refs/heads/main/data/qbhof.csv\")\n\npro_bowls = pd.read_csv(\"https://raw.githubusercontent.com/ethanabbott10/Sports_Data/refs/heads/main/data/qbprobowls.csv\")\n\nall_pros = pd.read_csv(\"https://raw.githubusercontent.com/ethanabbott10/Sports_Data/refs/heads/main/data/qballpros.csv\")\n\n\n\n        \n        \n        \n\n\n\n\nShow the code\n# 1). Preprocessing data\n\n# Drop rank and player columns from data frames\nunwanted_columns = ['Rk', 'Player']\nsuper_bowls = super_bowls.drop(columns = unwanted_columns)\nhof = hof.drop(columns = unwanted_columns)\npro_bowls = pro_bowls.drop(columns = unwanted_columns)\nall_pros = all_pros.drop(columns = unwanted_columns)\n\n# Get Super Bowl count\nsuper_bowl_count = super_bowls['player_id'].value_counts().reset_index()\nsuper_bowl_count.columns = ['player_id', 'super_bowls']\n\n# Fill hof column with positive\nhof['hof'] = 1\n\n# Merge data frames into one\ndata_frames = [all_pros, super_bowl_count, hof]\ndf = pd.merge(\n    left = general,\n    right = pro_bowls,\n    how = \"left\",\n    on = \"player_id\")\n\nfor data_frame in data_frames:\n    df = pd.merge(\n    left = df,\n    right = data_frame,\n    how = \"left\",\n    on = \"player_id\")\n\n#Fill N/As\nint_columns = ['hof', 'super_bowls', 'Sk', 'Yds.1', 'W', 'L', 'T', '1D']\nfloat_columns = ['Cmp%', 'TD%', 'Int%', 'Rate', 'Sk%', 'Y/A', 'AY/A', 'ANY/A', 'Y/C', 'Succ%', 'Y/A.1', 'Succ%.1']\n\nfor column in int_columns:\n    df[column] = df[column].fillna(0).astype(int)\n\nfor column in float_columns:\n    df[column] = df[column].fillna(0)\n\n# Create Hall of Fame Eligible Column\ndf['eligible'] = np.where(df['To'] &gt;= 2020, 0, 1)\n\n# Create 16 games column\ndf['16_games'] = round(df['G'] / 16, 2)\n\n# Create W% column\ndf['W%'] = round(df['W'] / (df['W'] + df['L'] + df['T']), 2).fillna(0)\n\n\n# Create per season columns \ndf['passing_yards_per_16_games'] = round(df['Yds'] / df['16_games'], 2)\ndf['passing_attempts_per_16_games'] = round(df['Att'] / df['16_games'], 2)\ndf['passing_tds_per_16_games'] = round(df['TD'] / df['16_games'], 2)\ndf['int_per_16_games'] = round(df['Int'] / df['16_games'], 2)\ndf['pick_6_per_16_games'] = round(df['Yds'] / df['16_games'], 2)\ndf['sacks_per_16_games'] = round(df['Sk'] / df['16_games'], 2)\ndf['sacks_yards_per_16_games'] = round(df['Yds.1'] / df['16_games'], 2)\ndf['wins_per_16_games'] = round(df['W'] / df['16_games'], 2)\ndf['losses_per_16_games'] = round(df['L'] / df['16_games'], 2)\ndf['ties_per_16_games'] = round(df['T'] / df['16_games'], 2)\ndf['fourth_quarter_comebacks_per_16_games'] = round(df['4QC'] / df['16_games'], 2)\ndf['game_winning_drives_per_16_games'] = round(df['GWD'] / df['16_games'], 2)\ndf['rushing_yards_per_16_games'] = round(df['Yds.2'] / df['16_games'], 2)\ndf['rushing_tds_per_16_games'] = round(df['TD.1'] / df['16_games'], 2)\ndf['rushing_first_downs_per_16_games'] = round(df['Sk'] / df['16_games'], 2)\ndf['pro_bowls_per_16_games'] = round(df['Pro_Bowls'] / df['16_games'], 2)\ndf['first_team_all_pros_per_16_games'] = round(df['AP1'] / df['16_games'], 2)\ndf['super_bowls_per_16_games'] = round(df['super_bowls'] / df['16_games'], 2)\n\n# Drop more unwanted columns\ndf = df.drop(columns = ['Rk', 'Age', 'player_id'])\n\n# Rename columns\ndf.columns = ['player', 'career_start', 'career_end', 'games', 'games_started', 'completions', 'passing_attempts', 'incompletions', 'completion_%', 'passing_yards', 'passing_tds', 'interceptions', 'pick_6s', 'touchdown_%', 'int_%', 'passer_rating', 'sacks_taken', 'sack_yards', 'sack_%', 'passing_yards_per_attempt', 'adjusted_passing_yards_per_attempt', 'adjusted_net_passing_yards_per_attempt', 'passing_yards_per_completion', 'passing_yards_per_game', 'pass_success_rate', 'wins', 'losses', 'ties', 'fourth_quarter_comebacks', 'game_winning_drives', 'rushing_attempts', 'rushing_yards', 'rushing_yards_per_attempt', 'rushing_touchdowns', 'rushing_yards_per_game', 'rushing_first_downs', 'rush_success_rate', 'pro_bowls', 'first_team_all_pros', 'super_bowls', 'hall_of_fame', 'hall_of_fame_eligible', '16_games', 'winning_%', 'passing_yards_per_16_games', 'passing_attempts_per_16_games', 'passing_tds_per_16_games', 'int_per_16_games', 'pick_6_per_16_games', 'sacks_per_16_games', 'sacks_yards_per_16_games', 'wins_per_16_games', 'losses_per_16_games', 'ties_per_16_games', 'fourth_quarter_comebacks_per_16_games', 'game_winning_drives_per_16_games', 'rushing_yards_per_16_games', 'rushing_tds_per_16_games', 'rushing_first_downs_per_16_games', 'pro_bowls_per_16_games', 'first_team_all_pros_per_16_games', 'super_bowls_per_16_games']\n\n# Scale values using MinMaxScaler\nscaler = MinMaxScaler()\nnumeric_columns = ['games', 'games_started', 'completions', 'passing_attempts', 'incompletions', 'completion_%', 'passing_yards', 'passing_tds', 'interceptions', 'pick_6s', 'touchdown_%', 'int_%', 'passer_rating', 'sacks_taken', 'sack_yards', 'sack_%', 'passing_yards_per_attempt', 'adjusted_passing_yards_per_attempt', 'adjusted_net_passing_yards_per_attempt', 'passing_yards_per_completion', 'passing_yards_per_game', 'pass_success_rate', 'wins', 'losses', 'ties', 'fourth_quarter_comebacks', 'game_winning_drives', 'rushing_attempts', 'rushing_yards', 'rushing_yards_per_attempt', 'rushing_touchdowns', 'rushing_yards_per_game', 'rushing_first_downs', 'rush_success_rate', 'pro_bowls', 'first_team_all_pros', 'super_bowls', 'hall_of_fame', 'hall_of_fame_eligible', '16_games', 'winning_%', 'passing_yards_per_16_games', 'passing_attempts_per_16_games', 'passing_tds_per_16_games', 'int_per_16_games', 'pick_6_per_16_games', 'sacks_per_16_games', 'sacks_yards_per_16_games', 'wins_per_16_games', 'losses_per_16_games', 'ties_per_16_games', 'fourth_quarter_comebacks_per_16_games', 'game_winning_drives_per_16_games', 'rushing_yards_per_16_games', 'rushing_tds_per_16_games', 'rushing_first_downs_per_16_games', 'pro_bowls_per_16_games', 'first_team_all_pros_per_16_games', 'super_bowls_per_16_games']\n\nfor column in numeric_columns:\n    df[column] = scaler.fit_transform(df[[column]])\n\n# Split into eligible and ineligible data frames\neligible = df[df['hall_of_fame_eligible'] == 1]\nineligible = df[df['hall_of_fame_eligible'] == 0]\n\n\nI trained an XGBoost classification model using statistics from [Pro Football Reference] (https://www.pro-football-reference.com/) for 80% of the quarterbacks eligible for the Hall of Fame whose stats they have. (Click the dropdown to see which stats were used)\n\n\nStats Used\n\n\nGames Played\nGames Started\nCompletions\nPassing Attempts\nIncompletions\nCompletion %\nPassing Yards\nPassing Touchdowns\nInterceptions\nPick 6’s\nTouchdown %\nInterception %\nPasser Rating\nSacks Taken\nSack Yards\nSack %\nPassing Yards per Attempt\nAdjusted Passing Yards per Attempt\nAdjusted Net Passing Yards per Attempt, ‘passing_yards_per_completion’, ‘passing_yards_per_game’, ‘pass_success_rate’, ‘wins’, - Games Played\nGames Started\nCompletions\nPassing Attempts\nIncompletions\nCompletion %\nPassing Yards\nPassing Touchdowns\nInterceptions\nPick 6’s\nTouchdown %\nInterception %\nPasser Rating\nSacks Taken\nSack Yards\nSack %\nPassing Yards per Attempt\nAdjusted Passing Yards per Attempt\nAdjusted Net Passing Yards per Attempt\nPassing Yards per Completion\nPassing Yards per Game\nPass Success Rate\nWins\nLosses\nTies\nFourth Quarter Comebacks\nGame Winning Drives\nRushing Attempts\nRushing Yards\nRushing Yards per Attempt\nRushing Touchdowns\nRushing Yards per Game\nRushing First Downs\nRush Success Rate\nPro Bowls\nFirst Team All-Pros\nSuper Bowls\nHall of Fame\nHall of Fame Eligible\n16 Games\nWinning %\nPer 16 games metrics for each stat that isn’t a percentage or a rating\n\n\nThe other 20% were used to test the model.\n\n\nShow the code\n# 2). Selection, training, and use of a machine learning model\n\n# Create X and y from eligible data set\nX = eligible.drop(columns = ['hall_of_fame', 'player', 'hall_of_fame_eligible'])\ny = eligible['hall_of_fame']\n\n# Split into test and training data\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 20)\n\n# SMOTE to help with inbalanced data\nsm = SMOTE()\nX_sm, y_sm = sm.fit_resample(X_train, y_train)\n\n\n\n\nShow the code\n# XGBoost\nxg = XGBClassifier(scale_pos_weight = 27.37)\nxg.fit(X_train, y_train)\nxg_prediction = xg.predict(X_test)\nxg_report = classification_report(y_test, xg_prediction)\nprint(\"Model Confusion Matrix\")\nprint(xg_report)\n\n# Use XGBoost model to make predictions on ineligible players\n\nZ = ineligible.drop(columns = ['player', 'hall_of_fame_eligible', 'hall_of_fame'])\n\nhof_predictions = xg.predict(Z)\n\nplayers = pd.DataFrame({\n    'player': ineligible['player'].values,\n    'hof': hof_predictions\n})\n\nwrong_predict = xg.predict(X)\n\nwrong = pd.DataFrame({\n    'player' : eligible['player'].values,\n    'real' : eligible['hall_of_fame'].values,\n    'predicted' : wrong_predict\n}).query('real != predicted')\n\nplayers.head(10)\n\n\nModel Confusion Matrix\n              precision    recall  f1-score   support\n\n         0.0       1.00      1.00      1.00        20\n\n    accuracy                           1.00        20\n   macro avg       1.00      1.00      1.00        20\nweighted avg       1.00      1.00      1.00        20\n\n\n\n\n\n\n\n\n\n\nplayer\nhof\n\n\n\n\n0\nTom Brady\n1\n\n\n1\nDrew Brees\n1\n\n\n2\nAaron Rodgers\n1\n\n\n3\nRussell Wilson\n1\n\n\n4\nPhilip Rivers\n1\n\n\n5\nPatrick Mahomes\n1\n\n\n6\nBen Roethlisberger\n1\n\n\n7\nJosh Allen\n0\n\n\n8\nDerek Carr\n0\n\n\n9\nKirk Cousins\n0\n\n\n\n\n\n\n\n\n\n\n\n Back to top",
-    "crumbs": [
-      "Story Telling",
-      "NFL QB HoF Predictor"
-    ]
-  },
-  {
-    "objectID": "Story_Telling/project4.html",
-    "href": "Story_Telling/project4.html",
-    "title": "Client Report - [Insert Project Title]",
-    "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "Full_Stack/project3.html",
-    "href": "Full_Stack/project3.html",
-    "title": "Client Report - [Insert Project Title]",
-    "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "Full_Stack/project5.html",
-    "href": "Full_Stack/project5.html",
-    "title": "Client Report - [Insert Project Title]",
-    "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top"
   },
   {
     "objectID": "index.html",
@@ -88,6 +41,98 @@
     "text": "Skills\n\n\nPython\n\n\n\nPandas\n\n\nNumPy\n\n\nSpark\n\n\nLets-Plot\n\n\nscikit-learn\n\n\nPolars\n\n\n\n\n\nR\n\n\n\ntidyverse\n\n\nggplot\n\n\nregression analysis\n\n\n\n\n\nSQL\n\n\n\n\nMicrosoft\n\n\n\nPower BI\n\n\nDAX\n\n\nExcel\n\n\nPowerPoint\n\n\nWord\n\n\n\n\n\nSoftware\n\n\n\nDatabricks\n\n\nGCP\n\n\nDocker\n\n\nGit"
   },
   {
+    "objectID": "Cleansing_Projects/project3.html",
+    "href": "Cleansing_Projects/project3.html",
+    "title": "Client Report - [Insert Project Title]",
+    "section": "",
+    "text": "Paste in a template\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "Cleansing_Projects/project5.html",
+    "href": "Cleansing_Projects/project5.html",
+    "title": "Client Report - [Insert Project Title]",
+    "section": "",
+    "text": "Paste in a template\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "Cleansing_Projects/cstore.html",
+    "href": "Cleansing_Projects/cstore.html",
+    "title": "Market Segmentation Feature Engineering",
+    "section": "",
+    "text": "I took convenience store sales data and created a couple of features that would be used by a clustering model to segment a convenience store’s customer base. Ideally this segmentation would be used to identify customers who were perhaps frequent shoppers in the past who have fallen away or high potential customers who could easily made into frequent customers. Data came from Dewey Data. I used PySpark to perform all the engineering.\n\n# Import necessary libraries\nimport pyspark as spark\nimport pyspark.sql.functions as sf\nfrom pyspark.sql.window import Window\nfrom pyspark.sql import SparkSession\n\n# Start Spark session\nspark = SparkSession.builder.getOrCreate()\n\n# Load in necessary tables\nshoppers0 = spark.read.parquet(\"../Data/shoppers_0.parquet\")\nshoppers1 = spark.read.parquet(\"../Data/shoppers_1.parquet\")\nshoppers2 = spark.read.parquet(\"../Data/shoppers_2.parquet\")\nstores = spark.read.parquet(\"../Data/cstore_stores.parquet\")\nsets0 = spark.read.parquet(\"../Data/sets_0.parquet\")\nsets1 = spark.read.parquet(\"../Data/sets_1.parquet\")\ntransactions0 = spark.read.parquet(\"../Data/part-00000.parquet\")\ntransactions1 = spark.read.parquet(\"../Data/part-00001.parquet\")\ntransactions2 = spark.read.parquet(\"../Data/part-00002.parquet\")\ntransactions3 = spark.read.parquet(\"../Data/part-00003.parquet\")\ntransactions4 = spark.read.parquet(\"../Data/part-00004.parquet\")\ntransactions5 = spark.read.parquet(\"../Data/part-00005.parquet\")\ntransactions6 = spark.read.parquet(\"../Data/part-00006.parquet\")\nitems = spark.read.parquet(\"../Data/cstore_master_ctin.parquet\")\n\n# Create baseline tables\n\n# Merge items tables\ntransactions = (\n    transactions0\n    .unionByName(transactions1)\n    .unionByName(transactions2)\n    .unionByName(transactions3)\n    .unionByName(transactions4)\n    .unionByName(transactions5)\n    .unionByName(transactions6)\n)\n\n# Merge sets tables\nsets = sets0.unionByName(sets1)\n\n# Merge shoppers tables\nshoppers = (\n    shoppers0\n    .unionByName(shoppers1)\n    .unionByName(shoppers2)\n)\n\n# Change data type of Store ID in stores table\nstores = stores.withColumn(\n    \"STORE_ID\",\n    sf.col(\"STORE_ID\").cast(\"string\")\n)\n\n# Create baseline tables\n\n# Join shoppers, transactions, items, and stores tables\njoined_items = (shoppers\n                .join(transactions, on = \"TRANSACTION_SET_ID\", how = \"left\")\n                .join(stores, \"STORE_ID\", how = \"left\")\n                .withColumn(\"MONTH\", sf.month(\"DATE_TIME\"))\n                .withColumn(\"YEAR\", sf.year(\"DATE_TIME\"))\n                .join(items, \"GTIN\", how = \"left\"))\n\n# Join shoppers, sets, and stores table. Create columns for year, month, and hour of each transaction set\njoined_sets = (shoppers\n               .join(sets, on = \"TRANSACTION_SET_ID\", how = \"left\")\n               .join(stores, on = \"STORE_ID\", how = \"left\")\n               .withColumn(\"MONTH\", sf.month(\"DATE_TIME\"))\n               .withColumn(\"YEAR\", sf.year(\"DATE_TIME\"))\n               .withColumn(\"TIME\", sf.hour(\"DATE_TIME\")))\n\nThe first feature is the number of cycles it has been since the customer last shop. A cycle is the average number of days between visits. Now customers who have gone longer than normal without shopping at the store can easily be indentified and grouped bny the clustering alogrithm.\n\n# Calculate the number of cycles that have passed since the last time each shopper generated a set using shoppers.SHOPPER_ID, shoppers.TRANSACTION_SET_ID, and sets.DATE_TIME\n\n# Create window for calculations\nwindow = Window.partitionBy(\"SHOPPER_ID\").orderBy(sf.asc(\"DATE_TIME\"))\n\n# Calculate the average days between sets for each shopper, the days between now and their last set, and the divide the days since last set by the average time between sets\nfinal = (joined_sets\n    .select(\"SHOPPER_ID\", \"DATE_TIME\")\n    .withColumn(\"PREVIOUS_SET_DATE_TIME\", sf.lag(\"DATE_TIME\").over(window))\n    .withColumn(\"DAYS_BETWEEN_PREVIOUS_PURCHASE\", sf.date_diff(\"DATE_TIME\", \"PREVIOUS_SET_DATE_TIME\"))\n    .withColumn(\"LAST_PURCHASE_DATE\", sf.max(\"DATE_TIME\").over(window))\n    .withColumn(\"DAYS_SINCE_LAST_PURCHASE\", sf.date_diff(sf.now(), \"LAST_PURCHASE_DATE\"))\n    .groupBy(\"SHOPPER_ID\")\n    .agg(sf.avg(\"DAYS_BETWEEN_PREVIOUS_PURCHASE\").alias(\"AVERAGE_DAYS_BETWEEN_PURCHASES\"), sf.avg(\"DAYS_SINCE_LAST_PURCHASE\").alias(\"DAYS_SINCE_LAST_PURCHASE\"))\n    .withColumn(\"ROTATIONS_SINCE_LAST_PURCHASE\", sf.when((sf.col(\"AVERAGE_DAYS_BETWEEN_PURCHASES\").isNotNull()) & (sf.col(\"AVERAGE_DAYS_BETWEEN_PURCHASES\") != 0),  sf.col(\"DAYS_SINCE_LAST_PURCHASE\")/sf.col(\"AVERAGE_DAYS_BETWEEN_PURCHASES\")).otherwise(None))\n    .select(\"SHOPPER_ID\", \"ROTATIONS_SINCE_LAST_PURCHASE\"))\n\ndisplay(final.limit(5))\n\nDataFrame[SHOPPER_ID: string, ROTATIONS_SINCE_LAST_PURCHASE: double]\n\n\nThe second feature I created was a sort of basket diversity score. The company might offer discounts on certain items to customers who have a consistent shopping pattern. The score represents the average of the percentage of baskets that every item a customer has purchased appears in. If a customer only buys gas, then gas is in 100% of their baskets, therefore they have a score of 100. If a customer buys cigarettes every time and peanuts half the time, their score is 75% (100% and 50%).\n\n# Calculate The average percent of Total transaction sets every item a shopper has bought appears in for each shopper at every store all time using shoppers.SHOPPER_ID, shoppers.TRANSACTION_SET_ID, and items.GTIN\n\n# Filter joined_items to distinct shopper_id, transaction_set_id, and gtin combinations (we had some problems with duplicate rows instead of quantity being more than 1)\nunique_joined_items = joined_items.select(\"SHOPPER_ID\", \"TRANSACTION_SET_ID\", \"GTIN\").distinct()\n\n# Calculate the total number of sets by each shopper and filter out those with fewer than 2 sets\ntotal_sets = (joined_sets\n              .groupBy(\"SHOPPER_ID\").agg(sf.count(\"TRANSACTION_SET_ID\").alias(\"TOTAL_SETS\"))\n              .filter(\"TOTAL_SETS &gt; 1\"))\n\n# Calculate the number of baskets in which an item purchased by a shopper appears\nitem_appearances = unique_joined_items.groupBy(\"SHOPPER_ID\", \"GTIN\").agg(sf.countDistinct(\"TRANSACTION_SET_ID\").alias(\"ITEM_APPEARANCES\"))\n\n# Join the total number of sets by each shopper with the number of baskets in which an item purchased by a shopper appears\nappearance_percentage = (item_appearances\n                         .join(total_sets, on = \"SHOPPER_ID\", how = \"left\")\n                         .withColumn(\"APPEARANCE_PERCENTAGE\", sf.col(\"ITEM_APPEARANCES\")/sf.col(\"TOTAL_SETS\") * 100)\n                         .groupBy(\"SHOPPER_ID\").\n                         agg(sf.avg(\"APPEARANCE_PERCENTAGE\").alias(\"AVERAGE_APPEARANCE_PERCENTAGE\")))\n\ndisplay(appearance_percentage.limit(5))\n\nDataFrame[SHOPPER_ID: string, AVERAGE_APPEARANCE_PERCENTAGE: double]\n\n\n\n\n\n Back to top",
+    "crumbs": [
+      "Data Cleansing",
+      "Convenience Store Clustering"
+    ]
+  },
+  {
+    "objectID": "Story_Telling/project1.html",
+    "href": "Story_Telling/project1.html",
+    "title": "What Makes a Hall of Famer?",
+    "section": "",
+    "text": "Show the code\n# Import necessary libraries and data\nimport pandas as pd\nimport numpy as np\nfrom lets_plot import *\nLetsPlot.setup_html()\nimport sklearn\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.tree import DecisionTreeClassifier \nfrom sklearn.ensemble import RandomForestClassifier\nfrom sklearn.metrics import classification_report\nfrom sklearn.preprocessing import MinMaxScaler\nfrom xgboost import XGBClassifier\nfrom imblearn.over_sampling import SMOTE\nimport great_tables as gt\n\ngeneral = pd.read_csv(\"https://raw.githubusercontent.com/ethanabbott10/Sports_Data/refs/heads/main/data/qbgeneral.csv\")\n\nsuper_bowls = pd.read_csv(\"https://raw.githubusercontent.com/ethanabbott10/Sports_Data/refs/heads/main/data/qbsuperbowls.csv\")\n\nhof = pd.read_csv(\"https://raw.githubusercontent.com/ethanabbott10/Sports_Data/refs/heads/main/data/qbhof.csv\")\n\npro_bowls = pd.read_csv(\"https://raw.githubusercontent.com/ethanabbott10/Sports_Data/refs/heads/main/data/qbprobowls.csv\")\n\nall_pros = pd.read_csv(\"https://raw.githubusercontent.com/ethanabbott10/Sports_Data/refs/heads/main/data/qballpros.csv\")\n\n# 1). Preprocessing data\n\n# Drop rank and player columns from data frames\nunwanted_columns = ['Rk', 'Player']\nsuper_bowls = super_bowls.drop(columns = unwanted_columns)\nhof = hof.drop(columns = unwanted_columns)\npro_bowls = pro_bowls.drop(columns = unwanted_columns)\nall_pros = all_pros.drop(columns = unwanted_columns)\n\n# Get Super Bowl count\nsuper_bowl_count = super_bowls['player_id'].value_counts().reset_index()\nsuper_bowl_count.columns = ['player_id', 'super_bowls']\n\n# Fill hof column with positive\nhof['hof'] = 1\n\n# Merge data frames into one\ndata_frames = [all_pros, super_bowl_count, hof]\ndf = pd.merge(\n    left = general,\n    right = pro_bowls,\n    how = \"left\",\n    on = \"player_id\")\n\nfor data_frame in data_frames:\n    df = pd.merge(\n    left = df,\n    right = data_frame,\n    how = \"left\",\n    on = \"player_id\")\n\n#Fill N/As\nint_columns = ['hof', 'super_bowls', 'Sk', 'Yds.1', 'W', 'L', 'T', '1D']\nfloat_columns = ['Cmp%', 'TD%', 'Int%', 'Rate', 'Sk%', 'Y/A', 'AY/A', 'ANY/A', 'Y/C', 'Succ%', 'Y/A.1', 'Succ%.1']\n\nfor column in int_columns:\n    df[column] = df[column].fillna(0).astype(int)\n\nfor column in float_columns:\n    df[column] = df[column].fillna(0)\n\n# Create Hall of Fame Eligible Column\ndf['eligible'] = np.where(df['To'] &gt;= 2020, 0, 1)\n\n# Create 16 games column\ndf['16_games'] = round(df['G'] / 16, 2)\n\n# Create W% column\ndf['W%'] = round(df['W'] / (df['W'] + df['L'] + df['T']), 2).fillna(0)\n\n\n# Create per season columns \ndf['passing_yards_per_16_games'] = round(df['Yds'] / df['16_games'], 2)\ndf['passing_attempts_per_16_games'] = round(df['Att'] / df['16_games'], 2)\ndf['passing_tds_per_16_games'] = round(df['TD'] / df['16_games'], 2)\ndf['int_per_16_games'] = round(df['Int'] / df['16_games'], 2)\ndf['pick_6_per_16_games'] = round(df['Yds'] / df['16_games'], 2)\ndf['sacks_per_16_games'] = round(df['Sk'] / df['16_games'], 2)\ndf['sacks_yards_per_16_games'] = round(df['Yds.1'] / df['16_games'], 2)\ndf['wins_per_16_games'] = round(df['W'] / df['16_games'], 2)\ndf['losses_per_16_games'] = round(df['L'] / df['16_games'], 2)\ndf['ties_per_16_games'] = round(df['T'] / df['16_games'], 2)\ndf['fourth_quarter_comebacks_per_16_games'] = round(df['4QC'] / df['16_games'], 2)\ndf['game_winning_drives_per_16_games'] = round(df['GWD'] / df['16_games'], 2)\ndf['rushing_yards_per_16_games'] = round(df['Yds.2'] / df['16_games'], 2)\ndf['rushing_tds_per_16_games'] = round(df['TD.1'] / df['16_games'], 2)\ndf['rushing_first_downs_per_16_games'] = round(df['Sk'] / df['16_games'], 2)\ndf['pro_bowls_per_16_games'] = round(df['Pro_Bowls'] / df['16_games'], 2)\ndf['first_team_all_pros_per_16_games'] = round(df['AP1'] / df['16_games'], 2)\ndf['super_bowls_per_16_games'] = round(df['super_bowls'] / df['16_games'], 2)\n\n# Drop more unwanted columns\ndf = df.drop(columns = ['Rk', 'Age', 'player_id'])\n\n# Rename columns\ndf.columns = ['player', 'career_start', 'career_end', 'games', 'games_started', 'completions', 'passing_attempts', 'incompletions', 'completion_%', 'passing_yards', 'passing_tds', 'interceptions', 'pick_6s', 'touchdown_%', 'int_%', 'passer_rating', 'sacks_taken', 'sack_yards', 'sack_%', 'passing_yards_per_attempt', 'adjusted_passing_yards_per_attempt', 'adjusted_net_passing_yards_per_attempt', 'passing_yards_per_completion', 'passing_yards_per_game', 'pass_success_rate', 'wins', 'losses', 'ties', 'fourth_quarter_comebacks', 'game_winning_drives', 'rushing_attempts', 'rushing_yards', 'rushing_yards_per_attempt', 'rushing_touchdowns', 'rushing_yards_per_game', 'rushing_first_downs', 'rush_success_rate', 'pro_bowls', 'first_team_all_pros', 'super_bowls', 'hall_of_fame', 'hall_of_fame_eligible', '16_games', 'winning_%', 'passing_yards_per_16_games', 'passing_attempts_per_16_games', 'passing_tds_per_16_games', 'int_per_16_games', 'pick_6_per_16_games', 'sacks_per_16_games', 'sacks_yards_per_16_games', 'wins_per_16_games', 'losses_per_16_games', 'ties_per_16_games', 'fourth_quarter_comebacks_per_16_games', 'game_winning_drives_per_16_games', 'rushing_yards_per_16_games', 'rushing_tds_per_16_games', 'rushing_first_downs_per_16_games', 'pro_bowls_per_16_games', 'first_team_all_pros_per_16_games', 'super_bowls_per_16_games']\n\n# Scale values using MinMaxScaler\nscaler = MinMaxScaler()\nnumeric_columns = ['games', 'games_started', 'completions', 'passing_attempts', 'incompletions', 'completion_%', 'passing_yards', 'passing_tds', 'interceptions', 'pick_6s', 'touchdown_%', 'int_%', 'passer_rating', 'sacks_taken', 'sack_yards', 'sack_%', 'passing_yards_per_attempt', 'adjusted_passing_yards_per_attempt', 'adjusted_net_passing_yards_per_attempt', 'passing_yards_per_completion', 'passing_yards_per_game', 'pass_success_rate', 'wins', 'losses', 'ties', 'fourth_quarter_comebacks', 'game_winning_drives', 'rushing_attempts', 'rushing_yards', 'rushing_yards_per_attempt', 'rushing_touchdowns', 'rushing_yards_per_game', 'rushing_first_downs', 'rush_success_rate', 'pro_bowls', 'first_team_all_pros', 'super_bowls', 'hall_of_fame', 'hall_of_fame_eligible', '16_games', 'winning_%', 'passing_yards_per_16_games', 'passing_attempts_per_16_games', 'passing_tds_per_16_games', 'int_per_16_games', 'pick_6_per_16_games', 'sacks_per_16_games', 'sacks_yards_per_16_games', 'wins_per_16_games', 'losses_per_16_games', 'ties_per_16_games', 'fourth_quarter_comebacks_per_16_games', 'game_winning_drives_per_16_games', 'rushing_yards_per_16_games', 'rushing_tds_per_16_games', 'rushing_first_downs_per_16_games', 'pro_bowls_per_16_games', 'first_team_all_pros_per_16_games', 'super_bowls_per_16_games']\n\nfor column in numeric_columns:\n    df[column] = scaler.fit_transform(df[[column]])\n\n# Split into eligible and ineligible data frames\neligible = df[df['hall_of_fame_eligible'] == 1]\nineligible = df[df['hall_of_fame_eligible'] == 0]\n\n# 2). Selection, training, and use of a machine learning model\n\n# Create X and y from eligible data set\nX = eligible.drop(columns = ['hall_of_fame', 'player', 'hall_of_fame_eligible'])\ny = eligible['hall_of_fame']\n\n# Split into test and training data\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size = .1, random_state = 12)\n\n# Train model\nxg = XGBClassifier(scale_pos_weight = 27.37,\nrandom_state = 12)\nxg.fit(X_train, y_train)\nxg_prediction = xg.predict(X_test)\n\n# Use XGBoost model to make predictions on ineligible players\nZ = ineligible.drop(columns = ['player', 'hall_of_fame_eligible', 'hall_of_fame'])\n\nhof_predictions = xg.predict(Z)\n\nplayers = pd.DataFrame({\n    'player': ineligible['player'].values,\n    'Hall of Fame': hof_predictions\n}).replace({1:\"Yes\", 0:\"No\"}).head(15)\n\nwrong_predict = xg.predict(X)\n\nwrong = pd.DataFrame({\n    'player' : eligible['player'].values,\n    'real' : eligible['hall_of_fame'].values,\n    'predicted' : wrong_predict\n}).query('real != predicted').replace({1:\"Yes\", 0:\"No\"})\n\n\n\n        \n        \n        \n\n\n\nIntroduction\nThe general consensus around the NFL today is that the 1983 draft had the greatest quarterback class of all time. John Elway, Dan Marino, and Jim Kelly combined for 23 Pro Bowls, 11 All Pros, 2 MVPs, 10 Super Bowl Appearances, and 2 Super Bowl Championships. Each made the Hall of Fame.\nThe consensus runner-up is the 2004 draft class, featuring Eli Manning, Ben Roethlisberger, and Philip Rivers. Given their recent retirements (or coming out of retirement), only Eli Manning is eligible for induction. He has been on the past two ballots but hasn’t been inducted. Roethlisberger will be eligible in 2027 while Rivers reset his 5 year waiting period by coming out of retirement last season.\n\n\n\nStathead QB Comparison\n\n\nEach player has an interesting case. Phillip Rivers has had no playoff success while Eli Manning won 2 Super Bowl MVPs. Ben Roethlisberger’s resume is a mesh of the two. He doesn’t quite have Rivers’ raw statistics and accolades nor Manning’s playoff impact.\nWill the 2004 draft class also have three Hall of Fame inductees? What achievement matters the most? I created a machine learning mdoel to answer those questions.\n\n\nThe Model\nI trained an XGBoost classification model using statistics from Pro Football Reference for 90% of the quarterbacks eligible for the Hall of Fame whose stats they have. Stats were taken during the 2025 offseason. (Click the dropdown to see which stats were used)\n\n\nStats Used\n\n\nGames Played\nGames Started\nCompletions\nPassing Attempts\nIncompletions\nCompletion %\nPassing Yards\nPassing Touchdowns\nInterceptions\nPick 6’s\nTouchdown %\nInterception %\nPasser Rating\nSacks Taken\nSack Yards\nSack %\nPassing Yards per Attempt\nAdjusted Passing Yards per Attempt\nAdjusted Net Passing Yards per Attempt, ‘passing_yards_per_completion’, ‘passing_yards_per_game’, ‘pass_success_rate’, ‘wins’, - Games Played\nGames Started\nCompletions\nPassing Attempts\nIncompletions\nCompletion %\nPassing Yards\nPassing Touchdowns\nInterceptions\nPick 6’s\nTouchdown %\nInterception %\nPasser Rating\nSacks Taken\nSack Yards\nSack %\nPassing Yards per Attempt\nAdjusted Passing Yards per Attempt\nAdjusted Net Passing Yards per Attempt\nPassing Yards per Completion\nPassing Yards per Game\nPass Success Rate\nWins\nLosses\nTies\nFourth Quarter Comebacks\nGame Winning Drives\nRushing Attempts\nRushing Yards\nRushing Yards per Attempt\nRushing Touchdowns\nRushing Yards per Game\nRushing First Downs\nRush Success Rate\nPro Bowls\nFirst Team All-Pros\nSuper Bowls\nHall of Fame\nHall of Fame Eligible\n16 Games\nWinning %\nPer 16 games metrics for each stat that isn’t a percentage or a rating\n\n\nThe other 10% were used to test the model.\nBelow you’ll see the classification report for the model, but what exactly does it mean?\nThe main thing to focus on is the top portion. Precision communicates how often the model is right when making the given prediction (separated by the rows). In this case, with either a positive or negative prediction, the model was always right. Recall tells you how many of that kind the model correctly identifies. Once again, the model correctly identified all Hall of Famers and non-Hall of Famers. The f1-score is the harmonic mean of the previous values. It tries to balance precision and recall to give a slightly different accuracy metric. Since the model predicted everything correctly, that difference is lost.\n\n\nShow the code\nxg_report = classification_report(y_test, xg_prediction)\nprint(\"Model Classification Report\")\nprint(xg_report)\n\n\nModel Classification Report\n              precision    recall  f1-score   support\n\n         0.0       1.00      1.00      1.00        84\n         1.0       1.00      1.00      1.00         2\n\n    accuracy                           1.00        86\n   macro avg       1.00      1.00      1.00        86\nweighted avg       1.00      1.00      1.00        86\n\n\n\n\n\nConclusion\nNow to answer the first question. What makes a Hall of Fame career?\nBelow you’ll find what’s called a feature importance chart. When the model is trying to make its prediction, these are the statistics it has found to be the best predictors of Hall of Fame induction.\n\n\nShow the code\n# Create feature importance plot\nimportant_stats = pd.DataFrame({'importance': xg.feature_importances_,'stat': X_train.columns}).sort_values('importance', ascending = False).query('importance &gt;= .04')\n\nimportant_stats[\"importance\"] = important_stats[\"importance\"].round(2)\n\n(\n    ggplot(\n        data = important_stats,\n        mapping = aes(\n            y = 'importance',\n            x = 'stat'))\n        + geom_bar(stat = 'identity')\n        + geom_text(\n          mapping = aes(label = \"importance\"),\n          va = \"top\",\n          nudge_y = .05,\n          size = 5 \n        )\n        + labs(\n            x = 'Stat',\n            y = 'Importance',\n            title = 'What makes a Hall of Famer?',\n            subtitle = 'The stats that most strongly predict a Hall of Fame career')\n        + theme(\n            axis_text_x = element_text(\n                hjust=1,\n                angle = 45),\n            panel_grid = element_blank(),\n            axis_line_y = element_blank(),\n            axis_ticks_y = element_blank(),\n            axis_text_y = element_blank())\n)\n\n\n   \n   \n\n\nWhen Hall of Fame resumes are discussed, is the pro bowl usually the first thing mentioned? No. The usual suspect, championships, doesn’t weigh heavy at all in the mind of the model. All-Pros and MVPs don’t even have as much weight despite being more prestigious.\nCareer End adds some context. There are a number of quarterbacks who played over half a century ago that played in the Pro Bowl in almost every season they played in. The model seems to have found a way to filter them out of Hall of Fame inductions by changing the standard based on era (something some sports fans nowadays struggle to do).\nDespite its apparent importance in predicting a Hall of Fame career, its importance to the players seems to be declining. One of the headlines before the end of the season was Shedeur Sanders’ invitation the the Pro Bowl. Texans QB CJ Stroud and the Jets’ Justin Fields each declined their invitation to the NFL’s All-Star game. It will be fascinating to see if this trend continnues and if this model will need to be retrained as Pro Bowl selections mean less.\nNow it’s time to see whether the model predicts that the 2004 draft class will have 3 Hall of Famers.\nAfter being trained, the model was run on the 2025 resumes of all the quarterbacks who were not yet eligible for the Hall of Fame. The table below shows the results:\n\n\nShow the code\ncolor_map = {True:\"green\", False:\"red\"}\n\nplayers_table = (\n  gt.GT(players)\n  .tab_header(title = \"Who Has a Hall of Fame Resume?\")\n  .tab_style(\n    style = gt.style.text(color = \"green\"),\n    locations = gt.loc.body(\n      columns = \"Hall of Fame\",\n      rows = lambda x: x[\"Hall of Fame\"] == \"Yes\"))\n  .tab_style(\n    style = gt.style.text(color = \"red\"),\n    locations = gt.loc.body(\n      columns = \"Hall of Fame\",\n      rows = lambda x: x[\"Hall of Fame\"] == \"No\")))\n\nplayers_table\n\n\n\n\n\n\n\n\nWho Has a Hall of Fame Resume?\n\n\nplayer\nHall of Fame\n\n\n\n\nTom Brady\nYes\n\n\nDrew Brees\nYes\n\n\nAaron Rodgers\nYes\n\n\nRussell Wilson\nYes\n\n\nPhilip Rivers\nYes\n\n\nPatrick Mahomes\nYes\n\n\nBen Roethlisberger\nNo\n\n\nJosh Allen\nNo\n\n\nDerek Carr\nNo\n\n\nKirk Cousins\nNo\n\n\nJared Goff\nNo\n\n\nLamar Jackson\nNo\n\n\nDak Prescott\nNo\n\n\nMatt Ryan\nNo\n\n\nAndy Dalton\nNo\n\n\n\n\n\n\n\n\nWith Roethlisberger not making it. That’s at least one who falls short. At the time of training, Eli Manning was ineligible (we’ll revisit that soon). Phillip Rivers projects to make it (unless this extra season played ruins his Pro Bowls/Season ration). Other quarterbacks projected to make the Hall of Fame. Matt Ryan, whose Hall of Fame case is also disputed, is not predicted to make it either.\nThat brings us to the next table. Based on how the model defines a Hall of Fame career, are they any eligible players who have been incorrectly left out? Or players that perhaps weren’t deserving of their induction?\nThe model found no such players. This means that Eli Manning is also not predicted to be a Hall of Famer.\n\n\nShow the code\nincorrect = (\n  gt.GT(wrong)\n  .tab_header(title = \"Who Should (or Shouldn't) Be In?\")\n  .tab_style(\n    style = gt.style.text(color = \"green\"),\n    locations = gt.loc.body(\n      columns = [\"real\"],\n      rows = lambda x: x[\"real\"] == \"Yes\"))\n  .tab_style(\n    style = gt.style.text(color = \"red\"),\n    locations = gt.loc.body(\n      columns = [\"real\"],\n      rows = lambda x: x[\"real\"] == \"No\")))\n\nincorrect\n\n\n\n\n\n\n\n\nWho Should (or Shouldn't) Be In?\n\n\nplayer\nreal\npredicted\n\n\n\n\n\n\n\n\n\n\nIf the model’s predictions ring true, the 2004 Draft class will fail to join the 1983, 1971, and 1956 draft classes as the only groups with multiple Hall of Fame quarterbacks.Like Rivers, maybe Roethlisberger or Manning can also come back and attempt to shore up their case.\n\n\n\n\n Back to top",
+    "crumbs": [
+      "Story Telling",
+      "NFL QB HoF Predictor"
+    ]
+  },
+  {
+    "objectID": "Story_Telling/project5.html",
+    "href": "Story_Telling/project5.html",
+    "title": "Client Report - [Insert Project Title]",
+    "section": "",
+    "text": "Paste in a template\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "Full_Stack/project2.html",
+    "href": "Full_Stack/project2.html",
+    "title": "Client Report - [Insert Project Title]",
+    "section": "",
+    "text": "Paste in a template\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "Full_Stack/project3.html",
+    "href": "Full_Stack/project3.html",
+    "title": "Client Report - [Insert Project Title]",
+    "section": "",
+    "text": "Paste in a template\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "Full_Stack/project4.html",
+    "href": "Full_Stack/project4.html",
+    "title": "Client Report - [Insert Project Title]",
+    "section": "",
+    "text": "Paste in a template\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "story_telling.html",
+    "href": "story_telling.html",
+    "title": "Story Telling",
+    "section": "",
+    "text": "What’s Here?\n\n\n\n\n Back to top",
+    "crumbs": [
+      "Story Telling"
+    ]
+  },
+  {
+    "objectID": "Machine_Learning/project1.html",
+    "href": "Machine_Learning/project1.html",
+    "title": "NFL Hall of Fame Predictor",
+    "section": "",
+    "text": "You can see the data preparation for this model here\nThis is a classification which outputs a prediction as to whether a quarterback will make the Hall of Fame given the following information:\n\nGames Played\nGames Started\nCompletions\nPassing Attempts\nIncompletions\nCompletion %\nPassing Yards\nPassing Touchdowns\nInterceptions\nPick 6’s\nTouchdown %\nInterception %\nPasser Rating\nSacks Taken\nSack Yards\nSack %\nPassing Yards per Attempt\nAdjusted Passing Yards per Attempt\nAdjusted Net Passing Yards per Attempt, ‘passing_yards_per_completion’, ‘passing_yards_per_game’, ‘pass_success_rate’, ‘wins’, - Games Played\nGames Started\nCompletions\nPassing Attempts\nIncompletions\nCompletion %\nPassing Yards\nPassing Touchdowns\nInterceptions\nPick 6’s\nTouchdown %\nInterception %\nPasser Rating\nSacks Taken\nSack Yards\nSack %\nPassing Yards per Attempt\nAdjusted Passing Yards per Attempt\nAdjusted Net Passing Yards per Attempt\nPassing Yards per Completion\nPassing Yards per Game\nPass Success Rate\nWins\nLosses\nTies\nFourth Quarter Comebacks\nGame Winning Drives\nRushing Attempts\nRushing Yards\nRushing Yards per Attempt\nRushing Touchdowns\nRushing Yards per Game\nRushing First Downs\nRush Success Rate\nPro Bowls\nFirst Team All-Pros\nSuper Bowls\nHall of Fame\nHall of Fame Eligible\n16 Games\nWinning %\n\nAs well as per 16 for all stats that aren’t career comprehensive such as ratings and percentages.\n\n# 2). Selection, training, and use of a machine learning model\n\n# Load cleaned data and libraries\nimport pandas as pd\nimport numpy as np\nfrom lets_plot import *\nLetsPlot.setup_html()\nimport sklearn\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.tree import DecisionTreeClassifier \nfrom sklearn.ensemble import RandomForestClassifier\nfrom sklearn.metrics import classification_report\nfrom sklearn.preprocessing import MinMaxScaler\nfrom xgboost import XGBClassifier\nfrom imblearn.over_sampling import SMOTE\n\neligible = pd.read_csv(\"https://raw.githubusercontent.com/ethanabbott10/Sports_Data/refs/heads/main/data/eligible.csv\")\nineligible = pd.read_csv(\"https://raw.githubusercontent.com/ethanabbott10/Sports_Data/refs/heads/main/data/ineligible.csv\")\n\n# Create X and y from eligible data set\nX = eligible.drop(columns = ['hall_of_fame', 'player', 'hall_of_fame_eligible'])\ny = eligible['hall_of_fame']\n\n# Split into test and training data\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 20)\n\n# SMOTE to help with inbalanced data\n#sm = SMOTE()\n#X_sm, y_sm = sm.fit_resample(X_train, y_train)\n\n\n        \n        \n        \n\n\n\n# Decision Tree\ntree = DecisionTreeClassifier()\ntree.fit(X_train, y_train)\ntree_prediction = tree.predict(X_test)\ntree_report = classification_report(y_test, tree_prediction)\nprint(tree_report)\n\n# Random Forest\nforest = RandomForestClassifier()\nforest.fit(X_train, y_train)\nforest_prediction = forest.predict(X_test)\nforest_report = classification_report(y_test, forest_prediction)\nprint(forest_report)\n\n# XGBoost\nxg = XGBClassifier(scale_pos_weight = 27.37)\nxg.fit(X_train, y_train)\nxg_prediction = xg.predict(X_test)\nxg_report = classification_report(y_test, xg_prediction)\nprint(xg_report)\n\n# Use XGBoost model to make predictions on ineligible players\n\nZ = ineligible.drop(columns = ['player', 'hall_of_fame_eligible', 'hall_of_fame'])\n\nhof_predictions = xg.predict(Z)\n\nplayers = pd.DataFrame({\n    'player': ineligible['player'].values,\n    'hof': hof_predictions\n})\n\nwrong_predict = xg.predict(X)\n\nwrong = pd.DataFrame({\n    'player' : eligible['player'].values,\n    'real' : eligible['hall_of_fame'].values,\n    'predicted' : wrong_predict\n}).query('real != predicted')\n\n              precision    recall  f1-score   support\n\n         0.0       1.00      1.00      1.00        20\n\n    accuracy                           1.00        20\n   macro avg       1.00      1.00      1.00        20\nweighted avg       1.00      1.00      1.00        20\n\n              precision    recall  f1-score   support\n\n         0.0       1.00      1.00      1.00        20\n\n    accuracy                           1.00        20\n   macro avg       1.00      1.00      1.00        20\nweighted avg       1.00      1.00      1.00        20\n\n              precision    recall  f1-score   support\n\n         0.0       1.00      0.95      0.97        20\n         1.0       0.00      0.00      0.00         0\n\n    accuracy                           0.95        20\n   macro avg       0.50      0.47      0.49        20\nweighted avg       1.00      0.95      0.97        20\n\n\n\n\n# Create feature importance plot\nimportant_stats = pd.DataFrame({'importance': xg.feature_importances_,'stat': X_train.columns}).sort_values('importance', ascending = True).query('importance &gt;= .035')\n\n(\n    ggplot(\n        data = important_stats,\n        mapping = aes(\n            y = 'importance',\n            x = 'stat'))\n        + geom_bar(stat = 'identity')\n        + labs(\n            x = 'Stat',\n            y = 'Importance',\n            title = 'What makes a Hall of Famer?',\n            subtitle = 'The stats that most strongly predict a Hall of Fame career')\n        + theme(\n            axis_text_x = element_text(\n                hjust=1),\n            panel_grid= element_blank())\n)\n\n   \n   \n\n\n\n\n\n Back to top",
+    "crumbs": [
+      "Machine Learning",
+      "NFL QB Hof Predictor"
+    ]
+  },
+  {
+    "objectID": "Machine_Learning/project5.html",
+    "href": "Machine_Learning/project5.html",
+    "title": "Client Report - [Insert Project Title]",
+    "section": "",
+    "text": "Paste in a template\n\n\n\n\n Back to top"
+  },
+  {
     "objectID": "exploration.html",
     "href": "exploration.html",
     "title": "Data Exploration",
@@ -98,38 +143,6 @@
     ]
   },
   {
-    "objectID": "Machine_Learning/project2.html",
-    "href": "Machine_Learning/project2.html",
-    "title": "Client Report - [Insert Project Title]",
-    "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "Machine_Learning/project1.html",
-    "href": "Machine_Learning/project1.html",
-    "title": "NFL Hall of Fame Predictor",
-    "section": "",
-    "text": "You can see the data preparation for this model here\nThis is a classification which outputs a prediction as to whether a quarterback will make the Hall of Fame given the following information:\n\nGames Played\nGames Started\nCompletions\nPassing Attempts\nIncompletions\nCompletion %\nPassing Yards\nPassing Touchdowns\nInterceptions\nPick 6’s\nTouchdown %\nInterception %\nPasser Rating\nSacks Taken\nSack Yards\nSack %\nPassing Yards per Attempt\nAdjusted Passing Yards per Attempt\nAdjusted Net Passing Yards per Attempt, ‘passing_yards_per_completion’, ‘passing_yards_per_game’, ‘pass_success_rate’, ‘wins’, - Games Played\nGames Started\nCompletions\nPassing Attempts\nIncompletions\nCompletion %\nPassing Yards\nPassing Touchdowns\nInterceptions\nPick 6’s\nTouchdown %\nInterception %\nPasser Rating\nSacks Taken\nSack Yards\nSack %\nPassing Yards per Attempt\nAdjusted Passing Yards per Attempt\nAdjusted Net Passing Yards per Attempt\nPassing Yards per Completion\nPassing Yards per Game\nPass Success Rate\nWins\nLosses\nTies\nFourth Quarter Comebacks\nGame Winning Drives\nRushing Attempts\nRushing Yards\nRushing Yards per Attempt\nRushing Touchdowns\nRushing Yards per Game\nRushing First Downs\nRush Success Rate\nPro Bowls\nFirst Team All-Pros\nSuper Bowls\nHall of Fame\nHall of Fame Eligible\n16 Games\nWinning %\n\nAs well as per 16 for all stats that aren’t career comprehensive such as ratings and percentages.\n\n# 2). Selection, training, and use of a machine learning model\n\n# Load cleaned data and libraries\nimport pandas as pd\nimport numpy as np\nfrom lets_plot import *\nLetsPlot.setup_html()\nimport sklearn\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.tree import DecisionTreeClassifier \nfrom sklearn.ensemble import RandomForestClassifier\nfrom sklearn.metrics import classification_report\nfrom sklearn.preprocessing import MinMaxScaler\nfrom xgboost import XGBClassifier\nfrom imblearn.over_sampling import SMOTE\n\neligible = pd.read_csv(\"https://raw.githubusercontent.com/ethanabbott10/Sports_Data/refs/heads/main/data/eligible.csv\")\nineligible = pd.read_csv(\"https://raw.githubusercontent.com/ethanabbott10/Sports_Data/refs/heads/main/data/ineligible.csv\")\n\n# Create X and y from eligible data set\nX = eligible.drop(columns = ['hall_of_fame', 'player', 'hall_of_fame_eligible'])\ny = eligible['hall_of_fame']\n\n# Split into test and training data\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 20)\n\n# SMOTE to help with inbalanced data\n#sm = SMOTE()\n#X_sm, y_sm = sm.fit_resample(X_train, y_train)\n\n\n        \n        \n        \n\n\n\n# Decision Tree\ntree = DecisionTreeClassifier()\ntree.fit(X_train, y_train)\ntree_prediction = tree.predict(X_test)\ntree_report = classification_report(y_test, tree_prediction)\nprint(tree_report)\n\n# Random Forest\nforest = RandomForestClassifier()\nforest.fit(X_train, y_train)\nforest_prediction = forest.predict(X_test)\nforest_report = classification_report(y_test, forest_prediction)\nprint(forest_report)\n\n# XGBoost\nxg = XGBClassifier(scale_pos_weight = 27.37)\nxg.fit(X_train, y_train)\nxg_prediction = xg.predict(X_test)\nxg_report = classification_report(y_test, xg_prediction)\nprint(xg_report)\n\n# Use XGBoost model to make predictions on ineligible players\n\nZ = ineligible.drop(columns = ['player', 'hall_of_fame_eligible', 'hall_of_fame'])\n\nhof_predictions = xg.predict(Z)\n\nplayers = pd.DataFrame({\n    'player': ineligible['player'].values,\n    'hof': hof_predictions\n})\n\nwrong_predict = xg.predict(X)\n\nwrong = pd.DataFrame({\n    'player' : eligible['player'].values,\n    'real' : eligible['hall_of_fame'].values,\n    'predicted' : wrong_predict\n}).query('real != predicted')\n\n              precision    recall  f1-score   support\n\n         0.0       1.00      1.00      1.00        20\n\n    accuracy                           1.00        20\n   macro avg       1.00      1.00      1.00        20\nweighted avg       1.00      1.00      1.00        20\n\n              precision    recall  f1-score   support\n\n         0.0       1.00      1.00      1.00        20\n\n    accuracy                           1.00        20\n   macro avg       1.00      1.00      1.00        20\nweighted avg       1.00      1.00      1.00        20\n\n              precision    recall  f1-score   support\n\n         0.0       1.00      1.00      1.00        20\n\n    accuracy                           1.00        20\n   macro avg       1.00      1.00      1.00        20\nweighted avg       1.00      1.00      1.00        20\n\n\n\n\n# Create feature importance plot\nimportant_stats = pd.DataFrame({'importance': xg.feature_importances_,'stat': X_train.columns}).sort_values('importance', ascending = True).query('importance &gt;= .035')\n\n(\n    ggplot(\n        data = important_stats,\n        mapping = aes(\n            y = 'importance',\n            x = 'stat'))\n        + geom_bar(stat = 'identity')\n        + labs(\n            x = 'Stat',\n            y = 'Importance',\n            title = 'What makes a Hall of Famer?',\n            subtitle = 'The stats that most strongly predict a Hall of Fame career')\n        + theme(\n            axis_text_x = element_text(\n                hjust=1),\n            panel_grid= element_blank())\n)\n\n   \n   \n\n\n\n\n\n Back to top",
-    "crumbs": [
-      "Machine Learning",
-      "NFL QB Hof Predictor"
-    ]
-  },
-  {
-    "objectID": "Machine_Learning/project4.html",
-    "href": "Machine_Learning/project4.html",
-    "title": "Client Report - [Insert Project Title]",
-    "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "Data_Exploration/project2.html",
-    "href": "Data_Exploration/project2.html",
-    "title": "Client Report - [Insert Project Title]",
-    "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top"
-  },
-  {
     "objectID": "Data_Exploration/project1.html",
     "href": "Data_Exploration/project1.html",
     "title": "Client Report - [Insert Project Title]",
@@ -137,8 +150,8 @@
     "text": "Paste in a template\n\n\n\n\n Back to top"
   },
   {
-    "objectID": "Data_Exploration/project4.html",
-    "href": "Data_Exploration/project4.html",
+    "objectID": "Data_Exploration/project5.html",
+    "href": "Data_Exploration/project5.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
     "text": "Paste in a template\n\n\n\n\n Back to top"
@@ -151,8 +164,8 @@
     "text": "Paste in a template\n\n\n\n\n Back to top"
   },
   {
-    "objectID": "Competition/project1.html",
-    "href": "Competition/project1.html",
+    "objectID": "Competition/project3.html",
+    "href": "Competition/project3.html",
     "title": "Client Report - [Insert Project Title]",
     "section": "",
     "text": "Paste in a template\n\n\n\n\n Back to top"
@@ -163,6 +176,145 @@
     "title": "Client Report - [Insert Project Title]",
     "section": "",
     "text": "Paste in a template\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "ml.html",
+    "href": "ml.html",
+    "title": "Machine Learning",
+    "section": "",
+    "text": "What’s Here?\n\n\n\n\n Back to top",
+    "crumbs": [
+      "Machine Learning"
+    ]
+  },
+  {
+    "objectID": "Competition/project5.html",
+    "href": "Competition/project5.html",
+    "title": "Client Report - [Insert Project Title]",
+    "section": "",
+    "text": "Paste in a template\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "Competition/project1.html",
+    "href": "Competition/project1.html",
+    "title": "Client Report - [Insert Project Title]",
+    "section": "",
+    "text": "Paste in a template\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "Data_Exploration/project4.html",
+    "href": "Data_Exploration/project4.html",
+    "title": "Client Report - [Insert Project Title]",
+    "section": "",
+    "text": "Paste in a template\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "Data_Exploration/project3.html",
+    "href": "Data_Exploration/project3.html",
+    "title": "Client Report - [Insert Project Title]",
+    "section": "",
+    "text": "Paste in a template\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "Data_Exploration/project2.html",
+    "href": "Data_Exploration/project2.html",
+    "title": "Client Report - [Insert Project Title]",
+    "section": "",
+    "text": "Paste in a template\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "Machine_Learning/project4.html",
+    "href": "Machine_Learning/project4.html",
+    "title": "Client Report - [Insert Project Title]",
+    "section": "",
+    "text": "Paste in a template\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "Machine_Learning/project3.html",
+    "href": "Machine_Learning/project3.html",
+    "title": "Client Report - [Insert Project Title]",
+    "section": "",
+    "text": "Paste in a template\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "Machine_Learning/project2.html",
+    "href": "Machine_Learning/project2.html",
+    "title": "Client Report - [Insert Project Title]",
+    "section": "",
+    "text": "Paste in a template\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "full_stack.html",
+    "href": "full_stack.html",
+    "title": "Full Stack",
+    "section": "",
+    "text": "What’s Here?\n\n\n\n\n Back to top",
+    "crumbs": [
+      "Full Stack"
+    ]
+  },
+  {
+    "objectID": "Full_Stack/project5.html",
+    "href": "Full_Stack/project5.html",
+    "title": "Client Report - [Insert Project Title]",
+    "section": "",
+    "text": "Paste in a template\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "Full_Stack/project1.html",
+    "href": "Full_Stack/project1.html",
+    "title": "Client Report - [Insert Project Title]",
+    "section": "",
+    "text": "Paste in a template\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "Story_Telling/project4.html",
+    "href": "Story_Telling/project4.html",
+    "title": "Client Report - [Insert Project Title]",
+    "section": "",
+    "text": "Paste in a template\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "Story_Telling/project3.html",
+    "href": "Story_Telling/project3.html",
+    "title": "Client Report - [Insert Project Title]",
+    "section": "",
+    "text": "Paste in a template\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "Story_Telling/project2.html",
+    "href": "Story_Telling/project2.html",
+    "title": "Client Report - [Insert Project Title]",
+    "section": "",
+    "text": "Paste in a template\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "Cleansing_Projects/project4.html",
+    "href": "Cleansing_Projects/project4.html",
+    "title": "Client Report - [Insert Project Title]",
+    "section": "",
+    "text": "Paste in a template\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "Cleansing_Projects/nfl.html",
+    "href": "Cleansing_Projects/nfl.html",
+    "title": "NFL Hall of Fame Predictor",
+    "section": "",
+    "text": "For this assignment I got my data from Stathead. Thinking primarily about the quarterbacks drafted in 2004, I wanted to see what a predictive model would say about their chanches of being Hall of Famers given their distinct resumes.\nBelow you will find the process I took to merge multiple data frames, handle null values, and create standardized columns to reduce bias towards players with long career.\n\n# Import necessary libraries and data\nimport pandas as pd\nimport numpy as np\nfrom lets_plot import *\nLetsPlot.setup_html()\nimport sklearn\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.tree import DecisionTreeClassifier \nfrom sklearn.ensemble import RandomForestClassifier\nfrom sklearn.metrics import classification_report\nfrom sklearn.preprocessing import MinMaxScaler\nfrom xgboost import XGBClassifier\nfrom imblearn.over_sampling import SMOTE\n\ngeneral = pd.read_csv(\"https://raw.githubusercontent.com/ethanabbott10/Sports_Data/refs/heads/main/data/qbgeneral.csv\")\n\nsuper_bowls = pd.read_csv(\"https://raw.githubusercontent.com/ethanabbott10/Sports_Data/refs/heads/main/data/qbsuperbowls.csv\")\n\nhof = pd.read_csv(\"https://raw.githubusercontent.com/ethanabbott10/Sports_Data/refs/heads/main/data/qbhof.csv\")\n\npro_bowls = pd.read_csv(\"https://raw.githubusercontent.com/ethanabbott10/Sports_Data/refs/heads/main/data/qbprobowls.csv\")\n\nall_pros = pd.read_csv(\"https://raw.githubusercontent.com/ethanabbott10/Sports_Data/refs/heads/main/data/qballpros.csv\")\n\n\n        \n        \n        \n\n\n\n# 1). Preprocessing data\n\n# Drop unecessary rank and player columns from data frames\nunwanted_columns = ['Rk', 'Player']\nsuper_bowls = super_bowls.drop(columns = unwanted_columns)\nhof = hof.drop(columns = unwanted_columns)\npro_bowls = pro_bowls.drop(columns = unwanted_columns)\nall_pros = all_pros.drop(columns = unwanted_columns)\n\n# Get Super Bowl count\nsuper_bowl_count = super_bowls['player_id'].value_counts().reset_index()\nsuper_bowl_count.columns = ['player_id', 'super_bowls']\n\n# Fill hof column with positive\nhof['hof'] = 1\n\n# Merge data frames into one\ndata_frames = [all_pros, super_bowl_count, hof]\ndf = pd.merge(\n    left = general,\n    right = pro_bowls,\n    how = \"left\",\n    on = \"player_id\")\n\nfor data_frame in data_frames:\n    df = pd.merge(\n    left = df,\n    right = data_frame,\n    how = \"left\",\n    on = \"player_id\")\n\n#Fill N/As (all numeric nulls can be 0)\nint_columns = ['hof', 'super_bowls', 'Sk', 'Yds.1', 'W', 'L', 'T', '1D']\nfloat_columns = ['Cmp%', 'TD%', 'Int%', 'Rate', 'Sk%', 'Y/A', 'AY/A', 'ANY/A', 'Y/C', 'Succ%', 'Y/A.1', 'Succ%.1']\n\nfor column in int_columns:\n    df[column] = df[column].fillna(0).astype(int)\n\nfor column in float_columns:\n    df[column] = df[column].fillna(0)\n\n# Create Hall of Fame Eligible Column\ndf['eligible'] = np.where(df['To'] &gt;= 2020, 0, 1)\n\n# Create 16 games column\ndf['16_games'] = round(df['G'] / 16, 2)\n\n# Create W% column\ndf['W%'] = round(df['W'] / (df['W'] + df['L'] + df['T']), 2).fillna(0)\n\n\n# Create per season columns (I left the other columns but I wanted to ensure that quality players with shorter careers still had a chance without punishing longevity)\n\ndf['passing_yards_per_16_games'] = round(df['Yds'] / df['16_games'], 2)\ndf['passing_attempts_per_16_games'] = round(df['Att'] / df['16_games'], 2)\ndf['passing_tds_per_16_games'] = round(df['TD'] / df['16_games'], 2)\ndf['int_per_16_games'] = round(df['Int'] / df['16_games'], 2)\ndf['pick_6_per_16_games'] = round(df['Yds'] / df['16_games'], 2)\ndf['sacks_per_16_games'] = round(df['Sk'] / df['16_games'], 2)\ndf['sacks_yards_per_16_games'] = round(df['Yds.1'] / df['16_games'], 2)\ndf['wins_per_16_games'] = round(df['W'] / df['16_games'], 2)\ndf['losses_per_16_games'] = round(df['L'] / df['16_games'], 2)\ndf['ties_per_16_games'] = round(df['T'] / df['16_games'], 2)\ndf['fourth_quarter_comebacks_per_16_games'] = round(df['4QC'] / df['16_games'], 2)\ndf['game_winning_drives_per_16_games'] = round(df['GWD'] / df['16_games'], 2)\ndf['rushing_yards_per_16_games'] = round(df['Yds.2'] / df['16_games'], 2)\ndf['rushing_tds_per_16_games'] = round(df['TD.1'] / df['16_games'], 2)\ndf['rushing_first_downs_per_16_games'] = round(df['Sk'] / df['16_games'], 2)\ndf['pro_bowls_per_16_games'] = round(df['Pro_Bowls'] / df['16_games'], 2)\ndf['first_team_all_pros_per_16_games'] = round(df['AP1'] / df['16_games'], 2)\ndf['super_bowls_per_16_games'] = round(df['super_bowls'] / df['16_games'], 2)\n\n# Drop more unwanted columns\ndf = df.drop(columns = ['Rk', 'Age', 'player_id'])\n\n# Rename columns\ndf.columns = ['player', 'career_start', 'career_end', 'games', 'games_started', 'completions', 'passing_attempts', 'incompletions', 'completion_%', 'passing_yards', 'passing_tds', 'interceptions', 'pick_6s', 'touchdown_%', 'int_%', 'passer_rating', 'sacks_taken', 'sack_yards', 'sack_%', 'passing_yards_per_attempt', 'adjusted_passing_yards_per_attempt', 'adjusted_net_passing_yards_per_attempt', 'passing_yards_per_completion', 'passing_yards_per_game', 'pass_success_rate', 'wins', 'losses', 'ties', 'fourth_quarter_comebacks', 'game_winning_drives', 'rushing_attempts', 'rushing_yards', 'rushing_yards_per_attempt', 'rushing_touchdowns', 'rushing_yards_per_game', 'rushing_first_downs', 'rush_success_rate', 'pro_bowls', 'first_team_all_pros', 'super_bowls', 'hall_of_fame', 'hall_of_fame_eligible', '16_games', 'winning_%', 'passing_yards_per_16_games', 'passing_attempts_per_16_games', 'passing_tds_per_16_games', 'int_per_16_games', 'pick_6_per_16_games', 'sacks_per_16_games', 'sacks_yards_per_16_games', 'wins_per_16_games', 'losses_per_16_games', 'ties_per_16_games', 'fourth_quarter_comebacks_per_16_games', 'game_winning_drives_per_16_games', 'rushing_yards_per_16_games', 'rushing_tds_per_16_games', 'rushing_first_downs_per_16_games', 'pro_bowls_per_16_games', 'first_team_all_pros_per_16_games', 'super_bowls_per_16_games']\n\n# Scale values using MinMaxScaler (Bound all numbers between 0 and 1 to weaken the bias towards columns such as passing yards which contain large values, model will be able to better understand the difference between players at each position in the context of all columns)\n\nscaler = MinMaxScaler()\nnumeric_columns = ['games', 'games_started', 'completions', 'passing_attempts', 'incompletions', 'completion_%', 'passing_yards', 'passing_tds', 'interceptions', 'pick_6s', 'touchdown_%', 'int_%', 'passer_rating', 'sacks_taken', 'sack_yards', 'sack_%', 'passing_yards_per_attempt', 'adjusted_passing_yards_per_attempt', 'adjusted_net_passing_yards_per_attempt', 'passing_yards_per_completion', 'passing_yards_per_game', 'pass_success_rate', 'wins', 'losses', 'ties', 'fourth_quarter_comebacks', 'game_winning_drives', 'rushing_attempts', 'rushing_yards', 'rushing_yards_per_attempt', 'rushing_touchdowns', 'rushing_yards_per_game', 'rushing_first_downs', 'rush_success_rate', 'pro_bowls', 'first_team_all_pros', 'super_bowls', 'hall_of_fame', 'hall_of_fame_eligible', '16_games', 'winning_%', 'passing_yards_per_16_games', 'passing_attempts_per_16_games', 'passing_tds_per_16_games', 'int_per_16_games', 'pick_6_per_16_games', 'sacks_per_16_games', 'sacks_yards_per_16_games', 'wins_per_16_games', 'losses_per_16_games', 'ties_per_16_games', 'fourth_quarter_comebacks_per_16_games', 'game_winning_drives_per_16_games', 'rushing_yards_per_16_games', 'rushing_tds_per_16_games', 'rushing_first_downs_per_16_games', 'pro_bowls_per_16_games', 'first_team_all_pros_per_16_games', 'super_bowls_per_16_games']\n\nfor column in numeric_columns:\n    df[column] = scaler.fit_transform(df[[column]])\n\n# Split into eligible and ineligible data frames (I'll split the eligible players to train and then use the model to predict on uneligible players)\neligible = df[df['hall_of_fame_eligible'] == 1]\nineligible = df[df['hall_of_fame_eligible'] == 0]\n\n\n\n\n Back to top",
+    "crumbs": [
+      "Data Cleansing",
+      "NFL QB HoF Predictor"
+    ]
+  },
+  {
+    "objectID": "competition.html",
+    "href": "competition.html",
+    "title": "Competition",
+    "section": "",
+    "text": "What’s Here?\n\n\n\n\n Back to top",
+    "crumbs": [
+      "Competition"
+    ]
   },
   {
     "objectID": "resume.html",
@@ -198,153 +350,5 @@
     "title": "Comprehensive Resume",
     "section": "",
     "text": "Warehouse and Delivery Associate\nSteve’s Paint Supply\nAugust 2024 - January 2026\nColorado Springs, CO\n\nManaged four separate spaces for efficient storage and retrieval of material. Operated company forklift\nTransported up to 100 gallons of paint in a safe and timely manner\nEntrusted daily with company funds to realize business purchases around town. Praised for accountable work performance under circumstances easy to abuse\n\nMissionary\nThe Church of Jesus Christ of Latter-Day Saints\nApril 2022 - April 2024\nMexico City, Mexico\n\nPerformed ministering, proselyting, public relations, and service work on a regional level in 3 separate Mexican states\nAssigned by mission president to a mission office position to execute a culture change\nFound and submitted housing solutions for needs of 135 missionaries including proposals and contract negotiations through church legal department. Completed task of finding new properties for 3 companionships on a short schedule\nOversaw logistics for distributing proselyting aids, equipment, and mail to missionaries in 50 different mission areas\nOrganized and cleaned out storage spaces to increase space and better separate 2 inventories\nManaged technology maintenance, repair, and training needs. Headed project to distribute 75 new phones in an efficient manner to rotate oldest phones out of use sooner\nPrepared dozens of residency application packages for foreign-serving missionaries and maintained inconsistent consulate appointment schedules\nPlanned transportation of 70+ missionaries on a tight schedule to ensure missionaries could work in new area as soon as possible, usually same day\nAssigned to leadership positions over up to 15 other missionaries\n\nHotel Maintenance Staff\nHampton Inn and Suites\nJune 2020 - December 2022\nColorado Springs, CO\n\nServiced and supported hotel amenities and building assets for the #1 rated Hampton Inn & Suites in Colorado. Specialized in pool maintenance, grounds keeping, facilities appearance, structural and landscaping improvements to keep a fully operational, clean hotel property at one of the highest volume per unit hotels in Colorado."
-  },
-  {
-    "objectID": "Competition/project5.html",
-    "href": "Competition/project5.html",
-    "title": "Client Report - [Insert Project Title]",
-    "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "Competition/project3.html",
-    "href": "Competition/project3.html",
-    "title": "Client Report - [Insert Project Title]",
-    "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "cleansing.html",
-    "href": "cleansing.html",
-    "title": "Data Cleansing",
-    "section": "",
-    "text": "The data used was taken from Pro Football Reference’s Stathead service. In order to get all of the player information I wanted, I had to perform multiple queries to pull specific information regarding awards and Super Bowl information. The tables from these queries were then joined together. I handled null values and created standardized “per 16 games” columns to reduce bias towards long careers.",
-    "crumbs": [
-      "Data Cleansing"
-    ]
-  },
-  {
-    "objectID": "cleansing.html#nfl-quarterback-hall-of-fame-predictor",
-    "href": "cleansing.html#nfl-quarterback-hall-of-fame-predictor",
-    "title": "Data Cleansing",
-    "section": "",
-    "text": "The data used was taken from Pro Football Reference’s Stathead service. In order to get all of the player information I wanted, I had to perform multiple queries to pull specific information regarding awards and Super Bowl information. The tables from these queries were then joined together. I handled null values and created standardized “per 16 games” columns to reduce bias towards long careers.",
-    "crumbs": [
-      "Data Cleansing"
-    ]
-  },
-  {
-    "objectID": "Data_Exploration/project5.html",
-    "href": "Data_Exploration/project5.html",
-    "title": "Client Report - [Insert Project Title]",
-    "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "Data_Exploration/project3.html",
-    "href": "Data_Exploration/project3.html",
-    "title": "Client Report - [Insert Project Title]",
-    "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "full_stack.html",
-    "href": "full_stack.html",
-    "title": "Full Stack",
-    "section": "",
-    "text": "What’s Here?\n\n\n\n\n Back to top",
-    "crumbs": [
-      "Full Stack"
-    ]
-  },
-  {
-    "objectID": "Machine_Learning/project5.html",
-    "href": "Machine_Learning/project5.html",
-    "title": "Client Report - [Insert Project Title]",
-    "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "Machine_Learning/project3.html",
-    "href": "Machine_Learning/project3.html",
-    "title": "Client Report - [Insert Project Title]",
-    "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "competition.html",
-    "href": "competition.html",
-    "title": "Competition",
-    "section": "",
-    "text": "What’s Here?\n\n\n\n\n Back to top",
-    "crumbs": [
-      "Competition"
-    ]
-  },
-  {
-    "objectID": "ml.html",
-    "href": "ml.html",
-    "title": "Machine Learning",
-    "section": "",
-    "text": "What’s Here?\n\n\n\n\n Back to top",
-    "crumbs": [
-      "Machine Learning"
-    ]
-  },
-  {
-    "objectID": "Full_Stack/project4.html",
-    "href": "Full_Stack/project4.html",
-    "title": "Client Report - [Insert Project Title]",
-    "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "Full_Stack/project1.html",
-    "href": "Full_Stack/project1.html",
-    "title": "Client Report - [Insert Project Title]",
-    "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "Full_Stack/project2.html",
-    "href": "Full_Stack/project2.html",
-    "title": "Client Report - [Insert Project Title]",
-    "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "Story_Telling/project5.html",
-    "href": "Story_Telling/project5.html",
-    "title": "Client Report - [Insert Project Title]",
-    "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "Story_Telling/project3.html",
-    "href": "Story_Telling/project3.html",
-    "title": "Client Report - [Insert Project Title]",
-    "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "Cleansing_Projects/project4.html",
-    "href": "Cleansing_Projects/project4.html",
-    "title": "Client Report - [Insert Project Title]",
-    "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "Cleansing_Projects/project3.html",
-    "href": "Cleansing_Projects/project3.html",
-    "title": "Client Report - [Insert Project Title]",
-    "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "Cleansing_Projects/project2.html",
-    "href": "Cleansing_Projects/project2.html",
-    "title": "Client Report - [Insert Project Title]",
-    "section": "",
-    "text": "Paste in a template\n\n\n\n\n Back to top"
   }
 ]
