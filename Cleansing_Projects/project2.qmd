@@ -12,7 +12,7 @@ format:
     toc-location: body
     number-sections: false
     html-math-method: katex
-    code-fold: true
+    code-fold: false
     code-summary: "Show the code"
     code-overflow: wrap
     code-copy: hover
@@ -24,18 +24,18 @@ execute:
   warning: false
     
 ---
+
+I took convenience store sales data and created a couple of features that would be used by a clustering model to segment a convenience store's customer base. Ideally this segmentation would be used to identify customers who were perhaps frequent shoppers in the past who have fallen away or high potential customers who could easily made into frequent customers. Data came from Dewey Data. I used PySpark to perform all the engineering. 
+
 ```{python}
 # Import necessary libraries
 import pyspark as spark
 import pyspark.sql.functions as sf
 from pyspark.sql.window import Window
 from pyspark.sql import SparkSession
-from lets_plot import *
-import plotly.express as px
-import polars as pl
 
+# Start Spark session
 spark = SparkSession.builder.getOrCreate()
-
 
 # Load in necessary tables
 shoppers0 = spark.read.parquet("../Data/shoppers_0.parquet")
@@ -44,25 +44,26 @@ shoppers2 = spark.read.parquet("../Data/shoppers_2.parquet")
 stores = spark.read.parquet("../Data/cstore_stores.parquet")
 sets0 = spark.read.parquet("../Data/sets_0.parquet")
 sets1 = spark.read.parquet("../Data/sets_1.parquet")
-items0 = spark.read.parquet("../Data/part-00000.parquet")
-items1 = spark.read.parquet("../Data/part-00001.parquet")
-items2 = spark.read.parquet("../Data/part-00002.parquet")
-items3 = spark.read.parquet("../Data/part-00003.parquet")
-items4 = spark.read.parquet("../Data/part-00004.parquet")
-items5 = spark.read.parquet("../Data/part-00005.parquet")
-items6 = spark.read.parquet("../Data/part-00006.parquet")
+transactions0 = spark.read.parquet("../Data/part-00000.parquet")
+transactions1 = spark.read.parquet("../Data/part-00001.parquet")
+transactions2 = spark.read.parquet("../Data/part-00002.parquet")
+transactions3 = spark.read.parquet("../Data/part-00003.parquet")
+transactions4 = spark.read.parquet("../Data/part-00004.parquet")
+transactions5 = spark.read.parquet("../Data/part-00005.parquet")
+transactions6 = spark.read.parquet("../Data/part-00006.parquet")
+items = spark.read.parquet("../Data/cstore_master_ctin.parquet")
 
 # Create baseline tables
 
 # Merge items tables
-items = (
-    items0
-    .unionByName(items1)
-    .unionByName(items2)
-    .unionByName(items3)
-    .unionByName(items4)
-    .unionByName(items5)
-    .unionByName(items6)
+transactions = (
+    transactions0
+    .unionByName(transactions1)
+    .unionByName(transactions2)
+    .unionByName(transactions3)
+    .unionByName(transactions4)
+    .unionByName(transactions5)
+    .unionByName(transactions6)
 )
 
 # Merge sets tables
@@ -81,9 +82,11 @@ stores = stores.withColumn(
     sf.col("STORE_ID").cast("string")
 )
 
+# Create baseline tables
+
 # Join shoppers, transactions, items, and stores tables
 joined_items = (shoppers
-                .join(sets, on = "TRANSACTION_SET_ID", how = "left")
+                .join(transactions, on = "TRANSACTION_SET_ID", how = "left")
                 .join(stores, "STORE_ID", how = "left")
                 .withColumn("MONTH", sf.month("DATE_TIME"))
                 .withColumn("YEAR", sf.year("DATE_TIME"))
@@ -98,10 +101,51 @@ joined_sets = (shoppers
                .withColumn("TIME", sf.hour("DATE_TIME")))
 ```
 
-I took convenience store sales data and created a couple of features that would be used by a clustering model to segment a convenience store's customer base. Data came from Dewey Data. I used PySpark to perform all the engineering. 
-
-The first feature is the number of cycles it has been since the customer last shop. A cycle is the average number of days between visits. 
+The first feature is the number of cycles it has been since the customer last shop. A cycle is the average number of days between visits. Now customers who have gone longer than normal without shopping at the store can easily be indentified and grouped bny the clustering alogrithm.
 
 ```{python}
+# Calculate the number of cycles that have passed since the last time each shopper generated a set using shoppers.SHOPPER_ID, shoppers.TRANSACTION_SET_ID, and sets.DATE_TIME
 
+# Create window for calculations
+window = Window.partitionBy("SHOPPER_ID").orderBy(sf.asc("DATE_TIME"))
 
+# Calculate the average days between sets for each shopper, the days between now and their last set, and the divide the days since last set by the average time between sets
+final = (joined_sets
+    .select("SHOPPER_ID", "DATE_TIME")
+    .withColumn("PREVIOUS_SET_DATE_TIME", sf.lag("DATE_TIME").over(window))
+    .withColumn("DAYS_BETWEEN_PREVIOUS_PURCHASE", sf.date_diff("DATE_TIME", "PREVIOUS_SET_DATE_TIME"))
+    .withColumn("LAST_PURCHASE_DATE", sf.max("DATE_TIME").over(window))
+    .withColumn("DAYS_SINCE_LAST_PURCHASE", sf.date_diff(sf.now(), "LAST_PURCHASE_DATE"))
+    .groupBy("SHOPPER_ID")
+    .agg(sf.avg("DAYS_BETWEEN_PREVIOUS_PURCHASE").alias("AVERAGE_DAYS_BETWEEN_PURCHASES"), sf.avg("DAYS_SINCE_LAST_PURCHASE").alias("DAYS_SINCE_LAST_PURCHASE"))
+    .withColumn("ROTATIONS_SINCE_LAST_PURCHASE", sf.when((sf.col("AVERAGE_DAYS_BETWEEN_PURCHASES").isNotNull()) & (sf.col("AVERAGE_DAYS_BETWEEN_PURCHASES") != 0),  sf.col("DAYS_SINCE_LAST_PURCHASE")/sf.col("AVERAGE_DAYS_BETWEEN_PURCHASES")).otherwise(None))
+    .select("SHOPPER_ID", "ROTATIONS_SINCE_LAST_PURCHASE"))
+
+display(final.limit(5))
+```
+
+The second feature I created was a sort of basket diversity score. The company might offer discounts on certain items to customers who have a consistent shopping pattern. The score represents the average of the percentage of baskets that every item a customer has purchased appears in. If a customer only buys gas, then gas is in 100% of their baskets, therefore they have a score of 100. If a customer buys cigarettes every time and peanuts half the time, their score is 75% (100% and 50%). 
+
+```{python}
+# Calculate The average percent of Total transaction sets every item a shopper has bought appears in for each shopper at every store all time using shoppers.SHOPPER_ID, shoppers.TRANSACTION_SET_ID, and items.GTIN
+
+# Filter joined_items to distinct shopper_id, transaction_set_id, and gtin combinations (we had some problems with duplicate rows instead of quantity being more than 1)
+unique_joined_items = joined_items.select("SHOPPER_ID", "TRANSACTION_SET_ID", "GTIN").distinct()
+
+# Calculate the total number of sets by each shopper and filter out those with fewer than 2 sets
+total_sets = (joined_sets
+              .groupBy("SHOPPER_ID").agg(sf.count("TRANSACTION_SET_ID").alias("TOTAL_SETS"))
+              .filter("TOTAL_SETS > 1"))
+
+# Calculate the number of baskets in which an item purchased by a shopper appears
+item_appearances = unique_joined_items.groupBy("SHOPPER_ID", "GTIN").agg(sf.countDistinct("TRANSACTION_SET_ID").alias("ITEM_APPEARANCES"))
+
+# Join the total number of sets by each shopper with the number of baskets in which an item purchased by a shopper appears
+appearance_percentage = (item_appearances
+                         .join(total_sets, on = "SHOPPER_ID", how = "left")
+                         .withColumn("APPEARANCE_PERCENTAGE", sf.col("ITEM_APPEARANCES")/sf.col("TOTAL_SETS") * 100)
+                         .groupBy("SHOPPER_ID").
+                         agg(sf.avg("APPEARANCE_PERCENTAGE").alias("AVERAGE_APPEARANCE_PERCENTAGE")))
+
+display(appearance_percentage.limit(5))
+```

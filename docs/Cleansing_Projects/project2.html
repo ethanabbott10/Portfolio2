@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="[STUDENT NAME]">
+<meta name="author" content="Ethan Abbott">
 
-<title>Client Report - [Insert Project Title] – Ethan Abbott - Data Science Portfolio</title>
+<title>Market Segmentation Feature Engineering – Ethan Abbott - Data Science Portfolio</title>
 <style>
 
 code{white-space: pre-wrap;}
@@ -20,6 +20,41 @@ ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
 width: 0.8em;
 margin: 0 0.8em 0.2em -1em;  vertical-align: middle;
+}
+
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+}
+pre.numberSource { margin-left: 3em; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -4228,8 +4263,8 @@ vertical-align: -.125em;
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-page">
-      <h1 class="title">Client Report - [Insert Project Title]</h1>
-            <p class="subtitle lead">Course DS 250</p>
+      <h1 class="title">Market Segmentation Feature Engineering</h1>
+            <p class="subtitle lead">Data Cleansing</p>
                       </div>
   </div>
     
@@ -4239,7 +4274,7 @@ vertical-align: -.125em;
       <div>
       <div class="quarto-title-meta-heading">Author</div>
       <div class="quarto-title-meta-contents">
-               <p>[STUDENT NAME] </p>
+               <p>Ethan Abbott </p>
             </div>
     </div>
       
@@ -4260,18 +4295,134 @@ vertical-align: -.125em;
 
 
 
-<nav id="TOC" role="doc-toc">
-    <h2 id="toc-title">On this page</h2>
-   
-  <ul>
-  <li><a href="#paste-in-a-template" id="toc-paste-in-a-template">Paste in a template</a></li>
-  </ul>
-</nav>
-<section id="paste-in-a-template" class="level3">
-<h3 class="anchored" data-anchor-id="paste-in-a-template">Paste in a template</h3>
+
+<p>I took convenience store sales data and created a couple of features that would be used by a clustering model to segment a convenience store’s customer base. Ideally this segmentation would be used to identify customers who were perhaps frequent shoppers in the past who have fallen away or high potential customers who could easily made into frequent customers. Data came from Dewey Data. I used PySpark to perform all the engineering.</p>
+<div id="c4d6b0a6" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Import necessary libraries</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pyspark <span class="im">as</span> spark</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pyspark.sql.functions <span class="im">as</span> sf</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql.window <span class="im">import</span> Window</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql <span class="im">import</span> SparkSession</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Start Spark session</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>spark <span class="op">=</span> SparkSession.builder.getOrCreate()</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Load in necessary tables</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>shoppers0 <span class="op">=</span> spark.read.parquet(<span class="st">&quot;../Data/shoppers_0.parquet&quot;</span>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>shoppers1 <span class="op">=</span> spark.read.parquet(<span class="st">&quot;../Data/shoppers_1.parquet&quot;</span>)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>shoppers2 <span class="op">=</span> spark.read.parquet(<span class="st">&quot;../Data/shoppers_2.parquet&quot;</span>)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>stores <span class="op">=</span> spark.read.parquet(<span class="st">&quot;../Data/cstore_stores.parquet&quot;</span>)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>sets0 <span class="op">=</span> spark.read.parquet(<span class="st">&quot;../Data/sets_0.parquet&quot;</span>)</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>sets1 <span class="op">=</span> spark.read.parquet(<span class="st">&quot;../Data/sets_1.parquet&quot;</span>)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>transactions0 <span class="op">=</span> spark.read.parquet(<span class="st">&quot;../Data/part-00000.parquet&quot;</span>)</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>transactions1 <span class="op">=</span> spark.read.parquet(<span class="st">&quot;../Data/part-00001.parquet&quot;</span>)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>transactions2 <span class="op">=</span> spark.read.parquet(<span class="st">&quot;../Data/part-00002.parquet&quot;</span>)</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>transactions3 <span class="op">=</span> spark.read.parquet(<span class="st">&quot;../Data/part-00003.parquet&quot;</span>)</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>transactions4 <span class="op">=</span> spark.read.parquet(<span class="st">&quot;../Data/part-00004.parquet&quot;</span>)</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>transactions5 <span class="op">=</span> spark.read.parquet(<span class="st">&quot;../Data/part-00005.parquet&quot;</span>)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>transactions6 <span class="op">=</span> spark.read.parquet(<span class="st">&quot;../Data/part-00006.parquet&quot;</span>)</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>items <span class="op">=</span> spark.read.parquet(<span class="st">&quot;../Data/cstore_master_ctin.parquet&quot;</span>)</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Create baseline tables</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Merge items tables</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>transactions <span class="op">=</span> (</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>    transactions0</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>    .unionByName(transactions1)</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>    .unionByName(transactions2)</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>    .unionByName(transactions3)</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>    .unionByName(transactions4)</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>    .unionByName(transactions5)</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>    .unionByName(transactions6)</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="co"># Merge sets tables</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>sets <span class="op">=</span> sets0.unionByName(sets1)</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="co"># Merge shoppers tables</span></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>shoppers <span class="op">=</span> (</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>    shoppers0</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>    .unionByName(shoppers1)</span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>    .unionByName(shoppers2)</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a><span class="co"># Change data type of Store ID in stores table</span></span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>stores <span class="op">=</span> stores.withColumn(</span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;STORE_ID&quot;</span>,</span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>    sf.col(<span class="st">&quot;STORE_ID&quot;</span>).cast(<span class="st">&quot;string&quot;</span>)</span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a><span class="co"># Create baseline tables</span></span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a><span class="co"># Join shoppers, transactions, items, and stores tables</span></span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>joined_items <span class="op">=</span> (shoppers</span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>                .join(transactions, on <span class="op">=</span> <span class="st">&quot;TRANSACTION_SET_ID&quot;</span>, how <span class="op">=</span> <span class="st">&quot;left&quot;</span>)</span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>                .join(stores, <span class="st">&quot;STORE_ID&quot;</span>, how <span class="op">=</span> <span class="st">&quot;left&quot;</span>)</span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a>                .withColumn(<span class="st">&quot;MONTH&quot;</span>, sf.month(<span class="st">&quot;DATE_TIME&quot;</span>))</span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a>                .withColumn(<span class="st">&quot;YEAR&quot;</span>, sf.year(<span class="st">&quot;DATE_TIME&quot;</span>))</span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a>                .join(items, <span class="st">&quot;GTIN&quot;</span>, how <span class="op">=</span> <span class="st">&quot;left&quot;</span>))</span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a><span class="co"># Join shoppers, sets, and stores table. Create columns for year, month, and hour of each transaction set</span></span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a>joined_sets <span class="op">=</span> (shoppers</span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a>               .join(sets, on <span class="op">=</span> <span class="st">&quot;TRANSACTION_SET_ID&quot;</span>, how <span class="op">=</span> <span class="st">&quot;left&quot;</span>)</span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a>               .join(stores, on <span class="op">=</span> <span class="st">&quot;STORE_ID&quot;</span>, how <span class="op">=</span> <span class="st">&quot;left&quot;</span>)</span>
+<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a>               .withColumn(<span class="st">&quot;MONTH&quot;</span>, sf.month(<span class="st">&quot;DATE_TIME&quot;</span>))</span>
+<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a>               .withColumn(<span class="st">&quot;YEAR&quot;</span>, sf.year(<span class="st">&quot;DATE_TIME&quot;</span>))</span>
+<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a>               .withColumn(<span class="st">&quot;TIME&quot;</span>, sf.hour(<span class="st">&quot;DATE_TIME&quot;</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The first feature is the number of cycles it has been since the customer last shop. A cycle is the average number of days between visits. Now customers who have gone longer than normal without shopping at the store can easily be indentified and grouped bny the clustering alogrithm.</p>
+<div id="3231852f" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the number of cycles that have passed since the last time each shopper generated a set using shoppers.SHOPPER_ID, shoppers.TRANSACTION_SET_ID, and sets.DATE_TIME</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Create window for calculations</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>window <span class="op">=</span> Window.partitionBy(<span class="st">&quot;SHOPPER_ID&quot;</span>).orderBy(sf.asc(<span class="st">&quot;DATE_TIME&quot;</span>))</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the average days between sets for each shopper, the days between now and their last set, and the divide the days since last set by the average time between sets</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>final <span class="op">=</span> (joined_sets</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    .select(<span class="st">&quot;SHOPPER_ID&quot;</span>, <span class="st">&quot;DATE_TIME&quot;</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    .withColumn(<span class="st">&quot;PREVIOUS_SET_DATE_TIME&quot;</span>, sf.lag(<span class="st">&quot;DATE_TIME&quot;</span>).over(window))</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    .withColumn(<span class="st">&quot;DAYS_BETWEEN_PREVIOUS_PURCHASE&quot;</span>, sf.date_diff(<span class="st">&quot;DATE_TIME&quot;</span>, <span class="st">&quot;PREVIOUS_SET_DATE_TIME&quot;</span>))</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    .withColumn(<span class="st">&quot;LAST_PURCHASE_DATE&quot;</span>, sf.<span class="bu">max</span>(<span class="st">&quot;DATE_TIME&quot;</span>).over(window))</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    .withColumn(<span class="st">&quot;DAYS_SINCE_LAST_PURCHASE&quot;</span>, sf.date_diff(sf.now(), <span class="st">&quot;LAST_PURCHASE_DATE&quot;</span>))</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    .groupBy(<span class="st">&quot;SHOPPER_ID&quot;</span>)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    .agg(sf.avg(<span class="st">&quot;DAYS_BETWEEN_PREVIOUS_PURCHASE&quot;</span>).alias(<span class="st">&quot;AVERAGE_DAYS_BETWEEN_PURCHASES&quot;</span>), sf.avg(<span class="st">&quot;DAYS_SINCE_LAST_PURCHASE&quot;</span>).alias(<span class="st">&quot;DAYS_SINCE_LAST_PURCHASE&quot;</span>))</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    .withColumn(<span class="st">&quot;ROTATIONS_SINCE_LAST_PURCHASE&quot;</span>, sf.when((sf.col(<span class="st">&quot;AVERAGE_DAYS_BETWEEN_PURCHASES&quot;</span>).isNotNull()) <span class="op">&amp;</span> (sf.col(<span class="st">&quot;AVERAGE_DAYS_BETWEEN_PURCHASES&quot;</span>) <span class="op">!=</span> <span class="dv">0</span>),  sf.col(<span class="st">&quot;DAYS_SINCE_LAST_PURCHASE&quot;</span>)<span class="op">/</span>sf.col(<span class="st">&quot;AVERAGE_DAYS_BETWEEN_PURCHASES&quot;</span>)).otherwise(<span class="va">None</span>))</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    .select(<span class="st">&quot;SHOPPER_ID&quot;</span>, <span class="st">&quot;ROTATIONS_SINCE_LAST_PURCHASE&quot;</span>))</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>display(final.limit(<span class="dv">5</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>DataFrame[SHOPPER_ID: string, ROTATIONS_SINCE_LAST_PURCHASE: double]</code></pre>
+</div>
+</div>
+<p>The second feature I created was a sort of basket diversity score. The company might offer discounts on certain items to customers who have a consistent shopping pattern. The score represents the average of the percentage of baskets that every item a customer has purchased appears in. If a customer only buys gas, then gas is in 100% of their baskets, therefore they have a score of 100. If a customer buys cigarettes every time and peanuts half the time, their score is 75% (100% and 50%).</p>
+<div id="89214e13" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate The average percent of Total transaction sets every item a shopper has bought appears in for each shopper at every store all time using shoppers.SHOPPER_ID, shoppers.TRANSACTION_SET_ID, and items.GTIN</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter joined_items to distinct shopper_id, transaction_set_id, and gtin combinations (we had some problems with duplicate rows instead of quantity being more than 1)</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>unique_joined_items <span class="op">=</span> joined_items.select(<span class="st">&quot;SHOPPER_ID&quot;</span>, <span class="st">&quot;TRANSACTION_SET_ID&quot;</span>, <span class="st">&quot;GTIN&quot;</span>).distinct()</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the total number of sets by each shopper and filter out those with fewer than 2 sets</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>total_sets <span class="op">=</span> (joined_sets</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>              .groupBy(<span class="st">&quot;SHOPPER_ID&quot;</span>).agg(sf.count(<span class="st">&quot;TRANSACTION_SET_ID&quot;</span>).alias(<span class="st">&quot;TOTAL_SETS&quot;</span>))</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>              .<span class="bu">filter</span>(<span class="st">&quot;TOTAL_SETS &gt; 1&quot;</span>))</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the number of baskets in which an item purchased by a shopper appears</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>item_appearances <span class="op">=</span> unique_joined_items.groupBy(<span class="st">&quot;SHOPPER_ID&quot;</span>, <span class="st">&quot;GTIN&quot;</span>).agg(sf.countDistinct(<span class="st">&quot;TRANSACTION_SET_ID&quot;</span>).alias(<span class="st">&quot;ITEM_APPEARANCES&quot;</span>))</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Join the total number of sets by each shopper with the number of baskets in which an item purchased by a shopper appears</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>appearance_percentage <span class="op">=</span> (item_appearances</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>                         .join(total_sets, on <span class="op">=</span> <span class="st">&quot;SHOPPER_ID&quot;</span>, how <span class="op">=</span> <span class="st">&quot;left&quot;</span>)</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>                         .withColumn(<span class="st">&quot;APPEARANCE_PERCENTAGE&quot;</span>, sf.col(<span class="st">&quot;ITEM_APPEARANCES&quot;</span>)<span class="op">/</span>sf.col(<span class="st">&quot;TOTAL_SETS&quot;</span>) <span class="op">*</span> <span class="dv">100</span>)</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>                         .groupBy(<span class="st">&quot;SHOPPER_ID&quot;</span>).</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>                         agg(sf.avg(<span class="st">&quot;APPEARANCE_PERCENTAGE&quot;</span>).alias(<span class="st">&quot;AVERAGE_APPEARANCE_PERCENTAGE&quot;</span>)))</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>display(appearance_percentage.limit(<span class="dv">5</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>DataFrame[SHOPPER_ID: string, AVERAGE_APPEARANCE_PERCENTAGE: double]</code></pre>
+</div>
+</div>
 
 
-</section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
