@@ -349,6 +349,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#whats-here" id="toc-whats-here" class="nav-link active" data-scroll-target="#whats-here">What’s here?</a>
   <ul class="collapse">
   <li><a href="#nfl-quarterback-hall-of-fame-predictor" id="toc-nfl-quarterback-hall-of-fame-predictor" class="nav-link" data-scroll-target="#nfl-quarterback-hall-of-fame-predictor">NFL Quarterback Hall of Fame Predictor</a></li>
+  <li><a href="#convenience-store-clustering-feature-engineering" id="toc-convenience-store-clustering-feature-engineering" class="nav-link" data-scroll-target="#convenience-store-clustering-feature-engineering">Convenience Store Clustering Feature Engineering</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -381,6 +382,10 @@ ul.task-list li input[type="checkbox"] {
 <section id="nfl-quarterback-hall-of-fame-predictor" class="level2">
 <h2 class="anchored" data-anchor-id="nfl-quarterback-hall-of-fame-predictor">NFL Quarterback Hall of Fame Predictor</h2>
 <p>The data used was taken from Pro Football Reference’s Stathead service. In order to get all of the player information I wanted, I had to perform multiple queries to pull specific information regarding awards and Super Bowl information. The tables from these queries were then joined together. I handled null values and created standardized “per 16 games” columns to reduce bias towards long careers.</p>
+</section>
+<section id="convenience-store-clustering-feature-engineering" class="level2">
+<h2 class="anchored" data-anchor-id="convenience-store-clustering-feature-engineering">Convenience Store Clustering Feature Engineering</h2>
+<p>I created a couple of features to be used in a clustering alogrithm for market segmentation. Data came from Dewey Data. I loaded in the parquet files and used PySpark to perform all the engineering. The features are a way to see how long it has been since a customer has come based on their habits as well as how predictable their basket is. All of this with the idea to identify customers that have fallen away from frequency or could easily be interested in sales on certain products.</p>
 
 
 </section>
